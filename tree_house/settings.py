@@ -25,7 +25,7 @@ SECRET_KEY = '76tf)ek-6uf0gig$r=d%le7_d$u9fhgrd4$gi3n0^-35s+bft@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'authapp',
+    'properties',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +88,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'authapp.Users'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -103,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
