@@ -131,3 +131,4 @@ dmypy.json
 .idea/
 */migrations
 tree_house/static
+/tree_house/static/
