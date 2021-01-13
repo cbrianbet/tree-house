@@ -2,6 +2,11 @@
   height: 100%;
 }
 
+
+.page-register-v2:before {
+    background-image: url(../../images/login.jpg)
+}
+
 .page-register-v2.page-dark.layout-full:after {
   background-color: rgba(255,255,255, 0.9);
 }
