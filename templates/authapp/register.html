@@ -56,7 +56,7 @@
     </script>
 
 </head>
-<body class="animsition page-register-v2 layout-full page-dark">
+<body class="animsition page-register-v2 layout-full page-dark" >
 <!--[if lt IE 8]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
     your browser</a> to improve your experience.</p>
@@ -75,18 +75,8 @@
         </div>
 
         <div class="page-register-main animation-slide-left animation-duration-1">
-            <div class="brand hidden-md-up">
-                <img class="brand-img" src="{% static 'authapp/assets/images/mnest-png.png' %}" alt="...">
-                <h3 class="brand-text font-size-40">MNEST</h3>
-            </div>
             <h3 class="font-size-24">Sign Up</h3>
             <p></p>
-            {##}
-            {#            <form method="post" role="form">#}
-            {#                {% csrf_token %}#}
-            {#                <button type="submit" class="btn btn-primary btn-block">Sign Up</button>#}
-            {#            </form>#}
-
             <!-- Panel Wizard Form Container -->
             <div class="panel" id="exampleWizardFormContainer">
                 <div class="panel-heading">
@@ -144,7 +134,7 @@
                                 <div class="form-group">
                                     <label class="form-control-label" for="acc_type">Account Type*</label>
                                     <select data-plugin="selectpicker" title="Account Type" id="acc_type"
-                                            name="acc_type">
+                                            name="acc_type" required="required">
                                         <option value="2">Landlord</option>
                                         <option value="3">Agent</option>
                                     </select>
@@ -158,7 +148,8 @@
                                                required="required">
                                     </div>
                                     <label class="form-control-label" for="logo">Logo</label>
-                                    <input type="image" id="logo" name="logo" />
+                                    <input type="file" id="logo" name="logo" data-plugin="dropify"
+                                           data-default-file="" accept="image/*"/>
                                     <div class="form-group">
                                         <label class="form-control-label" for="location">Office
                                             location(optional)</label>

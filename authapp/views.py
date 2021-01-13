@@ -37,17 +37,15 @@ def signup(request):
         user.save()
 
         if user.pk:
-
-            profile = Profile.objects.create(first_name = f_name, last_name = l_name, msisdn = mobile, id_no=number, terms_accepted = terms, user = user)
+            profile = Profile.objects.create(first_name=f_name, last_name=l_name, msisdn=mobile, id_number=number,
+                                             terms_accepted=terms, user=user)
             profile.save()
 
-            company = Companies.objects.create(name = company_name, no_of_emps=no_of_units, location=location)
+            company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location)
             company.save()
 
-            cp = CompanyProfile.objects.create(user = user, company = company)
+            cp = CompanyProfile.objects.create(user=user, company=company)
             cp.save()
-
-
 
         return redirect('login')
     return render(request, 'authapp/register.html')
