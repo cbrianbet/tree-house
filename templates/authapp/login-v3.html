@@ -8,10 +8,10 @@
     <meta name="description" content="bootstrap admin template">
     <meta name="author" content="">
 
-    <title>Login | Treehouse</title>
+    <title>Login | MNEST</title>
 
-    <link rel="apple-touch-icon" href="{% static 'authapp/assets/images/apple-touch-icon.png' %}">
-    <link rel="shortcut icon" href="{% static 'authapp/assets/images/Tree House Logo.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
+    <link rel="shortcut icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{% static 'authapp/global/css/bootstrap.min.css' %}">
@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/login-v3.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
 
 
     <!-- Fonts -->
@@ -61,17 +62,18 @@
         <div class="panel">
             <div class="panel-body">
                 <div class="brand">
-                    <img class="brand-img center" src="{% static 'authapp/assets/images/Tree House Logo.png' %}" alt="...">
+                    <img class="brand-img center" src="{% static 'authapp/assets/images/mnest-png.png' %}" width="338.6"
+                         height="180" alt="...">
                     <h2 class="brand-text font-size-18"></h2>
                 </div>
-                <form method="post" action="{% url 'login' %}">
+                <form method="post" id="sign_in" action="{% url 'login' %}">
                     {% csrf_token %}
                     <div class="form-group form-material floating" data-plugin="formMaterial">
-                        <input type="text" class="form-control" name="username"/>
+                        {{ form.username }}
                         <label class="floating-label">Username</label>
                     </div>
                     <div class="form-group form-material floating" data-plugin="formMaterial">
-                        <input type="password" class="form-control" name="password"/>
+                        {{ form.password }}
                         <label class="floating-label">Password</label>
                     </div>
                     <div class="form-group clearfix">
@@ -88,7 +90,7 @@
         </div>
 
         <footer class="page-copyright page-copyright-inverse">
-            <p>WEBSITE BY TREE HOUSE</p>
+            <p>WEBSITE BY MNEST PMS</p>
             <p>© 2021. All RIGHT RESERVED.</p>
             <div class="social">
                 <a class="btn btn-icon btn-pure" href="javascript:void(0)">
@@ -124,6 +126,7 @@
 <script src="{% static 'authapp/global/vendor/screenfull/screenfull.js' %}"></script>
 <script src="{% static 'authapp/global/vendor/slidepanel/jquery-slidePanel.js' %}"></script>
 <script src="{% static 'authapp/global/vendor/jquery-placeholder/jquery.placeholder.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
 
 <!-- Scripts -->
 <script src="{% static 'authapp/global/js/Component.js' %}"></script>
@@ -148,6 +151,8 @@
 <script src="{% static 'authapp/global/js/Plugin/switchery.js' %}"></script>
 <script src="{% static 'authapp/global/js/Plugin/jquery-placeholder.js' %}"></script>
 <script src="{% static 'authapp/global/js/Plugin/material.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+
 
 <script>
     (function (document, window, $) {
@@ -158,6 +163,69 @@
             Site.run();
         });
     })(document, window, jQuery);
+</script>
+
+<script>
+    var loginForm = $("#sign_in");
+    loginForm.submit(function (e) {
+        e.preventDefault();
+        var thisForm = $(this);
+        var endPoint = thisForm.attr("action") || window.location.href;
+        var method = thisForm.attr("method");
+        var formData = thisForm.serialize();
+
+        console.log(endPoint);
+        console.log(method);
+        swal({
+            title: "Please wait, Logging In!",
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
+
+        $.ajax({
+            type: method,
+            url: endPoint,
+            data: formData,
+            success: function (data) {
+                console.log(data)
+                if (data === 'Not an admin') {
+                    swal({
+                        title: 'Error!!',
+                        text: data,
+                        type: 'error'
+                    });
+                } else if (data === "invalid credentials") {
+                    swal({
+                        title: 'Wrong Login credentials!!',
+                        text: 'Username or Password does NOT exist!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else if (data === "form error") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Fill all fields correctly!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else {
+                    swal({
+                        title: 'Logged in',
+                        type: "success",
+                        showConfirmButton: true,
+                    });
+                    loginForm[0].reset();
+                    window.location.href = data;
+                }
+            },
+            error: function (er) {
+                console.log("Login error");
+                // console.log(er.responseText);
+                swal('Wrong Login credentials!!', 'Username or Password does NOT exist!!', 'error');
+            }
+        });
+
+    });
 </script>
 </body>
 </html>

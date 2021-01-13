@@ -1,15 +1,33 @@
+from django.contrib.auth import authenticate, login as log_in
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
+from authapp.forms import LoginForm
 from authapp.models import Users, Profile, AccTypes
 from properties.models import Companies, CompanyProfile
 
 
 def login(request):
-    if request.method == "POST":
-        return HttpResponse('dashboard')
-
-    return render(request, 'authapp/login-v3.html')
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            clean = form.cleaned_data
+            user = authenticate(username=clean['username'], password=clean['password'])
+            if user is not None:
+                if user.is_active:
+                    log_in(request, user)
+                    return HttpResponse(reverse('dashboard'))
+                else:
+                    return HttpResponse('Account is Disabled')
+            else:
+                return HttpResponse("invalid credentials")
+        else:
+            return HttpResponse("form error")
+    else:
+        form = LoginForm()
+    return render(request, "authApp/login-v3.html", {'form': form})
 
 
 def dashboard(request):
