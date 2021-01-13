@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/register-v2.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/jquery-wizard/jquery-wizard.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/formvalidation/formValidation.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
 
 
     <!-- Fonts -->
@@ -140,11 +142,6 @@
                                            required="required">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-control-label" for="inputPasswordCheck">Retype Password*</label>
-                                    <input type="password" class="form-control" id="inputPasswordCheck"
-                                           name="re_password" required="required">
-                                </div>
-                                <div class="form-group">
                                     <label class="form-control-label" for="acc_type">Account Type*</label>
                                     <select data-plugin="selectpicker" title="Account Type" id="acc_type"
                                             name="acc_type">
@@ -154,16 +151,41 @@
                                 </div>
                             </div>
                             <div class="wizard-pane" id="exampleBillingOne" role="tabpanel">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="company">Company Name*</label>
-                                    <input type="text" class="form-control" id="company" name="company"
-                                           required="required">
+                                <div id="agent">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="company">Company Name*</label>
+                                        <input type="text" class="form-control" id="company" name="company"
+                                               required="required">
+                                    </div>
+                                    <label class="form-control-label" for="logo">Logo</label>
+                                    <input type="image" id="logo" name="logo" />
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="location">Office
+                                            location(optional)</label>
+                                        <input type="text" class="form-control" id="location" name="location"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="props_no">Number of employees</label>
+                                        <input type="number" class="form-control" id="props_no" min="1" name="props_no"
+                                               required="required">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="props_no">Units Managed in Portfolio*</label>
-                                    <input type="number" class="form-control" id="props_no" min="1" name="props_no"
-                                           required="required">
+                                <div id="landlord">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="mobile">Mobile Number*</label>
+                                        <input type="tel" class="form-control" id="mobile" name="mobile"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="id_no">ID Number*</label>
+                                        <input type="text" class="form-control" id="id_no" name="id_no"
+                                               required="required">
+                                    </div>
                                 </div>
+                                {#                                <input type="file" id="input-file-now-custom-1" data-plugin="dropify"#}
+                                {#                                       data-default-file="../../../global/photos/placeholder.png"#}
+                                {#                                />#}
                             </div>
                             <div class="wizard-pane" id="exampleGettingOne" role="tabpanel">
                                 <div class="text-center my-20">
@@ -227,6 +249,7 @@
 <script src="{% static 'authapp/global/vendor/formvalidation/formValidation.js' %}"></script>
 <script src="{% static 'authapp/global/vendor/formvalidation/framework/bootstrap.js' %}"></script>
 <script src="{% static 'authapp/global/vendor/jquery-wizard/jquery-wizard.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/dropify/dropify.min.js' %}"></script>
 
 <!-- Scripts -->
 <script src="{% static 'authapp/global/js/Component.js' %}"></script>
@@ -251,6 +274,9 @@
 <script src="{% static 'authapp/global/js/Plugin/switchery.js' %}"></script>
 <script src="{% static 'authapp/global/js/Plugin/jquery-placeholder.js' %}"></script>
 <script src="{% static 'authapp/global/js/Plugin/material.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
+<script src="{% static 'authapp/assets/examples/js/forms/uploads.js' %}"></script>
+
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
@@ -260,6 +286,19 @@
 <script>
     $(function () {
         $('select').selectpicker();
+        $('select').change(function () {
+            var value = $(this).val();
+            console.log(value)
+            if (value == "2") {
+                $('#agent').hide();
+                $('#landlord').show();
+
+            } else if (value == "3") {
+                $('#agent').show();
+                $('#landlord').hide();
+            }
+
+        });
     });
     (function (document, window, $) {
         'use strict';
@@ -268,7 +307,7 @@
         $(document).ready(function () {
             Site.run();
         });
-    })(document, window, jQuery);
+    })(document, window, jQuery)
 </script>
 </body>
 </html>

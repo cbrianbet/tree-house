@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from authapp.models import Users, Profile, AccTypes
 from properties.models import Companies, CompanyProfile
@@ -22,7 +22,6 @@ def signup(request):
         username = request.POST.get('username')
         email = request.POST.get('email')
         pwrd = request.POST.get('password')
-        re_pwrd = request.POST.get('re_password')
         f_name = request.POST.get('f_name')
         l_name = request.POST.get('l_name')
         mobile = request.POST.get('mobile')
@@ -30,16 +29,19 @@ def signup(request):
         company_name = request.POST.get('company')
         no_of_units = request.POST.get('props_no')
         type = request.POST.get('acc_type')
+        number = request.POST.get('id_no')
+        location = request.POST.get('location')
 
         acc = AccTypes.objects.get(id=int(type))
         user = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
         user.save()
 
         if user.pk:
-            profile = Profile.objects.create(first_name = f_name, last_name = l_name, msisdn = mobile, terms_accepted = terms, user = user)
+
+            profile = Profile.objects.create(first_name = f_name, last_name = l_name, msisdn = mobile, id_no=number, terms_accepted = terms, user = user)
             profile.save()
 
-            company = Companies.objects.create(name = company_name, no_of_units = no_of_units)
+            company = Companies.objects.create(name = company_name, no_of_emps=no_of_units, location=location)
             company.save()
 
             cp = CompanyProfile.objects.create(user = user, company = company)
@@ -47,5 +49,5 @@ def signup(request):
 
 
 
-        return HttpResponse('login')
+        return redirect('login')
     return render(request, 'authapp/register.html')

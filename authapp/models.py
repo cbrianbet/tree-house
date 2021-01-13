@@ -39,7 +39,8 @@ class Profile(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
-    msisdn = models.CharField(max_length=15, null=True)
+    id_number = models.CharField(max_length=12, null=True, blank=True)
+    msisdn = models.CharField(max_length=15, null=True, blank=True)
     terms_accepted = models.BooleanField(null=True)
 
     class Meta:
