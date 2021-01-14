@@ -39,7 +39,7 @@ class Properties(models.Model):
     parking = models.PositiveIntegerField(default=0)
     electricity = models.CharField(max_length=20)
     water = models.CharField(max_length=20)
-    pics = models.FileField(upload_to='propPic/%Y/%m/')
+    pics = models.ImageField(upload_to='propPic/%Y/%m/', null=True, blank=True)
     long = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     lat = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     location_desc = models.CharField(max_length=50, null=True)

@@ -49,45 +49,40 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="text" class="form-control" name="p_name" placeholder="John Fish"
-                                               required="">
+                                        <input type="text" class="form-control" name="p_name" required="required">
                                     </div>
                                 </div>
                                 {% if u.acc_type.id == 3 %}
 
                                     <div class="form-group row">
                                         <label class="col-xl-12 col-md-3 form-control-label">Owner
-                                            <span class="required">*</span>
+                                            <span></span>
                                         </label>
                                         <div class="col-xl-12 col-md-9">
-                                <textarea class="form-control" name="owner" rows="3" placeholder="Landlord's Info"
-                                          required=""></textarea>
+                                <textarea class="form-control" name="owner" rows="3" placeholder="Landlord's Info">
+
+                                </textarea>
                                         </div>
                                     </div>
                                 {% endif %}
                                 <div class="form-group row">
                                     <label class="col-xl-12 col-md-3 form-control-label">Property Value
-                                        <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="text" class="form-control" name="username" placeholder="John Fish"
-                                               required="">
+                                        <input type="text" class="form-control" name="val_prop">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-xl-12 col-md-3 form-control-label">Date Started Management
-                                        <span class="required">*</span>
                                     </label>
                                     <div class="col-xl-12 col-md-9">
-                                        <input type="date" class="form-control" name="start_date"
-                                               placeholder="YYYY/MM/DD"
-                                               required=""/>
+                                        <input type="date" class="form-control" name="start_date"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-control-label" for="acc_type">Property Type*</label>
+                                    <label class="form-control-label" for="acc_type">Property Type *</label>
                                     <select data-plugin="selectpicker" title="Property Type" id="p_type"
                                             name="p_type" required="required">
                                         <option value="2">Residential</option>
@@ -95,7 +90,7 @@
                                     </select>
                                 </div>
                                 <label class="form-control-label" for="pic">Picture</label>
-                                <input type="file" id="logo" name="logo" data-plugin="dropify"
+                                <input type="file" id="pic" name="pic" data-plugin="dropify"
                                        data-default-file="" accept="image/*"/>
                             </div>
 
@@ -105,8 +100,7 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="number" class="form-control" name="floors" placeholder="John Fish"
-                                               required="">
+                                        <input type="number" class="form-control" name="floors" required="">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -114,21 +108,17 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="number" class="form-control" name="units" placeholder="John Fish"
-                                               required="">
+                                        <input type="number" class="form-control" name="units" required="">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-xl-12 col-md-3 form-control-label">Number of parking
-                                        <span class="required">*</span>
-                                    </label>
+                                    <label class="col-xl-12 col-md-3 form-control-label">Number of parking</label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="number" class="form-control" name="parking" placeholder="John Fish"
-                                               required="">
+                                        <input type="number" class="form-control" name="parking">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-xl-12 col-md-3 form-control-label">Electricity*
+                                    <label class="col-xl-12 col-md-3 form-control-label">Electricity
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-xl-12 col-md-9">
@@ -149,21 +139,20 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-xl-12 col-md-3 form-control-label">Water Bill payment*
+                                    <label class="col-xl-12 col-md-3 form-control-label">Water Bill payment
                                         <span class="required">*</span>
                                     </label>
                                     <div class="col-xl-12 col-md-9">
                                         <div class="d-flex flex-column">
                                             <div class="radio-custom radio-primary">
-                                                <input type="radio" id="inputAwesome" name="water" value="agent"
+                                                <input type="radio" id="agent" name="water" value="agent"
                                                        required="">
-                                                <label for="inputAwesome">On agent</label>
+                                                <label for="agent">On agent</label>
                                             </div>
 
                                             <div class="radio-custom radio-primary">
-                                                <input type="radio" id="inputVeryAwesome" name="water"
-                                                       value="tenant">
-                                                <label for="inputVeryAwesome">On tenant</label>
+                                                <input type="radio" id="tent" name="water" value="tenant">
+                                                <label for="tent">On tenant</label>
                                             </div>
                                         </div>
                                     </div>
