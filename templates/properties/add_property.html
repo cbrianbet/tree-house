@@ -1,0 +1,211 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Add Properties | MNEST</title>
+{% endblock %}
+{% block headscripts %}
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/formvalidation/formValidation.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/forms/validation.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+{% endblock %}
+{% block page %}
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Add Properties</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Properties</a></li>
+                <li class="breadcrumb-item active">Add Properties</li>
+            </ol>
+            <div class="page-header-actions">
+            </div>
+        </div>
+
+        <div class="page-content container-fluid">
+
+            <!-- Panel Full Example -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="panel-desc"> </span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+
+                    <form id="exampleFullForm" enctype="multipart/form-data" action="{% url 'add-list' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row row-lg">
+                            <div class="col-xl-6 form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Property Name
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class=" col-xl-12 col-md-9">
+                                        <input type="text" class="form-control" name="p_name" placeholder="John Fish"
+                                               required="">
+                                    </div>
+                                </div>
+                                {% if u.acc_type.id == 3 %}
+
+                                    <div class="form-group row">
+                                        <label class="col-xl-12 col-md-3 form-control-label">Owner
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-xl-12 col-md-9">
+                                <textarea class="form-control" name="owner" rows="3" placeholder="Landlord's Info"
+                                          required=""></textarea>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Property Value
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class=" col-xl-12 col-md-9">
+                                        <input type="text" class="form-control" name="username" placeholder="John Fish"
+                                               required="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Date Started Management
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-xl-12 col-md-9">
+                                        <input type="date" class="form-control" name="start_date"
+                                               placeholder="YYYY/MM/DD"
+                                               required=""/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label" for="acc_type">Property Type*</label>
+                                    <select data-plugin="selectpicker" title="Property Type" id="p_type"
+                                            name="p_type" required="required">
+                                        <option value="2">Residential</option>
+                                        <option value="3">Commercial</option>
+                                    </select>
+                                </div>
+                                <label class="form-control-label" for="pic">Picture</label>
+                                <input type="file" id="logo" name="logo" data-plugin="dropify"
+                                       data-default-file="" accept="image/*"/>
+                            </div>
+
+                            <div class="col-xl-6 form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Number of floors
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class=" col-xl-12 col-md-9">
+                                        <input type="number" class="form-control" name="floors" placeholder="John Fish"
+                                               required="">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Number of units
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class=" col-xl-12 col-md-9">
+                                        <input type="number" class="form-control" name="units" placeholder="John Fish"
+                                               required="">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Number of parking
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class=" col-xl-12 col-md-9">
+                                        <input type="number" class="form-control" name="parking" placeholder="John Fish"
+                                               required="">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Electricity*
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-xl-12 col-md-9">
+                                        <div class="d-flex flex-column">
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="inputAwesome" name="elec" value="Prepaid"
+                                                       required="">
+                                                <label for="inputAwesome">Prepaid</label>
+                                            </div>
+
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="inputVeryAwesome" name="elec"
+                                                       value="Postpaid">
+                                                <label for="inputVeryAwesome">Postpaid</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Water Bill payment*
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-xl-12 col-md-9">
+                                        <div class="d-flex flex-column">
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="inputAwesome" name="water" value="agent"
+                                                       required="">
+                                                <label for="inputAwesome">On agent</label>
+                                            </div>
+
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="inputVeryAwesome" name="water"
+                                                       value="tenant">
+                                                <label for="inputVeryAwesome">On tenant</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Location Description
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-xl-12 col-md-9">
+                                <textarea class="form-control" name="loc_desc" rows="3" placeholder="Location description"
+                                          required=""></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xl-12 text-right padding-top-m">
+                                <button type="submit" class="btn btn-primary" id="validateButton1">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- End Panel Full Example -->
+
+        </div>
+    </div>
+    <!-- End Page -->
+
+
+{% endblock %}
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/formvalidation/formValidation.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/formvalidation/framework/bootstrap4.min.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/dropify/dropify.min.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
+<script src="{% static 'authapp/assets/examples/js/forms/uploads.js' %}"></script>
+
+    <script src="{% static 'authapp/assets/examples/js/forms/validation.js' %}"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script>
+        $('select').selectpicker();
+    </script>
+{% endblock %}

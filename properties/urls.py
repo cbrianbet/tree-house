@@ -5,5 +5,6 @@ from . import  views
 
 urlpatterns = [
     path('property/list', views.properties_list, name='prop-list'),
+    path('property/add', views.properties_add, name='add-list'),
 
 ]

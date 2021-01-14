@@ -101,7 +101,7 @@
                     <!-- End Steps -->
 
                     <!-- Wizard Content -->
-                    <form id="exampleFormContainer" action="{% url 'register' %}" method="post">
+                    <form id="exampleFormContainer" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="wizard-content">
                             <div class="wizard-pane active" id="exampleAccountOne" role="tabpanel">
