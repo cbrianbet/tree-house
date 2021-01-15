@@ -23,6 +23,16 @@
 
     <!-- Page -->
     <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Properties</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active">Properties</li>
+            </ol>
+            <div class="page-header-actions">
+            </div>
+        </div>
+
         <div class="page-content blue-grey-500">
             <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
                 {% for i in prop %}
@@ -30,10 +40,10 @@
                         <div class="card card-shadow">
                             <div class="card-header cover">
                                 {% if i.pics %}
-                                <img class="cover-image" src="{{ i.pics.url }}" alt="{{ i.property_name }}">
-                                    {% else %}
+                                    <img class="cover-image" src="{{ i.pics.url }}" alt="{{ i.property_name }}">
+                                {% else %}
                                     <img class="cover-image" src="{% static 'authapp/global/photos/placeholder.png' %}"
-                                     alt="...">
+                                         alt="...">
                                 {% endif %}
                             </div>
                             <div class="card-block">
@@ -43,8 +53,8 @@
 
                                         <a href="javascript:void(0)"></a>
                                         <a href="javascript:void(0)"></a>
-{#                                        <a href="javascript:void(0)">#}
-{#                                            <span>3</span> Comments</a>#}
+                                        {#                                        <a href="javascript:void(0)">#}
+                                        {#                                            <span>3</span> Comments</a>#}
                                     </small>
                                 </p>
                                 <p class="card-text">{{ i.location_desc }}</p>
@@ -57,6 +67,8 @@
                                     </a>
                                 </div>
                                 <button type="button" class="btn btn-outline btn-primary card-link">View</button>
+                                <a href="{% url 'unit-list' u_uid=i.uuid %}" class="btn btn-select card-link">Add
+                                    Units</a>
                             </div>
                         </div>
                     </li>

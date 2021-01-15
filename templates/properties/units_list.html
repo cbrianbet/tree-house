@@ -1,0 +1,113 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+{% block title %}
+
+    <title>Units | MNEST</title>
+{% endblock %}
+{% block headscripts %}
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/animsition/animsition.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/asscrollable/asScrollable.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/switchery/switchery.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/intro-js/introjs.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
+
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/advanced/masonry.css' %}">
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+
+
+{% endblock %}
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+
+        <div class="page-header">
+            <h1 class="page-title">Units</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Properties</a></li>
+                <li class="breadcrumb-item active">Units</li>
+            </ol>
+            <div class="page-header-actions">
+            </div>
+        </div>
+
+        {% for i in p %}
+            <div class="page-content blue-grey-500">
+            <h3 class="text-dark">Floor {{ i }}</h3>
+                <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
+                    {% for i in prop %}
+                        <li class="masonry-item">
+                            <div class="card card-shadow">
+
+                                <div class="card-block">
+                                    <h3 class="card-title">{{ i.property_name }}</h3>
+                                    <p class="card-text type-link">
+                                        <small>
+
+                                            <a href="javascript:void(0)"></a>
+                                            <a href="javascript:void(0)"></a>
+                                            {#                                        <a href="javascript:void(0)">#}
+                                            {#                                            <span>3</span> Comments</a>#}
+                                        </small>
+                                    </p>
+                                    <p class="card-text">{{ i.location_desc }}</p>
+                                </div>
+                                <div class="card-block">
+                                    <div class="card-actions float-right">
+                                        <a href="javascript:void(0)">
+                                            <i class="icon wb-users" aria-hidden="true"></i>
+                                            <span>0</span>
+                                        </a>
+                                    </div>
+                                    <button type="button" class="btn btn-outline btn-primary card-link">View</button>
+                                    <a href="{% url '' %}" class="btn btn-outline btn-select card-link">Add Units</a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                    <li class="masonry-item">
+                        <div class="card card-shadow">
+                            <div class="card-header cover">
+
+                            </div>
+                            <div class="card-block">
+                                <h3 class="card-title">Add Units</h3>
+                            </div>
+                            <div class="card-block">
+                                <div class="card-actions float-right">
+                                    <a href="{% url 'add-list' %}">
+                                        <i class="icon wb-plus" aria-hidden="true"></i>
+                                        <span></span>
+                                    </a>
+                                </div>
+                                <a href="{% url 'unit-add' floor=i u_uid=p_id %}" class="btn btn-outline btn-primary">Add New</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/imagesloaded/imagesloaded.pkgd.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/masonry/masonry.pkgd.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/masonry.js' %}"></script>
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+    </body>
+
+{% endblock %}
