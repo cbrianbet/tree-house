@@ -9,7 +9,7 @@ from authapp.models import Users
 
 class Companies(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, null=True, blank=True)
     no_of_emp = models.PositiveIntegerField(default=1)
     location = models.CharField(max_length=40, blank=True, null=True)
 

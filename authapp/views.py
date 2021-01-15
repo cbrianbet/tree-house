@@ -1,4 +1,6 @@
-from django.contrib.auth import authenticate, login as log_in
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as log_in, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -30,6 +32,7 @@ def login(request):
     return render(request, "authApp/login-v3.html", {'form': form})
 
 
+@login_required
 def dashboard(request):
     return render(request, 'authapp/analytics.html')
 
@@ -59,11 +62,22 @@ def signup(request):
                                              terms_accepted=terms, user=user)
             profile.save()
 
-            company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location)
-            company.save()
+            if int(type) == 3:
+                company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location)
+                company.save()
+            elif int(type) == 2:
+                company = Companies.objects.create(name=mobile)
+                company.save()
 
             cp = CompanyProfile.objects.create(user=user, company=company)
             cp.save()
 
-        return redirect('login')
+        return redirect('web-login')
     return render(request, 'authapp/register.html')
+
+
+@login_required
+def logout_request(request):
+    logout(request)
+    return redirect('web-login')
+
