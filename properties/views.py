@@ -50,9 +50,11 @@ def properties_add(request):
 @login_required
 def list_units(request, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
+    unit = Unit.objects.filter(property=prop)
     context = {
         'p': range(prop.no_of_floors),
-        'p_id': u_uid
+        'p_id': u_uid,
+        'unit': unit,
     }
     return render(request, 'properties/units_list.html', context)
 
@@ -60,5 +62,27 @@ def list_units(request, u_uid):
 @login_required
 def add_units(request, floor, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
+    if request.method == "POST":
+        unit = request.POST.get('name')
+        type_of_units = request.POST.get('type')
+        value = request.POST.get('value')
+        unit_status = request.POST.get('status')
+        area = request.POST.get('area')
+        service_charge = request.POST.get('service_charge')
+        no_of_parking = 0
+        size = request.POST.get('size_unit')
+        specify = request.POST.get('other')
 
-    return render(request, 'properties/add_unit.html')
+        u_save = Unit.objects.create(
+            unit_name=unit, property=prop, type_of_unit=type_of_units, size=size, other_specify=specify, value=value,
+            parking_assigned=no_of_parking, service_charge=service_charge, area=area, unit_status=unit_status, floor=floor
+        )
+        u_save.save()
+
+    context = {
+        'fl': floor,
+        'u_id': u_uid,
+        'prop': prop,
+    }
+
+    return render(request, 'properties/add_unit.html', context)

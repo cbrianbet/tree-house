@@ -54,13 +54,16 @@ class Properties(models.Model):
 class Unit(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
     unit_name = models.CharField(max_length=40)
-    type_of_units = models.CharField(max_length=40)
+    type_of_unit = models.CharField(max_length=40, null=True, blank=True)
     value = models.CharField(max_length=40)
-    unit_status = models.CharField(max_length=40)
-    area = models.CharField(max_length=40)
-    service_charge = models.CharField(max_length=40)
+    unit_status = models.CharField(max_length=40, default='Vacant')
+    area = models.CharField(max_length=40, null=True, blank=True)
+    service_charge = models.CharField(max_length=40, default="0")
     parking_assigned = models.PositiveIntegerField(default=0)
     property = models.ForeignKey(Properties, on_delete=models.CASCADE)
+    floor = models.PositiveIntegerField()
+    other_specify = models.CharField(max_length=30, null=True, blank=True)
+    size = models.CharField(max_length=30, null=True, blank=True)
 
     class Meta:
         db_table = "Units"
