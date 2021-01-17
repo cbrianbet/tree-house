@@ -45,17 +45,17 @@
                             <div class="card card-shadow">
 
                                 <div class="card-block">
-                                    <h3 class="card-title">{{ u.unit_name }}</h3>
+                                    <h3 class="card-title">Name: {{ u.unit_name }}</h3>
                                     <p class="card-text type-link">
                                         <small>
 
-                                            <a href="javascript:void(0)"></a>
-                                            <a href="javascript:void(0)"></a>
+                                            <p class="">{% if u.other_specify %}{{ u.other_specify }}{% else %}{{ u.size }}{% endif %}</p>
+                                            <p class="text-dark">{{ u.unit_status }}</p>
                                             {#                                        <a href="javascript:void(0)">#}
                                             {#                                            <span>3</span> Comments</a>#}
                                         </small>
                                     </p>
-                                    <p class="card-text">{{ u.value }}</p>
+                                    <p class="card-text">Value: Kshs. {{ u.value }}</p>
                                 </div>
                                 <div class="card-block">
                                     <div class="card-actions float-right">
@@ -65,7 +65,7 @@
                                         </a>
                                     </div>
                                     <button type="button" class="btn btn-outline btn-primary card-link">View</button>
-                                    <a href="." class="btn btn-outline btn-select card-link">Add Units</a>
+                                    <a href="." class="btn btn-outline btn-dark card-link">Tenant</a>
                                 </div>
                             </div>
                         </li>

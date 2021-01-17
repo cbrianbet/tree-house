@@ -19,11 +19,11 @@
     <!-- Page -->
     <div class="page">
         <div class="page-header">
-            <h1 class="page-title">Add Properties</h1>
+            <h1 class="page-title">Add Unit</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Properties</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Units</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'unit-list' u_uid=u_id %}">Units</a></li>
                 <li class="breadcrumb-item active">Add Units</li>
             </ol>
             <div class="page-header-actions">
@@ -126,8 +126,8 @@
                                     <div class=" col-xl-12 col-md-9">
                                         <select data-plugin="selectpicker" title="Status" id="status"
                                                 name="status" required="required">
-                                            <option value="2">Occupied</option>
-                                            <option value="3">Vacant</option>
+                                            <option value="Occupied">Occupied</option>
+                                            <option value="Vacant">Vacant</option>
                                         </select>
                                     </div>
                                 </div>
