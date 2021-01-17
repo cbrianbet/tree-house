@@ -4,7 +4,7 @@ from datetime import date
 from django.db import models
 from django.utils import timezone
 
-from authapp.models import Users
+from authapp.models import Users, Profile
 
 
 class Companies(models.Model):
@@ -45,6 +45,10 @@ class Properties(models.Model):
     lat = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     location_desc = models.CharField(max_length=50, null=True)
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="p_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="p_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
     class Meta:
@@ -68,6 +72,11 @@ class Unit(models.Model):
     floor = models.PositiveIntegerField()
     other_specify = models.CharField(max_length=30, null=True, blank=True)
     size = models.CharField(max_length=30, null=True, blank=True)
+    security_deposit = models.CharField(max_length=20, default=0)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="u_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="u_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "Units"
@@ -75,15 +84,15 @@ class Unit(models.Model):
 
 class Tenant(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
-    unit_name = models.CharField(max_length=40)
-    type_of_units = models.CharField(max_length=40)
-    value = models.CharField(max_length=40)
-    unit_status = models.CharField(max_length=40)
-    area = models.CharField(max_length=40)
-    service_charge = models.CharField(max_length=40)
-    parking_assigned = models.PositiveIntegerField(default=0)
-    property = models.ForeignKey(Properties, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    secondary_msisdn = models.CharField(max_length=40)
+    date_occupied = models.DateTimeField()
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="t_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="t_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "Tenant"
-

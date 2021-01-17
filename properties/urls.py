@@ -8,5 +8,8 @@ urlpatterns = [
     path('property/add', views.properties_add, name='add-list'),
     path('property/units/list/<uuid:u_uid>', views.list_units, name='unit-list'),
     path('property/units/add/<int:floor>/<uuid:u_uid>', views.add_units, name='unit-add'),
+    path('property/units/tenant/add/<uuid:u_uid>', views.add_tenant, name='tenant-add'),
+    path('property/units/tenant/<uuid:u_uid>', views.view_tenant, name='view-tenant'),
+
 
 ]
