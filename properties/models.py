@@ -50,6 +50,10 @@ class Properties(models.Model):
     class Meta:
         db_table = "Properties"
 
+    def delete(self, *args, **kwargs):
+        self.pics.delete()
+        super().delete(*args, **kwargs)
+
 
 class Unit(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
