@@ -36,7 +36,7 @@ def properties_add(request):
         loc_desc = request.POST.get('loc_desc')
         # picture = request.FILES['pic']
         if request.FILES:
-            picture = request.FILES['pic']
+            picture = request.FILES['logo']
         else:
             picture = ''
 
@@ -123,10 +123,9 @@ def add_tenant(request, u_uid):
 
         unit.unit_status = "Occupied"
         unit.save()
-    else:
-        if Tenant.objects.filter(unit=unit).exists():
-            pass
-            return redirect('view-tenant', u_uid=unit.uuid)
+
+    if Tenant.objects.filter(unit=unit).exists():
+        return redirect('view-tenant', u_uid=unit.uuid)
 
 
     context = {
@@ -152,5 +151,6 @@ def view_tenant(request, u_uid):
     context = {
         'p_id': u_uid,
         'unit': unit,
+        't': prop
     }
     return render(request, 'properties/tenant_view.html', context)
