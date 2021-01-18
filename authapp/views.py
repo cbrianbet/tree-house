@@ -53,6 +53,11 @@ def signup(request):
         number = request.POST.get('id_no')
         location = request.POST.get('location')
 
+        if request.FILES:
+            logo = request.FILES['pic']
+        else:
+            logo = ''
+
         acc = AccTypes.objects.get(id=int(type))
         user = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
         user.save()
@@ -63,7 +68,7 @@ def signup(request):
             profile.save()
 
             if int(type) == 3:
-                company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location)
+                company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location, logo=logo)
                 company.save()
             elif int(type) == 2:
                 company = Companies.objects.create(name=mobile)

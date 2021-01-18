@@ -12,6 +12,7 @@ class Companies(models.Model):
     name = models.CharField(max_length=50, null=True, blank=True)
     no_of_emp = models.PositiveIntegerField(default=1)
     location = models.CharField(max_length=40, blank=True, null=True)
+    logo = models.ImageField(upload_to='logo/%Y/%m/', null=True, blank=True)
 
     class Meta:
         db_table = "Companies"
