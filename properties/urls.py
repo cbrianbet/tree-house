@@ -10,6 +10,7 @@ urlpatterns = [
     path('property/units/add/<int:floor>/<uuid:u_uid>', views.add_units, name='unit-add'),
     path('property/units/tenant/add/<uuid:u_uid>', views.add_tenant, name='tenant-add'),
     path('property/units/tenant/<uuid:u_uid>', views.view_tenant, name='view-tenant'),
+    path('property/units/tenant/swap/<uuid:u_uid>', views.swap_tenant, name='swap-tenant'),
 
 
 ]

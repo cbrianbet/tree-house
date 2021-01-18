@@ -3,9 +3,11 @@ import random
 import string
 
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 
 from authapp.models import AccTypes
+from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 
 
@@ -42,8 +44,10 @@ def properties_add(request):
 
         prop = Properties.objects.create(
             property_name=name, property_value=val, mngmt_start=start_date, property_type=prop_type, owner=owner,
-            no_of_floors=floors, no_of_units=units, parking=parking, electricity=elec, water=water, location_desc=loc_desc,
-            pics=picture, company=CompanyProfile.objects.get(user=user).company, building_type=build, created_by=request.user
+            no_of_floors=floors, no_of_units=units, parking=parking, electricity=elec, water=water,
+            location_desc=loc_desc,
+            pics=picture, company=CompanyProfile.objects.get(user=user).company, building_type=build,
+            created_by=request.user
         )
         prop.save()
     context = {
@@ -80,7 +84,8 @@ def add_units(request, floor, u_uid):
 
         u_save = Unit.objects.create(
             unit_name=unit, property=prop, type_of_unit=type_of_units, size=size, other_specify=specify, value=value,
-            parking_assigned=no_of_parking, service_charge=service_charge, area=area, unit_status=unit_status, floor=floor,
+            parking_assigned=no_of_parking, service_charge=service_charge, area=area, unit_status=unit_status,
+            floor=floor,
             created_by=request.user
         )
         u_save.save()
@@ -98,7 +103,6 @@ def add_units(request, floor, u_uid):
 def add_tenant(request, u_uid):
     unit = Unit.objects.get(uuid=u_uid)
     if request.method == "POST":
-
         f_name = request.POST.get('f_name')
         l_name = request.POST.get('l_name')
         id_no = request.POST.get('id_no')
@@ -116,10 +120,13 @@ def add_tenant(request, u_uid):
             first_name=f_name, last_name=l_name, msisdn=mobile, id_number=id_no, user=u
         )
         p.save()
-        t =Tenant.objects.create(
-            secondary_msisdn=secondary_mobile, date_occupied=date_of_occupancy, unit=unit, profile=p, created_by=request.user
+        t = Tenant.objects.create(
+            secondary_msisdn=secondary_mobile, date_occupied=date_of_occupancy, unit=unit, profile=p,
+            created_by=request.user
         )
         t.save()
+
+        inform(username, pwrd, email, f_name)
 
         unit.unit_status = "Occupied"
         unit.save()
@@ -127,13 +134,27 @@ def add_tenant(request, u_uid):
     if Tenant.objects.filter(unit=unit).exists():
         return redirect('view-tenant', u_uid=unit.uuid)
 
-
     context = {
         'u_id': u_uid,
         'unit': unit,
     }
 
     return render(request, 'properties/add_tenant.html', context)
+
+
+def inform(u, p, e, n):
+    subject = "Welcome to"
+    message = '''
+    Dear {}, 
+    We are thrilled to have you on-board! 
+    This email is to let you know that we are continuing to utilise the latest technologies available to provide you with an even better service. 
+    A special login has been created for you as follows:
+    Web URL:	https://mnest.co.ke/login
+    username: {}
+    Password:	{}
+    It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
+        n, u, p)
+    send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
 
 
 def get_random_username():
@@ -154,3 +175,39 @@ def view_tenant(request, u_uid):
         't': prop
     }
     return render(request, 'properties/tenant_view.html', context)
+
+
+@login_required
+def swap_tenant(request, u_uid):
+    if request.method == "POST":
+        old = Tenant.objects.get(unit__uuid=u_uid)
+        new = request.POST.get('unit')
+
+        old.unit = Unit.objects.get(uuid=new)
+        old.save()
+        u = Unit.objects.get(uuid=u_uid)
+        u.unit_status = "Vacant"
+        u.save()
+
+        n = Unit.objects.get(uuid=new)
+        n.unit_status = "Occupied"
+
+        return redirect('swap-tenant', u_uid=new)
+
+    prop = Tenant.objects.get(unit__uuid=u_uid)
+
+    ten = Tenant.objects.values_list('unit__uuid', flat=True)
+    company = CompanyProfile.objects.get(user=request.user).company
+    unit = Unit.objects.filter(property__company=company).exclude(uuid__in=ten).order_by('property', 'unit_name')
+    print(unit)
+    context = {
+        'p_id': u_uid,
+        'unit': unit,
+        't': prop
+    }
+    return render(request, 'properties/tenant_swap.html', context)
+
+
+@login_required
+def get_unit(request):
+    return
