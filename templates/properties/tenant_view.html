@@ -148,9 +148,9 @@
                         <a href="{% url 'swap-tenant' u_uid=t.unit.uuid %}" class="btn btn-animate btn-animate-side btn-primary">
                             <span><i class="icon wb-graph-up" aria-hidden="true"></i> Move to another Unit</span>
                         </a>
-                        <button type="submit" class="btn btn-animate btn-animate-side btn-primary">
-                            <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> View Billing History</span>
-                        </button>
+                        <a href="{% url 'bills-tenant' u_uid=t.uuid %}" class="btn btn-animate btn-animate-side btn-secondary">
+                            <span><i class="icon wb-book" aria-hidden="true"></i> Bills</span>
+                        </a>
                     </div>
                 </div>
             </div>
