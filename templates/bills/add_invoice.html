@@ -1,0 +1,274 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block title %}
+
+    <title>MNEST | Add Tenant Invoice</title>
+{% endblock %}
+
+{% block headscripts %}
+
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/forms/layouts.css' %}">
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Add Invoice</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Bills</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Tenant Bills</a></li>
+                <li class="breadcrumb-item active">Add Invoice</li>
+            </ol>
+        </div>
+
+        <div class="page-content">
+            <form action="{% url 'invoice-tenant' u_uid=u_uid %}" method="post">
+                <!-- Panel Table Add Row -->
+                <div class="panel">
+                    <header class="panel-heading">
+                        <h3 class="panel-title">Add Invoice Item</h3>
+                    </header>
+                    <div class="panel-body">
+                        <div class="example">
+                            <div class="form-inline">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="inv_item">Invoice Item</label>
+                                            <input type="text" class="form-control" id="inv_item"
+                                                   placeholder="Invoice Item" autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="inv_amount">Invoice Amount</label>
+                                            <input type="number" class="form-control" id="inv_amount"
+                                                   placeholder="Invoice Amount"
+                                                   autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="remarks">Remarks</label>
+                                            <input type="text" class="form-control" id="remarks"
+                                                   placeholder="Remarks"
+                                                   autocomplete="off"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button id="updateButton" class="btn btn-outline btn-primary" type="button"
+                                                onclick="productUpdate();">
+                                            <i class="icon wb-plus" aria-hidden="true"></i> Add Invoice Item
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {#                            <div class="col-md-6">#}
+                            {#                                <div class="mb-15">#}
+                            {#                                    <button id="addToTable" class="btn btn-outline btn-primary" type="button">#}
+                            {#                                        <i class="icon wb-plus" aria-hidden="true"></i> Add Invoice Item#}
+                            {#                                    </button>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                        </div>
+                        {% csrf_token %}
+                        <table class="table table-bordered table-hover table-striped" cellspacing="0"
+                               id="invoiceItems">
+                            <thead>
+                            <tr>
+                                <th>Invoice Item</th>
+                                <th>Amount payable</th>
+                                <th>Remarks</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+
+                            </tbody>
+                        </table>
+
+                        <button class="btn btn-outline btn-primary" type="submit">
+                            <i class="icon wb-plus" aria-hidden="true"></i> Add Invoice Item
+                        </button>
+                    </div>
+                </div>
+                <!-- End Panel Table Add Row -->
+            </form>
+        </div>
+    </div>
+    <!-- End Page -->
+
+{% endblock %}
+
+
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootbox/bootbox.js' %}"></script>
+
+    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
+    {#    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>#}
+    <script>
+        $(document).ready(function () {
+            productsAdd();
+        });
+
+        // Add products to <table>
+        function productsAdd() {
+            // First check if a <tbody> tag exists, add one if not
+            if ($("#invoiceItems tbody").length == 0) {
+                $("#productTable").append("<tbody></tbody>");
+            }
+
+        }
+
+        function productUpdate() {
+            console.log($("#inv_item").val());
+            if ($("#inv_item").val() != null && $("#inv_item").val() != '') {
+                // Add product to Table
+                productAddToTable();
+
+                // Clear form fields
+                formClear();
+
+                // Focus to product name field
+                $("#productname").focus();
+            }
+        }
+
+        function productAddToTable() {
+            // First check if a <tbody> tag exists, add one if not
+            if ($("#invoiceItems tbody").length == 0) {
+                $("#invoiceItems").append("<tbody></tbody>");
+            }
+                console.log('asd')
+
+            // Append product to the table
+            $("#invoiceItems tbody").append("<tr class=\"gradeA\">" +
+                "<td><input type=\"text\" name=\"inv_name[]\" value=\""+$("#inv_item").val() +"\" readonly> </td>" +
+                "<td><input type=\"text\" name=\"inv_amnt[]\" value=\""+$("#inv_amount").val() +"\" readonly> </td>" +
+                "<td><input type=\"text\" name=\"remark[]\" value=\""+$("#remarks").val() +"\" readonly> </td>" +
+                "<td class=\"actions\">\n" +
+                "<button onclick=\"productDelete(this);\" class=\"btn btn-sm btn-icon btn-pure btn-default on-default remove-row\"\n" +
+                "data-toggle=\"tooltip\" data-original-title=\"Remove\"><i class=\"icon wb-trash\" aria-hidden=\"true\"></i></button> </td>" +
+                "</tr>");
+        }
+
+        function formClear() {
+            $("#inv_item").val("");
+            $("#inv_amount").val("");
+            $("#remarks").val("");
+        }
+
+        function productDelete(ctl) {
+            $(ctl).parents("tr").remove();
+        }
+
+        // Current product being edited
+        var _row = null;
+
+        function productBuildTableRow() {
+            var ret = "<tr>" +
+                "<td>" +
+                "<td> <input type=\"text\" name=\"inv_name[]\" value="+$("#inv_item").val() +" readonly> </td>" +
+                "<td> <input type=\"text\" name=\"inv_amount[]\" value="+$("#inv_amount").val() +" readonly> </td>" +
+                "<td> <input type=\"text\" name=\"remark[]\" value="+$("#remarks").val() +" readonly> </td>" +
+                "<td class=\"actions\">\n" +
+                "<button onclick=\"productDelete(this);\" class=\"btn btn-sm btn-icon btn-pure btn-default on-default remove-row\" data-toggle=\"tooltip\" data-original-title=\"Remove\"><i class=\"icon wb-trash\" aria-hidden=\"true\"></i></button> </td>" +
+                "</tr>"
+
+            return ret;
+        }
+
+        function productDisplay(ctl) {
+            _row = $(ctl).parents("tr");
+            var cols = _row.children("td");
+            console.log(cols);
+            $("#inv_item").val($(cols[1]).text());
+            $("#inv_amount").val($(cols[2]).text());
+            $("#remarks").val($(cols[3]).text());
+
+            // Change Update Button Text
+            $("#updateButton").text("Update");
+        }
+
+        function productUpdate() {
+            if ($("#updateButton").text() == "Update") {
+                productUpdateInTable();
+            } else {
+                productAddToTable();
+            }
+
+            // Clear form fields
+            formClear();
+
+            // Focus to product name field
+            $("#productname").focus();
+        }
+
+        function productUpdateInTable() {
+            // Add changed product to table
+            $(_row).after(productBuildTableRow());
+
+            // Remove old product row
+            $(_row).remove();
+
+            // Clear form fields
+            formClear();
+
+            // Change Update Button Text
+            $("#updateButton").text("<i class=\"icon wb-plus\" aria-hidden=\"true\"></i> Add Invoice Item");
+        }
+
+
+    </script>
+
+
+
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+{% endblock %}
