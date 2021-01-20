@@ -181,9 +181,9 @@
 
             // Append product to the table
             $("#invoiceItems tbody").append("<tr class=\"gradeA\">" +
-                "<td><input type=\"text\" name=\"inv_name[]\" value=\""+$("#inv_item").val() +"\" readonly> </td>" +
-                "<td><input type=\"text\" name=\"inv_amnt[]\" value=\""+$("#inv_amount").val() +"\" readonly> </td>" +
-                "<td><input type=\"text\" name=\"remark[]\" value=\""+$("#remarks").val() +"\" readonly> </td>" +
+                "<td><input class=\"form-control\" type=\"text\" name=\"inv_name[]\" value=\""+$("#inv_item").val() +"\" readonly> </td>" +
+                "<td><input class=\"form-control\" type=\"text\" name=\"inv_amnt[]\" value=\""+$("#inv_amount").val() +"\" readonly> </td>" +
+                "<td><input class=\"form-control\" type=\"text\" name=\"remark[]\" value=\""+$("#remarks").val() +"\" readonly> </td>" +
                 "<td class=\"actions\">\n" +
                 "<button onclick=\"productDelete(this);\" class=\"btn btn-sm btn-icon btn-pure btn-default on-default remove-row\"\n" +
                 "data-toggle=\"tooltip\" data-original-title=\"Remove\"><i class=\"icon wb-trash\" aria-hidden=\"true\"></i></button> </td>" +

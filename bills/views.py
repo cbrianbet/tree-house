@@ -19,6 +19,11 @@ def tenant_bills(request, u_uid):
 def invoice_tenant(request, u_uid):
     if request.method == "POST":
         print(request.POST)
+        name = request.POST.getlist('inv_name')
+        amt = request.POST.getlist('inv_amount')
+        remarks = request.POST.getlist('remarks')
+
+        inv = Invoice.objects.all()
     tenant = Tenant.objects.get(uuid=u_uid)
     invoice = InvoiceItems.objects.filter(invoice__invoice_for=tenant.profile.user)
     context = {
