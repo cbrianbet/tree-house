@@ -1,12 +1,18 @@
+import csv
 import datetime
+import io
+import os
 import random
 import string
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 from authapp.models import AccTypes
+from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 
@@ -36,7 +42,7 @@ def properties_add(request):
         water = request.POST.get('water')
         build = request.POST.get('b_type')
         loc_desc = request.POST.get('loc_desc')
-        # picture = request.FILES['pic']
+
         if request.FILES:
             picture = request.FILES['logo']
         else:
@@ -211,3 +217,54 @@ def swap_tenant(request, u_uid):
 @login_required
 def get_unit(request):
     return
+
+#File uploads
+@login_required
+def prop_file_upload(request):
+    # declaring template
+
+    csv_file = request.FILES['logo']
+    # let's check if it is a csv file
+    if not csv_file.name.endswith('.csv'):
+        messages.error(request, 'THIS IS NOT A CSV FILE')
+    data_set = csv_file.read().decode('UTF-8')
+    # setup a stream which is when we loop through each line we are able to handle a data in a stream
+
+    io_string = io.StringIO(data_set)
+    next(io_string)
+    for column in csv.reader(io_string, delimiter=',', quotechar="|"):
+        print(column)
+        created = Properties.objects.create(
+            property_name=column[0],
+            no_of_floors=column[1],
+            property_value=column[2],
+            no_of_units=column[3],
+            parking=column[4],
+            mngmt_start=datetime.datetime.strptime(column[5], "%d/%m/%Y").strftime("%Y-%m-%d"),
+            property_type=column[6],
+            building_type=column[7],
+            electricity=column[8],
+            water=column[9],
+            location_desc=column[10],
+            created_by=request.user,
+            company=CompanyProfile.objects.get(user=request.user).company
+        )
+        created.save()
+    return redirect('prop-list')
+
+
+@login_required
+def tenant_file_upload(request):
+    return
+
+
+@login_required
+def prop_template(request):
+    file_path = os.path.join(settings.MEDIA_ROOT, 'properties.csv')
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404

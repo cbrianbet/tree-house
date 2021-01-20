@@ -11,6 +11,9 @@ urlpatterns = [
     path('property/units/tenant/add/<uuid:u_uid>', views.add_tenant, name='tenant-add'),
     path('property/units/tenant/<uuid:u_uid>', views.view_tenant, name='view-tenant'),
     path('property/units/tenant/swap/<uuid:u_uid>', views.swap_tenant, name='swap-tenant'),
+    path('property/file/upload', views.prop_file_upload, name='file-prop'),
+    path('property/file/template', views.prop_template, name='file-template'),
+    path('property/tenant/file/upload', views.tenant_file_upload, name='file-tenant'),
 
 
 ]

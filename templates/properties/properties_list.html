@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/intro-js/introjs.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
 
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/advanced/masonry.css' %}">
 
@@ -51,7 +53,7 @@
                                 <p class="card-text type-link">
                                     <small>
 
-                                        <a href="javascript:void(0)"></a>
+                                        <a href="javascript:void(0)">{{ i.property_type }}</a>
                                         <a href="javascript:void(0)"></a>
                                         {#                                        <a href="javascript:void(0)">#}
                                         {#                                            <span>3</span> Comments</a>#}
@@ -67,7 +69,8 @@
                                     </a>
                                 </div>
                                 <button type="button" class="btn btn-outline btn-primary card-link">View</button>
-                                <a href="{% url 'unit-list' u_uid=i.uuid %}" class="btn btn-outline btn-warning card-link">Units</a>
+                                <a href="{% url 'unit-list' u_uid=i.uuid %}"
+                                   class="btn btn-outline btn-warning card-link">Units</a>
                             </div>
                         </div>
                     </li>
@@ -92,15 +95,41 @@
                         </div>
                     </div>
                 </li>
+                <li class="masonry-item">
+                    <div class="card card-shadow">
+                        <div class="card-header">
+                            <form method="post" action="{% url 'file-prop' %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="file" name="logo" data-plugin="dropify"/>
+                                <button type="submit" class="btn btn-outline btn-danger">Upload</button>
+                            </form>
+                        </div>
+                        <div class="card-block">
+                            <h3 class="card-title">Upload Via file</h3>
+                        </div>
+                        <div class="card-block">
+                            <div class="card-actions float-right">
+                                <a href="{% url 'add-list' %}">
+                                    <i class="icon wb-plus" aria-hidden="true"></i>
+                                    <span></span>
+                                </a>
+                            </div>
+                            <a href="{% url 'file-template' %}" class="btn btn-outline btn-secondary">Download Template</a>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
 
 {% endblock %}
 {% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/dropify/dropify.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/imagesloaded/imagesloaded.pkgd.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/masonry/masonry.pkgd.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/masonry.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/forms/uploads.js' %}"></script>
     <script>
         (function (document, window, $) {
             'use strict';
