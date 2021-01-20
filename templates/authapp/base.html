@@ -342,12 +342,14 @@
                             <span class="site-menu-title">Dashboard</span>
                         </a>
                     </li>
+                    {% if user.acc_type.id != 4 %}
                     <li class="site-menu-item">
                         <a class="animsition-link" href="{% url 'prop-list' %}">
                             <i class="site-menu-icon wb-library" aria-hidden="true"></i>
                             <span class="site-menu-title">Properties</span>
                         </a>
                     </li>
+                    {% endif %}
                     <li class="site-menu-item">
                         <a class="animsition-link" href="{% url 'prop-list' %}">
                             <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>

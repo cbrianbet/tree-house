@@ -12,6 +12,7 @@ def tenant_bills(request, u_uid):
     context = {
         'bills': invoice,
         'u_uid': u_uid,
+        'user': request.user,
     }
     return render(request, 'bills/tenant_bills.html', context)
 
@@ -29,5 +30,6 @@ def invoice_tenant(request, u_uid):
     context = {
         'bills': invoice,
         'u_uid': u_uid,
+        'user': request.user,
     }
     return render(request, 'bills/add_invoice.html', context)

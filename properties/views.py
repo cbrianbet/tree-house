@@ -30,7 +30,8 @@ def properties_list(request):
     print(tenants)
     context = {
         'prop': p,
-        'tenant': tenants
+        'tenant': tenants,
+        'user': request.user,
     }
     return render(request, 'properties/properties_list.html', context)
 
@@ -67,6 +68,7 @@ def properties_add(request):
         prop.save()
     context = {
         'u': user,
+        'user': request.user,
     }
     return render(request, 'properties/add_property.html', context)
 
@@ -79,6 +81,7 @@ def list_units(request, u_uid):
         'p': range(prop.no_of_floors),
         'p_id': u_uid,
         'unit': unit,
+        'user': request.user,
     }
     return render(request, 'properties/units_list.html', context)
 
@@ -109,6 +112,7 @@ def add_units(request, floor, u_uid):
         'fl': floor,
         'u_id': u_uid,
         'prop': prop,
+        'user': request.user,
     }
 
     return render(request, 'properties/add_unit.html', context)
@@ -152,6 +156,7 @@ def add_tenant(request, u_uid):
     context = {
         'u_id': u_uid,
         'unit': unit,
+        'user': request.user,
     }
 
     return render(request, 'properties/add_tenant.html', context)
@@ -187,7 +192,8 @@ def view_tenant(request, u_uid):
     context = {
         'p_id': u_uid,
         'unit': unit,
-        't': prop
+        't': prop,
+        'user': request.user,
     }
     return render(request, 'properties/tenant_view.html', context)
 
@@ -218,7 +224,8 @@ def swap_tenant(request, u_uid):
     context = {
         'p_id': u_uid,
         'unit': unit,
-        't': prop
+        't': prop,
+        'user': request.user,
     }
     return render(request, 'properties/tenant_swap.html', context)
 
