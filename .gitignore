@@ -133,3 +133,4 @@ dmypy.json
 tree_house/static
 /tree_house/static/
 /media/propPic/
+!/media/properties.csv
