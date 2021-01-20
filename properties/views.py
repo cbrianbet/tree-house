@@ -8,6 +8,7 @@ import string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
@@ -20,8 +21,16 @@ from .models import *
 @login_required
 def properties_list(request):
     p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
+    queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(count=Count('unit__property__uuid')).order_by(
+        'unit__property__uuid')
+
+    tenants = {}
+    for entry in queryset1:
+        tenants.update({entry['unit__property__uuid']: entry['count']})
+    print(tenants)
     context = {
         'prop': p,
+        'tenant': tenants
     }
     return render(request, 'properties/properties_list.html', context)
 

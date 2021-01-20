@@ -65,7 +65,15 @@
                                 <div class="card-actions float-right">
                                     <a href="javascript:void(0)">
                                         <i class="icon wb-users" aria-hidden="true"></i>
-                                        <span>0</span>
+                                        <span>
+                                            {% for key, value in tenant.items %}
+                                                {% if key == i.uuid %}
+                                                    {{ value }}
+                                                {% else %}
+                                                    0
+                                                {% endif %}
+                                            {% endfor %}
+                                                </span>
                                     </a>
                                 </div>
                                 <button type="button" class="btn btn-outline btn-primary card-link">View</button>
@@ -114,7 +122,8 @@
                                     <span></span>
                                 </a>
                             </div>
-                            <a href="{% url 'file-template' %}" class="btn btn-outline btn-secondary">Download Template</a>
+                            <a href="{% url 'file-template' %}" class="btn btn-outline btn-secondary">Download
+                                Template</a>
                         </div>
                     </div>
                 </li>
