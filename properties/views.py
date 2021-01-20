@@ -79,17 +79,17 @@ def add_units(request, floor, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
     if request.method == "POST":
         unit = request.POST.get('name')
-        type_of_units = request.POST.get('type')
         value = request.POST.get('value')
         unit_status = request.POST.get('status')
         area = request.POST.get('area')
         service_charge = request.POST.get('service_charge')
-        no_of_parking = 0
+        no_of_parking = request.POST.get('parking')
         size = request.POST.get('size_unit')
         specify = request.POST.get('other')
+        deposit = request.POST.get('deposit')
 
         u_save = Unit.objects.create(
-            unit_name=unit, property=prop, type_of_unit=type_of_units, size=size, other_specify=specify, value=value,
+            unit_name=unit, property=prop, security_deposit=deposit, size=size, other_specify=specify, value=value,
             parking_assigned=no_of_parking, service_charge=service_charge, area=area, unit_status=unit_status,
             floor=floor,
             created_by=request.user
@@ -268,3 +268,47 @@ def prop_template(request):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
     raise Http404
+
+
+@login_required
+def unit_template(request):
+    file_path = os.path.join(settings.MEDIA_ROOT, 'Units.csv')
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
+
+@login_required
+def unit_file_upload(request, uid):
+    # declaring template
+
+    csv_file = request.FILES['logo']
+    # let's check if it is a csv file
+    if not csv_file.name.endswith('.csv'):
+        messages.error(request, 'THIS IS NOT A CSV FILE')
+    data_set = csv_file.read().decode('UTF-8')
+    # setup a stream which is when we loop through each line we are able to handle a data in a stream
+
+    io_string = io.StringIO(data_set)
+    next(io_string)
+    for column in csv.reader(io_string, delimiter=',', quotechar="|"):
+
+        created = Unit.objects.create(
+            unit_name=column[0],
+            value=column[1],
+            area=column[2],
+            size=column[3],
+            service_charge=column[4],
+            security_deposit=column[5],
+            unit_status=column[6],
+            parking_assigned=column[7],
+            floor=column[8],
+            property=Properties.objects.get(uuid=uid),
+            created_by=request.user
+        )
+        created.save()
+    return redirect('unit-list', u_uid=uid)

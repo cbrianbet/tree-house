@@ -13,6 +13,8 @@ urlpatterns = [
     path('property/units/tenant/swap/<uuid:u_uid>', views.swap_tenant, name='swap-tenant'),
     path('property/file/upload', views.prop_file_upload, name='file-prop'),
     path('property/file/template', views.prop_template, name='file-template'),
+    path('unit/file/template', views.unit_template, name='unit-template'),
+    path('unit/file/upload/<uuid:uid>', views.unit_file_upload, name='unit-file-upload'),
     path('property/tenant/file/upload', views.tenant_file_upload, name='file-tenant'),
 
 

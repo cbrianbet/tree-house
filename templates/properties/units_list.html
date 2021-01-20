@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/intro-js/introjs.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
 
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/advanced/masonry.css' %}">
 
@@ -35,40 +37,64 @@
             </div>
         </div>
 
+        <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
+            <li class="masonry-item">
+                <div class="card card-shadow">
+                    <div class="card-header">
+                        <form method="post" action="{% url 'unit-file-upload' uid=p_id %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="file" name="logo" data-plugin="dropify"/>
+                            <button type="submit" class="btn btn-outline btn-danger">Upload</button>
+                        </form>
+                    </div>
+                    <div class="card-block">
+                        <h3 class="card-title">Upload Via csv</h3>
+                    </div>
+                    <div class="card-block">
+                        <div class="card-actions float-right">
+
+                        </div>
+                        <a href="{% url 'unit-template' %}" class="btn btn-outline btn-secondary">Download Template</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
         {% for i in p %}
             <div class="page-content blue-grey-500">
-            <h3 class="text-dark">Floor {{ i }}</h3>
+                <h3 class="text-dark">Floor {{ i }}</h3>
                 <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
                     {% for u in unit %}
                         {% if u.floor == i %}
-                        <li class="masonry-item">
-                            <div class="card card-shadow">
+                            <li class="masonry-item">
+                                <div class="card card-shadow">
 
-                                <div class="card-block">
-                                    <h3 class="card-title">Name: {{ u.unit_name }}</h3>
-                                    <p class="card-text type-link">
-                                        <small>
-
-                                            <p class="">{% if u.other_specify %}{{ u.other_specify }}{% else %}{{ u.size }}{% endif %}</p>
-                                            <p class="text-dark">{{ u.unit_status }}</p>
-                                            {#                                        <a href="javascript:void(0)">#}
-                                            {#                                            <span>3</span> Comments</a>#}
+                                    <div class="card-block">
+                                        <h3 class="card-title">Name: {{ u.unit_name }}</h3>
+                                        <p class="card-text type-link">
+                                            <small>
+                                        <p class="">{% if u.other_specify %}{{ u.other_specify }}{% else %}
+                                            {{ u.size }}{% endif %}</p>
+                                        <p class="text-dark">{{ u.unit_status }}</p>
+                                        {#                                        <a href="javascript:void(0)">#}
+                                        {#                                            <span>3</span> Comments</a>#}
                                         </small>
-                                    </p>
-                                    <p class="card-text">Value: Kshs. {{ u.value }}</p>
-                                </div>
-                                <div class="card-block">
-                                    <div class="card-actions float-right">
-                                        <a href="javascript:void(0)">
-                                            <i class="icon wb-users" aria-hidden="true"></i>
-                                            <span>0</span>
-                                        </a>
+                                        </p>
+                                        <p class="card-text">Value: Kshs. {{ u.value }}</p>
                                     </div>
-                                    <button type="button" class="btn btn-outline btn-primary card-link">View</button>
-                                    <a href="{% url 'tenant-add' u_uid=u.uuid %}" class="btn btn-outline btn-dark card-link">Tenant</a>
+                                    <div class="card-block">
+                                        <div class="card-actions float-right">
+                                            <a href="javascript:void(0)">
+                                                <i class="icon wb-users" aria-hidden="true"></i>
+                                                <span>0</span>
+                                            </a>
+                                        </div>
+                                        <button type="button" class="btn btn-outline btn-primary card-link">View
+                                        </button>
+                                        <a href="{% url 'tenant-add' u_uid=u.uuid %}"
+                                           class="btn btn-outline btn-dark card-link">Tenant</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
                         {% endif %}
                     {% endfor %}
                     <li class="masonry-item">
@@ -86,7 +112,8 @@
                                         <span></span>
                                     </a>
                                 </div>
-                                <a href="{% url 'unit-add' floor=i u_uid=p_id %}" class="btn btn-outline btn-primary">Add New</a>
+                                <a href="{% url 'unit-add' floor=i u_uid=p_id %}" class="btn btn-outline btn-primary">Add
+                                    New</a>
                             </div>
                         </div>
                     </li>
@@ -97,9 +124,12 @@
 
 {% endblock %}
 {% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/dropify/dropify.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/imagesloaded/imagesloaded.pkgd.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/masonry/masonry.pkgd.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/masonry.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/forms/uploads.js' %}"></script>
     <script>
         (function (document, window, $) {
             'use strict';
