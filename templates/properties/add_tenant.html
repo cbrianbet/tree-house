@@ -76,6 +76,38 @@
                                         <input type="text" class="form-control" name="id_no" required="required">
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Discount type
+                                    </label>
+                                    <div class="col-xl-12 col-md-9">
+                                        <div class="d-flex flex-column" id="radio">
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="percent_dis" name="dis_type" value="Percent" required>
+                                                <label for="percent_dis">Percentage</label>
+                                            </div>
+
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="amount_dis" name="dis_type" value="Amount">
+                                                <label for="amount_dis">Amount</label>
+                                            </div>
+
+                                            <div class="radio-custom radio-primary">
+                                                <input type="radio" id="dis_none" name="dis_type" value="None">
+                                                <label for="dis_none">No Discount</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" id="discount">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Discount
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class=" col-xl-12 col-md-9">
+                                        <input type="number" class="form-control" name="discount" min="0">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-xl-6 form-horizontal">
@@ -139,7 +171,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="form-group col-xl-12 text-right padding-top-m">
@@ -174,6 +205,7 @@
 
         $(document).ready(function () {
             $('#other').hide();
+            $('#discount').hide();
         });
         $('select').selectpicker();
         $('#size_unit').change(function () {
@@ -185,6 +217,13 @@
                 $('#other').hide();
             }
 
+        });
+        $('#radio').click(function () {
+            if ($('#percent_dis').is(':checked') || $('#amount_dis').is(':checked')) {
+                $('#discount').show();
+            } else {
+                $('#discount').hide();
+            }
         });
     </script>
 {% endblock %}

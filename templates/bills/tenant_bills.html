@@ -79,14 +79,15 @@
                         </tr>
                         </tfoot>
                         <tbody>
-                        {% for bill in bills %}
+                        {% for b in bills %}
                             <tr>
-                                <td>Melany</td>
-                                <td>1100 Steve Pines</td>
-                                <td>Immanuelfort</td>
+                                <td>{{ b.invoice_no }}</td>
+                                <td>{{ b.unit.property.property_name }} Pines</td>
+                                <td>{{ b.unit.unit_name }}</td>
                                 <td>12</td>
-                                <td>2014/06/28</td>
-                                <td>$162,453</td>
+                                <td>12</td>
+                                <td>{{ b.created_by.username }}</td>
+                                <td>{{ b.created_at }}</td>
                             </tr>
                         {% endfor %}
 
