@@ -59,6 +59,7 @@
                 </div>
             </li>
         </ul>
+    {% if prop.building_type != "Bungalow" %}
         {% for i in p %}
             <div class="page-content blue-grey-500">
                 <h3 class="text-dark">Floor {{ i }}</h3>
@@ -120,6 +121,7 @@
                 </ul>
             </div>
         {% endfor %}
+    {% endif %}
     </div>
 
 {% endblock %}

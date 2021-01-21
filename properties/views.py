@@ -79,6 +79,7 @@ def list_units(request, u_uid):
     unit = Unit.objects.filter(property=prop)
     context = {
         'p': range(prop.no_of_floors),
+        'prop': prop,
         'p_id': u_uid,
         'unit': unit,
         'user': request.user,

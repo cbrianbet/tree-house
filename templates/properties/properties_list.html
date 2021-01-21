@@ -63,18 +63,18 @@
                             </div>
                             <div class="card-block">
                                 <div class="card-actions float-right">
+                                            {% for key, value in tenant.items %}
+                                                {% if key == i.uuid %}
                                     <a href="javascript:void(0)">
                                         <i class="icon wb-users" aria-hidden="true"></i>
                                         <span>
-                                            {% for key, value in tenant.items %}
-                                                {% if key == i.uuid %}
                                                     {{ value }}
-                                                {% else %}
-                                                    0
-                                                {% endif %}
-                                            {% endfor %}
                                                 </span>
                                     </a>
+
+
+                                                {% endif %}
+                                            {% endfor %}
                                 </div>
                                 <button type="button" class="btn btn-outline btn-primary card-link">View</button>
                                 <a href="{% url 'unit-list' u_uid=i.uuid %}"
@@ -116,12 +116,7 @@
                             <h3 class="card-title">Upload Via file</h3>
                         </div>
                         <div class="card-block">
-                            <div class="card-actions float-right">
-                                <a href="{% url 'add-list' %}">
-                                    <i class="icon wb-plus" aria-hidden="true"></i>
-                                    <span></span>
-                                </a>
-                            </div>
+
                             <a href="{% url 'file-template' %}" class="btn btn-outline btn-secondary">Download
                                 Template</a>
                         </div>
