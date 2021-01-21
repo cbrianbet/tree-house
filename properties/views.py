@@ -133,6 +133,10 @@ def add_tenant(request, u_uid):
         username = get_random_username()
         pwrd = ''.join((random.choice(string.ascii_letters + string.digits) for i in range(8)))
         acc = AccTypes.objects.get(id=4)
+        if request.POST.get('deprent') == "True":
+            dep = True
+        else:
+            dep = False
 
         u = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
         u.save()
@@ -213,6 +217,7 @@ def swap_tenant(request, u_uid):
 
         n = Unit.objects.get(uuid=new)
         n.unit_status = "Occupied"
+        n.save()
 
         return redirect('swap-tenant', u_uid=new)
 

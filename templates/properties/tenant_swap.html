@@ -69,17 +69,27 @@
                                     {{ t.unit.unit_name }}
                                 </td>
                             </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Current Rent
+                                </td>
+                                <td class="text-left">
+                                    {{ t.unit.value }}
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                         <form method="post" action="{% url 'swap-tenant' u_uid=p_id %}">
-                        {% csrf_token %}
+                            {% csrf_token %}
                             <div class="form-group">
                                 <label class="form-control-label" for="acc_type">New Unit *</label>
-                                <select data-plugin="selectpicker" title="Unit | Property | Rent | Size" id="unit"
+                                <select data-plugin="selectpicker" data-size="5" data-live-search="true"
+                                        title="Unit | Property | Rent | Size" id="unit"
                                         name="unit" required="required">
                                     {% for a in unit %}
                                         <option value="{{ a.uuid }}">{{ a.unit_name }} | {{ a.property.property_name }}
-                                            | Kshs.{{ a.value }} | {% if a.other_specify %}{{ a.other_specify }} {% else %}
+                                            | Kshs.{{ a.value }} |
+                                            {% if a.other_specify %}{{ a.other_specify }} {% else %}
                                                 {{ a.size }}{% endif %}</option>
                                     {% endfor %}
                                 </select>
