@@ -32,7 +32,8 @@ def invoice_tenant(request, u_uid):
         inv.save()
 
         for i in range(len(name)):
-            inv_item = InvoiceItems.objects.create(invoice=inv, invoice_item=name[i], amount=float(amt[i]), description=remarks[i])
+            print(round(float(amt[i]), 2))
+            inv_item = InvoiceItems.objects.create(invoice=inv, invoice_item=name[i], amount=round(float(amt[i]), 2), description=remarks[i])
             inv_item.save()
 
         return redirect('bills-tenant', u_uid=u_uid)

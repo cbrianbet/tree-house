@@ -25,7 +25,7 @@ class InvoiceItems(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     invoice_item = models.CharField(max_length=50, default="Default")
     description = models.CharField(max_length=150, null=True)
-    amount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    amount = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
 
 
     class Meta:
