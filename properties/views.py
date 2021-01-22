@@ -52,6 +52,8 @@ def properties_add(request):
         water = request.POST.get('water')
         build = request.POST.get('b_type')
         loc_desc = request.POST.get('loc_desc')
+        long = request.POST.get('longitude')
+        lat = request.POST.get('latitude')
 
         if request.FILES:
             picture = request.FILES['logo']
@@ -61,9 +63,8 @@ def properties_add(request):
         prop = Properties.objects.create(
             property_name=name, property_value=val, mngmt_start=start_date, property_type=prop_type, owner=owner,
             no_of_floors=floors, no_of_units=units, parking=parking, electricity=elec, water=water,
-            location_desc=loc_desc,
-            pics=picture, company=CompanyProfile.objects.get(user=user).company, building_type=build,
-            created_by=request.user
+            location_desc=loc_desc, long=long, lat=lat, created_by=request.user,
+            pics=picture, company=CompanyProfile.objects.get(user=user).company, building_type=build
         )
         prop.save()
     context = {

@@ -25,6 +25,15 @@
           href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/forms/layouts.css' %}">
+    <style>
+        .page-invoice-amount {
+            padding-top: 10px;
+            margin-bottom: 40px;
+            font-size: 20px;
+            border-top: 1px solid #e4eaec;
+        }
+
+    </style>
 {% endblock %}
 
 {% block page %}
@@ -156,7 +165,7 @@
     <script>
         $(document).ready(function () {
             productsAdd();
-                calculateColumn();
+            calculateColumn();
         });
 
         function calculateColumn() {
