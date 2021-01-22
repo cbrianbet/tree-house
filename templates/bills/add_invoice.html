@@ -110,6 +110,14 @@
 
                             </tbody>
                         </table>
+
+                        <div class="text-right clearfix">
+                            <div class="float-right">
+                                <p class="page-invoice-amount">Grand Total:
+                                    <span id="total">Kshs. </span>
+                                </p>
+                            </div>
+                        </div>
                         <button class="btn btn-outline btn-danger" type="submit">
                             <i class="icon wb-thumb-up" aria-hidden="true"></i> Submit
                         </button>
@@ -148,7 +156,19 @@
     <script>
         $(document).ready(function () {
             productsAdd();
+                calculateColumn();
         });
+
+        function calculateColumn() {
+            var TotalValue = 0;
+
+            $("tr #loop").each(function (index, value) {
+                currentRow = parseFloat($(this).val());
+                TotalValue += currentRow
+            });
+
+            $('#total').text('Kshs. ' + TotalValue);
+        }
 
         // Add products to <table>
         function productsAdd() {
@@ -169,7 +189,8 @@
                 formClear();
 
                 // Focus to product name field
-                $("#productname").focus();
+                $("#inv_item").focus();
+                calculateColumn();
             }
         }
 
@@ -183,7 +204,7 @@
             // Append product to the table
             $("#invoiceItems tbody").append("<tr class=\"gradeA\">" +
                 "<td><input class=\"form-control\" type=\"text\" name=\"inv_name\" value=\"" + $("#inv_item").val() + "\" readonly> </td>" +
-                "<td><input class=\"form-control\" type=\"text\" name=\"inv_amnt\" value=\"" + $("#inv_amount").val() + "\" readonly> </td>" +
+                "<td><input id=\"loop\" class=\"form-control\" type=\"text\" name=\"inv_amnt\" value=\"" + $("#inv_amount").val() + "\" readonly> </td>" +
                 "<td><input class=\"form-control\" type=\"text\" name=\"remark\" value=\"" + $("#remarks").val() + "\" readonly> </td>" +
                 "<td class=\"actions\">\n" +
                 "<button onclick=\"productDelete(this);\" class=\"btn btn-sm btn-icon btn-pure btn-default on-default remove-row\"\n" +
