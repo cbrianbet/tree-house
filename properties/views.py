@@ -21,7 +21,8 @@ from .models import *
 @login_required
 def properties_list(request):
     p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
-    queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(count=Count('unit__property__uuid')).order_by(
+    queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
+        count=Count('unit__property__uuid')).order_by(
         'unit__property__uuid')
 
     tenants = {}
@@ -54,17 +55,22 @@ def properties_add(request):
         loc_desc = request.POST.get('loc_desc')
         long = request.POST.get('longitude')
         lat = request.POST.get('latitude')
+        rent_coll = request.POST.get('rent_coll')
+        spdate = request.POST.get('specify_day')
+        pen_type = request.POST.get('pen_type')
+        pen_val = request.POST.get('penalty')
 
         if request.FILES:
-            picture = request.FILES['logo']
+            picture = request.FILES['pic']
         else:
             picture = ''
 
         prop = Properties.objects.create(
             property_name=name, property_value=val, mngmt_start=start_date, property_type=prop_type, owner=owner,
             no_of_floors=floors, no_of_units=units, parking=parking, electricity=elec, water=water,
-            location_desc=loc_desc, long=long, lat=lat, created_by=request.user,
-            pics=picture, company=CompanyProfile.objects.get(user=user).company, building_type=build
+            location_desc=loc_desc, long=long, lat=lat, created_by=request.user, rent_collection=rent_coll,
+            pics=picture, company=CompanyProfile.objects.get(user=user).company, building_type=build,
+            specific_day=spdate, penalty_type=pen_type, penalty_value=pen_val
         )
         prop.save()
     context = {
@@ -241,7 +247,8 @@ def swap_tenant(request, u_uid):
 def get_unit(request):
     return
 
-#File uploads
+
+# File uploads
 @login_required
 def prop_file_upload(request):
     # declaring template
@@ -319,7 +326,6 @@ def unit_file_upload(request, uid):
     io_string = io.StringIO(data_set)
     next(io_string)
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
-
         created = Unit.objects.create(
             unit_name=column[0],
             value=column[1],
