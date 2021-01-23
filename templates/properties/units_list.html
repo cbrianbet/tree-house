@@ -98,6 +98,7 @@
                             </li>
                         {% endif %}
                     {% endfor %}
+                {% if can_add %}
                     <li class="masonry-item">
                         <div class="card card-shadow">
                             <div class="card-header cover">
@@ -118,6 +119,7 @@
                             </div>
                         </div>
                     </li>
+                {% endif %}
                 </ul>
             </div>
         {% endfor %}

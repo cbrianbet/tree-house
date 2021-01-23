@@ -84,12 +84,16 @@ def properties_add(request):
 def list_units(request, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
     unit = Unit.objects.filter(property=prop)
+    can_add = False
+    if unit.count() <= prop.no_of_units:
+        can_add = True
     context = {
         'p': range(prop.no_of_floors),
         'prop': prop,
         'p_id': u_uid,
         'unit': unit,
         'user': request.user,
+        'can_add': can_add,
     }
     return render(request, 'properties/units_list.html', context)
 
