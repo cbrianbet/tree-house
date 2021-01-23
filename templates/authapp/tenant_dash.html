@@ -1,0 +1,201 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>Dashboard | MNEST</title>
+{% endblock %}
+{% block headscripts %}
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/chartist/chartist.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/aspieprogress/asPieProgress.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/jquery-selective/jquery-selective.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-datepicker/bootstrap-datepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/asscrollable/asScrollable.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/dashboard/team.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/fonts/font-awesome/font-awesome.css' %}">
+
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-content container-fluid">
+            <div class="row" data-plugin="matchHeight" data-by-row="true">
+
+                <div class="col-lg-2 col-sm-4">
+                    <a class="btn  btn-dark btn-animate-side" href="">
+                        <i class="icon fa-user" aria-hidden="true"></i>
+                        <span class="hidden-sm-down">Account</span>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-sm-4">
+                    <a class="btn  btn-dark btn-animate-side" href="">
+                        <i class="icon fa-chain-broken" aria-hidden="true"></i>
+                        <span class="hidden-sm-down">Service Request</span>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-sm-4">
+                    <a class="btn  btn-dark btn-animate-side" href="">
+                        <i class="icon fa-sticky-note" aria-hidden="true"></i>
+                        <span class="hidden-sm-down">Statements</span>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-sm-4">
+                    <a class="btn  btn-dark btn-animate-side" href="">
+                        <i class="icon fa-list-alt" aria-hidden="true"></i>
+                        <span class="hidden-sm-down">Invoices</span>
+                    </a>
+                </div>
+                <br>
+                <br>
+                <br>
+
+                <!-- First Row -->
+                <!-- Personal -->
+                <div class="col-xxl-9">
+                    <div id="personalCompletedWidget" class="card card-shadow pb-20">
+                        <div class="card-header card-header-transparent cover overlay">
+                            <img class="cover-image" src="../../../global/photos/placeholder.png">
+                            <div class="overlay-panel overlay-background vertical-align" style="background: rgba(212,175,55 ,1)">
+                                <div class="vertical-align-middle">
+                                    <a class="avatar" href="javascript:void(0)">
+                                        <img alt="" src="{% static 'authapp/assets/images/apple-touch-icon.png' %}">
+                                    </a>
+                                    <div class="font-size-20 mt-10">{{ prof.first_name }} {{ prof.last_name }}</div>
+                                    <div class="font-size-14">{{ prof.user.email }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-block">
+                            <div class="row text-center mb-20">
+                                <div class="col-6">
+                                    <div class="counter">
+                                        <div class="counter-label total-completed">TENANT ID</div>
+                                        <div class="counter-number red-600">{{ user.username }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="counter">
+                                        <div class="counter-label">PRIMARY CONTACT</div>
+                                        <div class="counter-number blue-600">{{ prof.msisdn }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <caption></caption>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <i class="icon wb-home" aria-hidden="true"></i> Property
+                                        </td>
+                                        <td>
+                                            {{ tenant.unit.property.property_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class="icon wb-grid-4" aria-hidden="true"></i> Unit Assigned
+                                        </td>
+                                        <td>
+                                            {{ tenant.unit.unit_name }}
+                                        </td>
+                                    </tr>
+                                    {% if tenant.secondary_msisdn %}
+                                        <tr>
+                                            <td>
+                                                <i class="icon wb-mobile" aria-hidden="true"></i> Secondary Mobile
+                                            </td>
+                                            <td>
+                                                {{ tenant.secondary_msisdn }}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <td>
+                                            <i class="icon wb-calendar" aria-hidden="true"></i> Tenant Since
+                                        </td>
+                                        <td>
+                                            {{ tenant.date_occupied }}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Personal -->
+                <!-- Completed Options Pie Widgets -->
+                <div class="col-xxl-3">
+                    <div class="row h-full" data-plugin="matchHeight">
+                        <div class="col-xxl-12 col-lg-4 col-sm-4">
+                            <div class="card card-shadow card-completed-options">
+                                <div class="card-block p-30">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <br><br>
+                                             <i class="icon fa-dollar" aria-hidden="true" style="font-size: 62px;"></i>
+                                        </div>
+                                        <div class="col-9">
+                                            <div class="counter text-left blue-grey-700">
+                                                <div class="counter-label mt-10 ">Amount Due
+                                                </div>
+                                                <div class="counter-number font-size-40 mt-10 red-600">
+                                                    {{ bals }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-12 col-lg-4 col-sm-4">
+                            <div class="card card-shadow card-completed-options">
+                                <div class="card-block p-30">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <br><br>
+                                             <i class="icon fa-file" aria-hidden="true" style="font-size: 62px;"></i>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="counter text-left blue-grey-700">
+                                                <div class="counter-label mt-10">Open Invoices
+                                                </div>
+                                                <div class="counter-number font-size-40 mt-10">
+                                                    {{ inv }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Completed Options Pie Widgets -->
+                <!-- End First Row -->
+                <!-- Second Row -->
+                <!-- End Second Row -->
+            </div>
+        </div>
+    </div>
+    <!-- End Page -->
+{% endblock %}
+
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/chartist/chartist.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/aspieprogress/jquery-asPieProgress.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/matchheight/jquery.matchHeight-min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/jquery-selective/jquery-selective.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootstrap-datepicker/bootstrap-datepicker.js' %}"></script>
+
+    <script src="{% static 'authapp/global/js/Plugin/matchheight.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/aspieprogress.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/asscrollable.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/dashboard/team.js' %}"></script>
+
+{% endblock %}

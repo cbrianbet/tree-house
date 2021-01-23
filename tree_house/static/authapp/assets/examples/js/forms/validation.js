@@ -64,16 +64,7 @@
             }
           }
         },
-        birthday: {
-          validators: {
-            notEmpty: {
-              message: 'The birthday is required'
-            },
-            date: {
-              format: 'YYYY/MM/DD'
-            }
-          }
-        },
+
         github: {
           validators: {
             url: {

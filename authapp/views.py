@@ -7,7 +7,8 @@ from django.urls import reverse
 
 from authapp.forms import LoginForm
 from authapp.models import Users, Profile, AccTypes
-from properties.models import Companies, CompanyProfile
+from bills.models import Invoice, InvoiceItems, InvoiceItemsTransaction
+from properties.models import Companies, CompanyProfile, Tenant
 
 
 def login(request):
@@ -34,7 +35,40 @@ def login(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'authapp/analytics.html')
+    user = request.user
+    if user.acc_type.id == 4:
+        num = 10000000
+        print(f"{num:,d}")
+        prof = Profile.objects.get(user=user)
+        tenant = Tenant.objects.get(profile=prof)
+        invoice = Invoice.objects.filter(invoice_for=user, status=False)
+        inv_item = InvoiceItems.objects.filter(invoice__in=invoice)
+        inv_tran = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_item)
+
+        bals = 0
+        for due in inv_item:
+            bals = due.amount + bals
+
+        for due in inv_tran:
+            bals =  bals - due.amount_paid
+
+        bals = '{0:,}'.format(bals)
+        context = {
+            'user': user,
+            'prof': prof,
+            'tenant': tenant,
+            'bals': bals,
+            'inv': invoice.count(),
+        }
+        return render(request, 'authapp/tenant_dash.html', context)
+
+    elif user.acc_type.id == 1:
+        context = {'user': user}
+        return render(request, 'authapp/analytics.html', context)
+
+    else:
+        context = {'user': user}
+        return render(request, 'authapp/analytics.html', context)
 
 
 def signup(request):
