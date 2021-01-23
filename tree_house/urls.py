@@ -9,6 +9,7 @@ urlpatterns = [
     url('', include('authapp.urls')),
     url('', include('properties.urls')),
     url('', include('bills.urls')),
+    url('', include('chatApp.urls')),
 
 ]
 

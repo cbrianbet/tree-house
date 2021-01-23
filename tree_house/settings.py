@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.chatbot',
 
     'authapp',
     'properties',
     'bills',
+    'chatApp',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +135,6 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+BACKGROUND_TASK_RUN_ASYNC = True
+CHATBOT_TEMPLATE = os.path.join(BASE_DIR, "chatbotTemplate", "webbot.template")

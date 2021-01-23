@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta name="description" content="bootstrap admin template">
     <meta name="author" content="">
-{% block title %}
+    {% block title %}
 
-{% endblock %}
+    {% endblock %}
 
 
     <link rel="apple-touch-icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
@@ -343,12 +343,12 @@
                         </a>
                     </li>
                     {% if user.acc_type.id != 4 %}
-                    <li class="site-menu-item">
-                        <a class="animsition-link" href="{% url 'prop-list' %}">
-                            <i class="site-menu-icon wb-library" aria-hidden="true"></i>
-                            <span class="site-menu-title">Properties</span>
-                        </a>
-                    </li>
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="{% url 'prop-list' %}">
+                                <i class="site-menu-icon wb-library" aria-hidden="true"></i>
+                                <span class="site-menu-title">Properties</span>
+                            </a>
+                        </li>
                     {% endif %}
                     <li class="site-menu-item">
                         <a class="animsition-link" href="{% url 'prop-list' %}">
@@ -356,6 +356,20 @@
                             <span class="site-menu-title">Bills</span>
                         </a>
                     </li>
+                    {% if user.acc_type.id == 4 %}
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="{% url 'prop-list' %}">
+                                <i class="site-menu-icon wb-download" aria-hidden="true"></i>
+                                <span class="site-menu-title">Vacant Unit Search</span>
+                            </a>
+                        </li>
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="{% url 'chat-start' %}">
+                                <i class="site-menu-icon wb-menu" aria-hidden="true"></i>
+                                <span class="site-menu-title">Chat</span>
+                            </a>
+                        </li>
+                    {% endif %}
                     {#                    <li class="site-menu-item has-sub">#}
                     {#                        <a href="javascript:void(0)">#}
                     {#                            <i class="site-menu-icon wb-layout" aria-hidden="true"></i>#}
@@ -1431,8 +1445,8 @@
 <script src="{% static 'authapp/global/js/Plugin/matchheight.js' %}"></script>
 
 
-    {% block footscripts %}
+{% block footscripts %}
 
-    {% endblock %}
+{% endblock %}
 </body>
 </html>

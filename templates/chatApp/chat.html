@@ -1,0 +1,123 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+{% block title %}
+
+    <title>Chat | MNEST</title>
+{% endblock %}
+{% block headscripts %}
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/structure/chat.css' %}">
+
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Chat</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item active">Chat</li>
+            </ol>
+            <div class="page-header-actions">
+
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Panel Title -->
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="chat-box">
+                        <div class="chats" id="chats">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer pb-30">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Say something" id="write_msg">
+                        <span class="input-group-btn">
+                  <button class="btn btn-primary" type="button" id="msg_send_btn">Send</button>
+                </span>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel Title -->
+        </div>
+    </div>
+    <!-- End Page -->
+{% endblock %}
+{% block footscripts %}
+
+    <script>
+        let LAST_MESSAGE_ID = 0;
+
+        function html_text(str) {
+            let elt = document.createElement('span');
+            elt.textContent = str;
+            return elt.innerHTML.replace(/(\n)+/g, "<br>");
+        }
+
+        function show_message(msg) {
+            if (msg.by == "bot") {
+                $("#chats").append($("<div class=\"chat chat-left\"><div class=\"chat-avatar\"><a class=\"avatar\" data-toggle=\"tooltip\" href=\"#\" data-placement=\"right\" title=\"June Lane\">" +
+                    "<img src=\"{% static 'authapp/assets/images/user.png' %}\" alt=\"June Lane\"></a></div><div class=\"chat-body\"><div class=\"chat-content\"><p>" + html_text(msg.text) +
+                    "</p><time class=\"chat-time\" datetime=\"2017-06-01T08:30\">8:30 am</time></div></div></div>"));
+            } else {
+                $("#chats").append($("<div class=\"chat\"><div class=\"chat-avatar\"><a class=\"avatar\" data-toggle=\"tooltip\" href=\"#\" data-placement=\"right\" title=\"June Lane\">" +
+                    "<img src=\"{% static 'authapp/assets/images/apple-touch-icon.png' %}\" alt=\"June Lane\"></a></div><div class=\"chat-body\"><div class=\"chat-content\"><p>" + html_text(msg.text) +
+                    "</p><time class=\"chat-time\" datetime=\"2017-06-01T08:30\">8:30 am</time></div></div></div>"));
+            }
+
+            LAST_MESSAGE_ID = msg.id;
+            $("#chatContainer").animate({scrollTop: $("#chatwindow").height() + 125}, 100);
+        }
+
+        $("#write_msg").prop('disabled', true);
+        $("#msg_send_btn").prop('disabled', true);
+        $.get("{% url 'webhook' %}",
+            {},
+            function (data, status) {
+                data.messages.forEach(show_message);
+                $("#write_msg").prop('disabled', false);
+                $("#msg_send_btn").prop('disabled', false);
+            });
+
+        function request_msg() {
+            var val = $("#write_msg").val().trim();
+            if (val) {
+                $("#write_msg").prop('disabled', true);
+                $(".msg_send_btn").prop('disabled', true);
+                $.post("{% url 'webhook' %}",
+                    {
+                        "last_message_id": LAST_MESSAGE_ID,
+                        "message": val
+                    },
+                    function (data, status) {
+                        data.messages.forEach(show_message);
+                        $("#write_msg").val("");
+                        $("#write_msg").prop('disabled', false);
+                        $("#msg_send_btn").prop('disabled', false);
+                    });
+            }
+        }
+
+        $('input#write_msg').keyup(function (e) {
+            if (e.keyCode == 13) {
+                request_msg();
+            }
+        });
+        $('#msg_send_btn').click(request_msg);
+    </script>
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+{% endblock %}
