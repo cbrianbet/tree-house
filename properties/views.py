@@ -13,6 +13,8 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 from authapp.models import AccTypes
+from bills.models import Invoice, InvoiceItems
+from bills.views import increment_invoice_number
 from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
@@ -134,16 +136,20 @@ def add_units(request, floor, u_uid):
 def add_tenant(request, u_uid):
     unit = Unit.objects.get(uuid=u_uid)
     if request.method == "POST":
+        print(request.POST)
+
         f_name = request.POST.get('f_name')
         l_name = request.POST.get('l_name')
         id_no = request.POST.get('id_no')
         mobile = request.POST.get('primary')
         secondary_mobile = request.POST.get('secondary')
         email = request.POST.get('email')
-        date_of_occupancy = datetime.datetime.strptime(request.POST.get('date'), "%d/%m/%Y").strftime("%Y-%m-%d")
+        date_of_occupancy = datetime.datetime.strptime(request.POST.get('date'), "%m/%d/%Y").strftime("%Y-%m-%d")
         username = get_random_username()
         pwrd = ''.join((random.choice(string.ascii_letters + string.digits) for i in range(8)))
         acc = AccTypes.objects.get(id=4)
+        dis_type = request.POST.get('dis_type')
+        discount = request.POST.get('discount')
         if request.POST.get('deprent') == "True":
             dep = True
         else:
@@ -156,8 +162,8 @@ def add_tenant(request, u_uid):
         )
         p.save()
         t = Tenant.objects.create(
-            secondary_msisdn=secondary_mobile, date_occupied=date_of_occupancy, unit=unit, profile=p,
-            created_by=request.user
+            secondary_msisdn=secondary_mobile, date_occupied=date_of_occupancy, unit=unit, profile=p, discount=discount,
+            created_by=request.user, discount_type=dis_type
         )
         t.save()
 
@@ -165,6 +171,16 @@ def add_tenant(request, u_uid):
 
         unit.unit_status = "Occupied"
         unit.save()
+
+        if dep:
+            rent = unit.value
+            if dis_type == "Percent":
+                rent = float(rent) - ((float(discount) / 100) * float(rent))
+                print(rent)
+            if dis_type == "Amount":
+                rent = float(rent) - float(discount)
+                print(rent)
+            apply_invoice(rent, float(unit.security_deposit), request.user, t)
 
     if Tenant.objects.filter(unit=unit).exists():
         return redirect('view-tenant', u_uid=unit.uuid)
@@ -199,6 +215,17 @@ def get_random_username():
         return username
     else:
         get_random_username()
+
+
+def apply_invoice(rent, dep, user, tenant):
+    inv_no = increment_invoice_number()
+    i = Invoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit)
+    i.save()
+    inv_item1 = InvoiceItems.objects.create(invoice=i, invoice_item='RENT', amount=round(rent, 2), description='RENT')
+    inv_item1.save()
+    inv_item2 = InvoiceItems.objects.create(invoice=i, invoice_item='DEPOSIT', amount=round(dep, 2), description='DEPOSIT')
+    inv_item2.save()
+    return True
 
 
 @login_required

@@ -27,7 +27,6 @@ def invoice_tenant(request, u_uid):
         for i in amt:
             print(i)
         inv_no = increment_invoice_number()
-        print(inv_no , remarks)
         inv = Invoice.objects.create(created_by=request.user, invoice_no=inv_no, invoice_for=t.profile.user, unit=t.unit)
         inv.save()
 
