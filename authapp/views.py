@@ -1,6 +1,9 @@
+import datetime
+
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as log_in, logout
+from django.contrib.auth import authenticate, login as log_in, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -50,7 +53,7 @@ def dashboard(request):
             bals = due.amount + bals
 
         for due in inv_tran:
-            bals =  bals - due.amount_paid
+            bals = bals - due.amount_paid
 
         bals = '{0:,}'.format(bals)
         context = {
@@ -69,6 +72,82 @@ def dashboard(request):
     else:
         context = {'user': user}
         return render(request, 'authapp/analytics.html', context)
+
+
+@login_required
+def profile(request):
+    user = request.user
+    if user.acc_type.id == 4:
+        profile = Profile.objects.get(user=user)
+        tenant = Tenant.objects.get(profile=profile)
+
+        events = [
+            {
+                'time': tenant.date_occupied,
+                'event': "unit occupied",
+                'days': (datetime.date.today() - tenant.date_occupied.date()).days
+            },
+            {
+                'time': tenant.created_at,
+                'event': "unit assigned",
+                'days': (datetime.date.today() - tenant.created_at.date()).days
+            },
+        ]
+        inv = Invoice.objects.filter(invoice_for=user)
+        for i in inv:
+            events.insert(0, {
+                'time': i.created_at,
+                'event': 'invoice {} created'.format(i.invoice_no),
+                'days': (datetime.date.today() - i.created_at.date()).days
+
+            })
+        if request.method == "POST":
+            if not request.user.check_password(request.POST.get('password')):
+                return HttpResponse("wrong password")
+            profile.first_name = request.POST.get('f_name')
+            profile.last_name = request.POST.get('l_name')
+            profile.msisdn = request.POST.get('msisdn')
+            profile.id_number = request.POST.get('id_no')
+
+            tenant.secondary_msisdn = request.POST.get('sec_msisdn')
+
+            profile.save()
+            tenant.save()
+
+        context = {
+            'user': user,
+            'profile': profile,
+            'ten': tenant,
+            'timeline': sorted(events, key = lambda i: (i['days'])),
+        }
+
+    elif user.acc_type.id == 1:
+        context = {
+            'user': user,
+        }
+
+    else:
+        context = {
+            'user': user,
+        }
+    return render(request, 'authapp/profile.html', context)
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'authapp/change_pass.html', {
+        'form': form
+    })
 
 
 def signup(request):
@@ -102,7 +181,8 @@ def signup(request):
             profile.save()
 
             if int(type) == 3:
-                company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location, logo=logo)
+                company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location,
+                                                   logo=logo)
                 company.save()
             elif int(type) == 2:
                 company = Companies.objects.create(name=mobile)
@@ -119,4 +199,3 @@ def signup(request):
 def logout_request(request):
     logout(request)
     return redirect('web-login')
-

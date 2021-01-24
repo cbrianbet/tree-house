@@ -1,0 +1,73 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Change Password | MNEST</title>
+{% endblock %}
+
+{% block headscripts %}
+
+{% endblock %}
+
+{% block page %}
+    <!-- Page -->
+    <div class="page">
+        <div class="page-content container-fluid">
+            <h2>Change Password</h2>
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.level_tag }}" role="alert">
+                            <li>{{ message }}</li>
+                        </div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="col-xl-6 ">
+                    <div class="form-group row">
+                        <label class="col-xl-12 col-md-3 form-control-label">{{ form.old_password.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class=" col-xl-12 col-md-9">
+                            {{ form.old_password }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xl-12 col-md-3 form-control-label">{{ form.new_password1.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class=" col-xl-12 col-md-9">
+                            {{ form.new_password1 }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xl-12 col-md-3 form-control-label">{{ form.new_password2.label }}
+                            <span class="required">*</span>
+                        </label>
+                        <div class=" col-xl-12 col-md-9">
+                            {{ form.new_password2 }}
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Save changes</button>
+            </form>
+
+        </div>
+    </div>
+    <!-- End Page -->
+
+{% endblock %}
+{% block footscripts %}
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+{% endblock %}

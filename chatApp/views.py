@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from messengerbot import MessengerClient, messages, attachments, templates, elements
-import json,wikipedia,urllib,os
 from chatbot import Chat, register_call
 import wikipedia
 
@@ -15,3 +14,17 @@ def chat(request):
         'user': request.user,
     }
     return render(request, 'chatApp/chat.html', context)
+
+
+@register_call("whoIs")
+def who_is(session, query):
+    try:
+        return wikipedia.summary(query)
+    except:
+        pass
+    for new_query in wikipedia.search(query):
+        try:
+            return wikipedia.summary(new_query)
+        except:
+            pass
+    return "I don't know about " + query
