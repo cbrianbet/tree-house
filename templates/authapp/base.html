@@ -351,23 +351,38 @@
                         </li>
                     {% endif %}
                     <li class="site-menu-item">
-                        <a class="animsition-link" href="{% url 'prop-list' %}">
+                        <a class="animsition-link" href="{% url 'tenant_bill-personal' %}">
                             <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
                             <span class="site-menu-title">Bills</span>
                         </a>
                     </li>
                     {% if user.acc_type.id == 4 %}
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'prop-list' %}">
-                                <i class="site-menu-icon wb-download" aria-hidden="true"></i>
-                                <span class="site-menu-title">Vacant Unit Search</span>
-                            </a>
-                        </li>
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'chat-start' %}">
+                        {#                        <li class="site-menu-item">#}
+                        {#                            <a class="animsition-link" href="{% url 'prop-list' %}">#}
+                        {#                                <i class="site-menu-icon wb-download" aria-hidden="true"></i>#}
+                        {#                                <span class="site-menu-title">Vacant Unit Search</span>#}
+                        {#                            </a>#}
+                        {#                        </li>#}
+                        <li class="site-menu-item has-sub">
+                            <a href="javascript:void(0)">
                                 <i class="site-menu-icon wb-menu" aria-hidden="true"></i>
                                 <span class="site-menu-title">Chat</span>
+                                <div class="site-menu-label">
+                                </div>
+                                <span class="site-menu-arrow"></span>
                             </a>
+                            <ul class="site-menu-sub">
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'chat-start' %}">
+                                        <span class="site-menu-title">With chatbot</span>
+                                    </a>
+                                </li>
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'chat-owner' %}">
+                                        <span class="site-menu-title">With owner</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="site-menu-item">
                             <a class="animsition-link" href="{% url 'change_password' %}">
@@ -1456,3 +1471,4 @@
 {% endblock %}
 </body>
 </html>
+{% block extra_js %}{% endblock extra_js %}

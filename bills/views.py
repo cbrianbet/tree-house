@@ -16,6 +16,17 @@ def tenant_bills(request, u_uid):
     }
     return render(request, 'bills/tenant_bills.html', context)
 
+
+@login_required
+def personal_bills(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
+    invoice = Invoice.objects.filter(invoice_for=tenant.profile.user)
+    context = {
+        'bills': invoice,
+        'user': request.user,
+    }
+    return render(request, 'bills/tenant_bills_personal.html', context)
+
 @login_required
 def invoice_tenant(request, u_uid):
     t = Tenant.objects.get(uuid=u_uid)

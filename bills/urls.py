@@ -5,7 +5,7 @@ from . import  views
 
 urlpatterns = [
     path('property/units/tenant/bill/<uuid:u_uid>', views.tenant_bills, name='bills-tenant'),
-    path('property/units/tenant/bill/<uuid:u_uid>', views.tenant_bills, name='bills-tenant'),
+    path('property/units/tenant/bill/personal', views.personal_bills, name='tenant_bill-personal'),
     path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),
 
 ]

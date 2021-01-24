@@ -27,7 +27,6 @@ class InvoiceItems(models.Model):
     description = models.CharField(max_length=150, null=True)
     amount = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
 
-
     class Meta:
         db_table = "Invoice Items"
 

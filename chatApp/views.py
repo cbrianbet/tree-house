@@ -16,6 +16,16 @@ def chat(request):
     return render(request, 'chatApp/chat.html', context)
 
 
+@login_required
+def chat_owner(request):
+
+
+    context = {
+        'user': request.user,
+    }
+    return render(request, 'chatApp/chat_with.html', context)
+
+
 @register_call("whoIs")
 def who_is(session, query):
     try:
