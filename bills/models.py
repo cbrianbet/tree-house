@@ -38,6 +38,7 @@ class InvoiceItemsTransaction(models.Model):
     payment_mode = models.CharField(max_length=50, null=True)
     remarks = models.CharField(max_length=150, null=True)
     amount_paid = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    date_paid = models.DateField()
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="it_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="it_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)

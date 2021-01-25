@@ -349,14 +349,21 @@
                                 <span class="site-menu-title">Properties</span>
                             </a>
                         </li>
-                    {% endif %}
-                    <li class="site-menu-item">
-                        <a class="animsition-link" href="{% url 'tenant_bill-personal' %}">
+                        <li class="site-menu-item">
+                        <a class="animsition-link" href="{% url 'all-invoices' %}">
                             <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
                             <span class="site-menu-title">Bills</span>
                         </a>
+                    {% endif %}
                     </li>
                     {% if user.acc_type.id == 4 %}
+
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="{% url 'tenant_bill-personal' %}">
+                                <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
+                                <span class="site-menu-title">Bills</span>
+                            </a>
+                        </li>
                         {#                        <li class="site-menu-item">#}
                         {#                            <a class="animsition-link" href="{% url 'prop-list' %}">#}
                         {#                                <i class="site-menu-icon wb-download" aria-hidden="true"></i>#}
@@ -1471,4 +1478,3 @@
 {% endblock %}
 </body>
 </html>
-{% block extra_js %}{% endblock extra_js %}
