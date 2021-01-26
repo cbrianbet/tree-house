@@ -121,6 +121,7 @@
                                     <input type="text" class="form-control" id="u_name" name="username"
                                            required="required">
                                 </div>
+                                 <div id="uname_response" ></div>
                                 <div class="form-group">
                                     <label class="form-control-label" for="inputEmail">Email*</label>
                                     <input type="email" class="form-control" id="inputEmail" name="email"
@@ -273,6 +274,33 @@
 
 <script src="{% static 'authapp/global/js/Plugin/jquery-wizard.js' %}"></script>
 <script src="{% static 'authapp/assets/examples/js/forms/signupwizard.js' %}"></script>
+<script>
+$(document).ready(function(){
+
+   $("#u_name").keyup(function(){
+
+      var username = $(this).val().trim();
+
+      if(username != ''){
+
+         $.ajax({
+            url: "{% url 'check-username' %}",
+            type: 'post',
+            data: {username: username},
+            success: function(response){
+
+                $('#uname_response').html(response);
+
+             }
+         });
+      }else{
+         $("#uname_response").html("");
+      }
+
+    });
+
+ });
+</script>
 
 <script>
     $(function () {

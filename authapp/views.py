@@ -33,7 +33,7 @@ def login(request):
             return HttpResponse("form error")
     else:
         form = LoginForm()
-    return render(request, "authApp/login-v3.html", {'form': form})
+    return render(request, "authapp/login-v3.html", {'form': form})
 
 
 @login_required
@@ -133,6 +133,18 @@ def profile(request):
     return render(request, 'authapp/profile.html', context)
 
 
+def check_username(request):
+    username = request.POST.get('username')
+
+    query = Users.objects.filter(username=username)
+
+    response = "<span style='color: green;'>Available.</span>"
+    if query.count() == 0:
+        response = "<span style='color: red;'>Username Not Available.</span>"
+
+    return response
+
+
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
@@ -167,7 +179,7 @@ def signup(request):
         location = request.POST.get('location')
 
         if request.FILES:
-            logo = request.FILES['pic']
+            logo = request.FILES['logo']
         else:
             logo = ''
 
