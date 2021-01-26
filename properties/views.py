@@ -180,7 +180,7 @@ def add_tenant(request, u_uid):
             if dis_type == "Amount":
                 rent = float(rent) - float(discount)
                 print(rent)
-            apply_invoice(rent, float(unit.security_deposit), request.user, t)
+            apply_invoice(float(rent), float(unit.security_deposit), request.user, t)
 
     if Tenant.objects.filter(unit=unit).exists():
         return redirect('view-tenant', u_uid=unit.uuid)
@@ -201,7 +201,7 @@ def inform(u, p, e, n):
     We are thrilled to have you on-board! 
     This email is to let you know that we are continuing to utilise the latest technologies available to provide you with an even better service. 
     A special login has been created for you as follows:
-    Web URL:	https://mnest.co.ke/login
+    Web URL:	mnestafrica.com
     username: {}
     Password:	{}
     It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(

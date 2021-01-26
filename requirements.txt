@@ -3,7 +3,6 @@ djangorestframework==3.11.2
 djangorestframework-datatables==0.5.2
 idna==2.10
 Pillow==8.1.0
-psycopg2==2.8.6
 psycopg2-binary==2.8.6
 py-dateutil==2.2
 PyJWT==1.7.1
