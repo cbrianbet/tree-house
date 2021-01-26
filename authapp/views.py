@@ -133,6 +133,18 @@ def profile(request):
     return render(request, 'authapp/profile.html', context)
 
 
+def check_username(request):
+    username = request.POST.get('username')
+
+    query = Users.objects.filter(username=username)
+
+    response = "<span style='color: green;'>Available.</span>"
+    if query.count() == 0:
+        response = "<span style='color: red;'>Username Not Available.</span>"
+
+    return response
+
+
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
