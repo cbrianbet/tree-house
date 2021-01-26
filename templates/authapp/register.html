@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
 
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
 
     <!-- Fonts -->
     <link rel="stylesheet" href="{% static 'authapp/global/fonts/web-icons/web-icons.min.css' %}">
@@ -274,6 +275,10 @@
 
 <script src="{% static 'authapp/global/js/Plugin/jquery-wizard.js' %}"></script>
 <script src="{% static 'authapp/assets/examples/js/forms/signupwizard.js' %}"></script>
+
+<script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+
 <script>
 $(document).ready(function(){
 
@@ -282,13 +287,13 @@ $(document).ready(function(){
       var username = $(this).val().trim();
 
       if(username != ''){
+          console.log(username)
 
          $.ajax({
             url: "{% url 'check-username' %}",
             type: 'post',
             data: {username: username},
             success: function(response){
-
                 $('#uname_response').html(response);
 
              }
@@ -296,10 +301,14 @@ $(document).ready(function(){
       }else{
          $("#uname_response").html("");
       }
+        console.log($('#resp').val())
 
     });
+   console.log($('#resp'))
 
  });
+
+
 </script>
 
 <script>

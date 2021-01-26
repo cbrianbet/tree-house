@@ -4,9 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login as log_in, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from authapp.forms import LoginForm
 from authapp.models import Users, Profile, AccTypes
@@ -133,16 +135,18 @@ def profile(request):
     return render(request, 'authapp/profile.html', context)
 
 
+@csrf_exempt
 def check_username(request):
+    print(request.POST)
     username = request.POST.get('username')
 
     query = Users.objects.filter(username=username)
 
-    response = "<span style='color: green;'>Available.</span>"
-    if query.count() == 0:
-        response = "<span style='color: red;'>Username Not Available.</span>"
+    response = "<span id='resp' style='color: green;'>Available.</span>"
+    if query.count() > 0:
+        response = "<span id='resp' style='color: red;'>Username Not Available.</span>"
 
-    return response
+    return HttpResponse(response)
 
 
 def change_password(request):
@@ -182,26 +186,28 @@ def signup(request):
             logo = request.FILES['logo']
         else:
             logo = ''
+        try:
+            acc = AccTypes.objects.get(id=int(type))
+            user = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
+            user.save()
 
-        acc = AccTypes.objects.get(id=int(type))
-        user = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
-        user.save()
+            if user.pk:
+                profile = Profile.objects.create(first_name=f_name, last_name=l_name, msisdn=mobile, id_number=number,
+                                                 terms_accepted=terms, user=user)
+                profile.save()
 
-        if user.pk:
-            profile = Profile.objects.create(first_name=f_name, last_name=l_name, msisdn=mobile, id_number=number,
-                                             terms_accepted=terms, user=user)
-            profile.save()
+                if int(type) == 3:
+                    company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location,
+                                                       logo=logo)
+                    company.save()
+                elif int(type) == 2:
+                    company = Companies.objects.create(name=mobile)
+                    company.save()
 
-            if int(type) == 3:
-                company = Companies.objects.create(name=company_name, no_of_emp=no_of_units, location=location,
-                                                   logo=logo)
-                company.save()
-            elif int(type) == 2:
-                company = Companies.objects.create(name=mobile)
-                company.save()
-
-            cp = CompanyProfile.objects.create(user=user, company=company)
-            cp.save()
+                cp = CompanyProfile.objects.create(user=user, company=company)
+                cp.save()
+        except:
+            raise PermissionDenied
 
         return redirect('web-login')
     return render(request, 'authapp/register.html')
