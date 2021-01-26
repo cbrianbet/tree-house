@@ -1,7 +1,7 @@
 {% extends 'authapp/base.html' %}
 {% load static %}
 {% block title %}
-    <title>Dashboard | MNEST</title>
+    <title>Dashboard | MNEST Africa</title>
 {% endblock %}
 {% block headscripts %}
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/chartist/chartist.css' %}">
@@ -150,6 +150,27 @@
                                         <div class="col-9">
                                             <div class="counter text-left blue-grey-700">
                                                 <div class="counter-label mt-10 ">Amount Due
+                                                </div>
+                                                <div class="counter-number font-size-40 mt-10 red-600">
+                                                    {{ bals }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-12 col-lg-4 col-sm-4">
+                            <div class="card card-shadow card-completed-options">
+                                <div class="card-block p-30">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <br><br>
+                                            <i class="icon fa-dollar" aria-hidden="true" style="font-size: 62px;"></i>
+                                        </div>
+                                        <div class="col-9">
+                                            <div class="counter text-left blue-grey-700">
+                                                <div class="counter-label mt-10 ">Rent Due
                                                 </div>
                                                 <div class="counter-number font-size-40 mt-10 red-600">
                                                     {{ bals }}
