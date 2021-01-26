@@ -61,6 +61,7 @@
                             <th>Status</th>
                             <th>Created by</th>
                             <th>Created at</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -73,19 +74,26 @@
                             <th>Status</th>
                             <th>Created by</th>
                             <th>Created at</th>
+                            <th></th>
                         </tr>
                         </tfoot>
                         <tbody>
                         {% for b in bills %}
                             <tr>
                                 <td>{{ b.invoice_no }}</td>
-                                <td>{{ b.unit.property.property_name }} Pines</td>
-                                <td>{{ b.unit.unit_name }}</td>
-                                <td>12</td>
-                                <td>12</td>
+                                <td>{{ b.property_name }} Pines</td>
+                                <td>{{ b.unit_name }}</td>
+                                <td>{{ b.amount }}</td>
+                                <td>{{ b.paid }}</td>
                                 <td>{% if b.status %}Closed{% else %}Open{% endif %}</td>
-                                <td>{{ b.created_by.username }}</td>
+                                <td>{{ b.username }}</td>
                                 <td>{{ b.created_at }}</td>
+                                <td>
+                                    <a class="btn" href="{% url 'invoice' i_id=b.uuid %}">
+                                        <i class="icon wb-plus" aria-hidden="true"></i>
+                                        <span class="hidden-sm-down">More</span>
+                                    </a>
+                                </td>
                             </tr>
                         {% endfor %}
 

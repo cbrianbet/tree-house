@@ -350,12 +350,19 @@
                             </a>
                         </li>
                         <li class="site-menu-item">
-                        <a class="animsition-link" href="{% url 'all-invoices' %}">
-                            <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
-                            <span class="site-menu-title">Bills</span>
-                        </a>
+                            <a class="animsition-link" href="{% url 'all-invoices' %}">
+                                <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
+                                <span class="site-menu-title">Bills</span>
+                            </a>
+                        </li>
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="{% url 'dashboard' %}">
+                                <i class="site-menu-icon wb-user-add" aria-hidden="true"></i>
+                                <span class="site-menu-title">Company staff</span>
+                            </a>
+                        </li>
                     {% endif %}
-                    </li>
+
                     {% if user.acc_type.id == 4 %}
 
                         <li class="site-menu-item">
@@ -398,6 +405,7 @@
                             </a>
                         </li>
                     {% endif %}
+
                     {#                    <li class="site-menu-item has-sub">#}
                     {#                        <a href="javascript:void(0)">#}
                     {#                            <i class="site-menu-icon wb-layout" aria-hidden="true"></i>#}

@@ -42,7 +42,7 @@
                     </a>
                 </div>
                 <div class="col-lg-2 col-sm-4">
-                    <a class="btn  btn-dark btn-animate-side" href="">
+                    <a class="btn  btn-dark btn-animate-side" href="{% url 'tenant_bill-personal' %}">
                         <i class="icon fa-list-alt" aria-hidden="true"></i>
                         <span class="hidden-sm-down">Invoices</span>
                     </a>
@@ -57,7 +57,8 @@
                     <div id="personalCompletedWidget" class="card card-shadow pb-20">
                         <div class="card-header card-header-transparent cover overlay">
                             <img class="cover-image" src="../../../global/photos/placeholder.png">
-                            <div class="overlay-panel overlay-background vertical-align" style="background: rgba(212,175,55 ,1)">
+                            <div class="overlay-panel overlay-background vertical-align"
+                                 style="background: rgba(212,175,55 ,1)">
                                 <div class="vertical-align-middle">
                                     <a class="avatar" href="javascript:void(0)">
                                         <img alt="" src="{% static 'authapp/assets/images/apple-touch-icon.png' %}">
@@ -120,6 +121,14 @@
                                             {{ tenant.date_occupied }}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <i class="icon wb-user-circle" aria-hidden="true"></i> Appartment Manager
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -136,7 +145,7 @@
                                     <div class="row">
                                         <div class="col-3">
                                             <br><br>
-                                             <i class="icon fa-dollar" aria-hidden="true" style="font-size: 62px;"></i>
+                                            <i class="icon fa-dollar" aria-hidden="true" style="font-size: 62px;"></i>
                                         </div>
                                         <div class="col-9">
                                             <div class="counter text-left blue-grey-700">
@@ -157,7 +166,7 @@
                                     <div class="row">
                                         <div class="col-3">
                                             <br><br>
-                                             <i class="icon fa-file" aria-hidden="true" style="font-size: 62px;"></i>
+                                            <i class="icon fa-file" aria-hidden="true" style="font-size: 62px;"></i>
                                         </div>
                                         <div class="col-6">
                                             <div class="counter text-left blue-grey-700">
