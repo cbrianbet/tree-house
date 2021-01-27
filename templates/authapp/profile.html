@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    <title>Profile | MNEST</title>
+    <title>Profile | MNEST Africa</title>
 {% endblock %}
 
 {% block headscripts %}
@@ -111,7 +111,7 @@
                                                 </label>
                                                 <div class=" col-xl-12 col-md-9">
                                                     <input type="text" class="form-control" name="id_no" required
-                                                           value="{{ profile.id_number }}">
+                                                           value="{{ profile.id_number }}" readonly>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -240,7 +240,7 @@
                 error: function (er) {
                     console.log("Login error");
                     // console.log(er.responseText);
-                    swal('Wrong credentials!!', 'Password incorect!!', 'error');
+                    swal('Wrong credentials!!', 'Password incorrect!!', 'error');
                 }
             });
 

@@ -13,7 +13,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 from authapp.models import AccTypes
-from bills.models import Invoice, InvoiceItems
+from bills.models import Invoice, InvoiceItems, RentInvoice, RentItems
 from bills.views import increment_invoice_number
 from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
@@ -87,7 +87,7 @@ def list_units(request, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
     unit = Unit.objects.filter(property=prop)
     can_add = False
-    if unit.count() <= prop.no_of_units:
+    if unit.count() < prop.no_of_units:
         can_add = True
     context = {
         'p': range(prop.no_of_floors),
@@ -103,6 +103,9 @@ def list_units(request, u_uid):
 @login_required
 def add_units(request, floor, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
+    if Unit.objects.filter(property=prop).count() < prop.no_of_units:
+        return redirect('unit-list', u_uid=u_uid)
+
     if request.method == "POST":
         unit = request.POST.get('name')
         value = request.POST.get('value')
@@ -150,6 +153,12 @@ def add_tenant(request, u_uid):
         acc = AccTypes.objects.get(id=4)
         dis_type = request.POST.get('dis_type')
         discount = request.POST.get('discount')
+
+        if request.FILES:
+            pic = request.FILES['pic']
+        else:
+            pic = ''
+
         if request.POST.get('deprent') == "True":
             dep = True
         else:
@@ -163,11 +172,11 @@ def add_tenant(request, u_uid):
         p.save()
         t = Tenant.objects.create(
             secondary_msisdn=secondary_mobile, date_occupied=date_of_occupancy, unit=unit, profile=p, discount=discount,
-            created_by=request.user, discount_type=dis_type
+            created_by=request.user, discount_type=dis_type, lease=pic
         )
         t.save()
 
-        inform(username, pwrd, email, f_name)
+        inform(username, pwrd, email, f_name, Properties.objects.get(id=unit.property.id).property_name)
 
         unit.unit_status = "Occupied"
         unit.save()
@@ -181,6 +190,7 @@ def add_tenant(request, u_uid):
                 rent = float(rent) - float(discount)
                 print(rent)
             apply_invoice(float(rent), float(unit.security_deposit), request.user, t)
+            inform_invoice(username, unit, email, f_name, Properties.objects.get(id=unit.property.id).property_name)
 
     if Tenant.objects.filter(unit=unit).exists():
         return redirect('view-tenant', u_uid=unit.uuid)
@@ -194,8 +204,8 @@ def add_tenant(request, u_uid):
     return render(request, 'properties/add_tenant.html', context)
 
 
-def inform(u, p, e, n):
-    subject = "Welcome to"
+def inform(u, p, e, n, prop):
+    subject = "Welcome to {}".format(prop)
     message = '''
     Dear {}, 
     We are thrilled to have you on-board! 
@@ -206,7 +216,23 @@ def inform(u, p, e, n):
     Password:	{}
     It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
         n, u, p)
-    send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+    except:
+        print('failed')
+
+
+def inform_invoice(u, unit, e, n, prop):
+    subject = "Invoice for {}".format(prop)
+    message = '''
+    Dear {}, 
+    This email is to let you know that an Invoice has been created for your unit {} at {}.
+    login to your portal at	mnestafrica.com to view it under bills. 
+    Your username is : {} incase you forgot.'''.format(n, unit, prop, u)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+    except:
+        print('failed')
 
 
 def get_random_username():
@@ -219,11 +245,11 @@ def get_random_username():
 
 def apply_invoice(rent, dep, user, tenant):
     inv_no = increment_invoice_number()
-    i = Invoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit)
+    i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit)
     i.save()
-    inv_item1 = InvoiceItems.objects.create(invoice=i, invoice_item='RENT', amount=round(rent, 2), description='RENT')
+    inv_item1 = RentItems.objects.create(invoice=i, invoice_item='RENT', amount=round(rent, 2), description='RENT')
     inv_item1.save()
-    inv_item2 = InvoiceItems.objects.create(invoice=i, invoice_item='DEPOSIT', amount=round(dep, 2), description='DEPOSIT')
+    inv_item2 = RentItems.objects.create(invoice=i, invoice_item='DEPOSIT', amount=round(dep, 2), description='DEPOSIT')
     inv_item2.save()
     return True
 

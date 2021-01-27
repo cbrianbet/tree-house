@@ -8,7 +8,7 @@
     <meta name="description" content="bootstrap admin template">
     <meta name="author" content="">
 
-    <title>Register | MNEST</title>
+    <title>Register | MNEST Africa</title>
 
     <link rel="apple-touch-icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
     <link rel="shortcut icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
@@ -57,7 +57,7 @@
     </script>
 
 </head>
-<body class="animsition page-register-v2 layout-full page-dark" >
+<body class="animsition page-register-v2 layout-full page-dark">
 <!--[if lt IE 8]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
     your browser</a> to improve your experience.</p>
@@ -70,7 +70,7 @@
         <div class="page-brand-info">
             <div class="brand">
                 <img class="brand-img" src="{% static 'authapp/assets/images/mnest-png.png' %}" alt="...">
-                <h2 class="brand-text font-size-40 text-dark">MNEST</h2>
+                <h2 class="brand-text font-size-40 text-dark">MNEST Africa</h2>
             </div>
             <p class="font-size-20 text-dark">Sign up to start your awesome journey.</p>
         </div>
@@ -102,7 +102,8 @@
                     <!-- End Steps -->
 
                     <!-- Wizard Content -->
-                    <form id="exampleFormContainer" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
+                    <form id="exampleFormContainer" action="{% url 'register' %}" method="post"
+                          enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="wizard-content">
                             <div class="wizard-pane active" id="exampleAccountOne" role="tabpanel">
@@ -120,9 +121,9 @@
                                 <div class="form-group">
                                     <label class="form-control-label" for="u_name">Username*</label>
                                     <input type="text" class="form-control" id="u_name" name="username"
-                                           required="required">
+                                           required="required" onBlur="check()">
                                 </div>
-                                 <div id="uname_response" ></div>
+                                <div id="uname_response"></div>
                                 <div class="form-group">
                                     <label class="form-control-label" for="inputEmail">Email*</label>
                                     <input type="email" class="form-control" id="inputEmail" name="email"
@@ -201,7 +202,7 @@
             <p>Have account already? Please go to <a href="{% url 'web-login' %}">Sign In</a></p>
 
             <footer class="page-copyright">
-                <p>WEBSITE BY MNEST PMS</p>
+                <p>WEBSITE BY MNEST Africa</p>
                 <p>© 2021. All RIGHT RESERVED.</p>
                 <div class="social">
                     <a class="btn btn-icon btn-round social-twitter mx-5" href="javascript:void(0)">
@@ -280,34 +281,43 @@
 <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
 
 <script>
-$(document).ready(function(){
+    $(document).ready(function () {
 
-   $("#u_name").keyup(function(){
+        $("#u_name").keyup(function () {
 
-      var username = $(this).val().trim();
+            var username = $(this).val().trim();
 
-      if(username != ''){
-          console.log(username)
+            if (username != '') {
+                console.log(username)
 
-         $.ajax({
-            url: "{% url 'check-username' %}",
-            type: 'post',
-            data: {username: username},
-            success: function(response){
-                $('#uname_response').html(response);
+                $.ajax({
+                    url: "{% url 'check-username' %}",
+                    type: 'post',
+                    data: {username: username},
+                    success: function (response) {
+                        $('#uname_response').html(response);
 
-             }
-         });
-      }else{
-         $("#uname_response").html("");
-      }
-        console.log($('#resp').val())
+                    }
+                });
+            } else {
+                $("#uname_response").html("");
+            }
+            console.log($('#uname_response').html())
+
+        });
+        console.log($('#resp'))
 
     });
-   console.log($('#resp'))
 
- });
-
+    function check() {
+        if ($('#uname_response') == '' || $('#uname_response') == '<span id="resp" style="color: green;">Available.</span>') {
+            var field = $('#u_name');
+            console.log(field)
+            setTimeout(function () {
+                field.focus();
+            }, 0);
+        }
+    }
 
 </script>
 

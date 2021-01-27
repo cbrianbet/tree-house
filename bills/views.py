@@ -61,10 +61,33 @@ def invoice_info(request, i_id):
     a = []
     if request.method == "POST":
         print(request.POST)
-        trans = request.POST.getlist('term')
-        trans = request.POST.getlist('code')
-        trans = request.POST.getlist('code')
-        trans = request.POST.getlist('code')
+        uuid = request.POST.getlist('uuid')
+        payment = request.POST.getlist('payment_mode')
+        amount = request.POST.getlist('amount')
+        trans = request.POST.getlist('trans')
+        remar = request.POST.getlist('remarks')
+        datepaid = request.POST.getlist('datepaid')
+        term = request.POST.getlist('term')
+        close = False
+
+        if term[0] == 'on':
+            close = not close
+
+        for i in range(len(uuid)):
+            if amount[i] != '':
+                pay_item = InvoiceItemsTransaction.objects.create(
+                    created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
+                    amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
+                )
+
+                pay_item.save()
+        if close:
+            invoice = Invoice.objects.get(uuid=InvoiceItems.objects.get(uuid=uuid[0]).invoice.uuid)
+            invoice.status = close
+            invoice.save()
+
+        return redirect('invoice', i_id=i_id)
+
     context = {
         'user': request.user,
         'bills': inv_items,
