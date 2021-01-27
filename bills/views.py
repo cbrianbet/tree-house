@@ -86,6 +86,8 @@ def invoice_info(request, i_id):
             invoice.status = close
             invoice.save()
 
+        return redirect('invoice', i_id=i_id)
+
     context = {
         'user': request.user,
         'bills': inv_items,
