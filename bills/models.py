@@ -63,7 +63,7 @@ class InvoiceItemsTransaction(models.Model):
     transaction_code = models.CharField(max_length=150, null=True)
     payment_mode = models.CharField(max_length=50, null=True)
     remarks = models.CharField(max_length=150, null=True)
-    amount_paid = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    amount_paid = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
     date_paid = models.DateField()
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="it_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="it_updated_by", null=True)
@@ -73,6 +73,26 @@ class InvoiceItemsTransaction(models.Model):
 
     class Meta:
         db_table = "Invoice Items Transaction"
+
+
+class InvoiceItemsRequest(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
+    invoice_item = models.ForeignKey(InvoiceItems, on_delete=models.CASCADE)
+    transaction_code = models.CharField(max_length=150, null=True)
+    payment_mode = models.CharField(max_length=50, null=True)
+    remarks = models.CharField(max_length=150, null=True)
+    amount_paid = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
+    date_paid = models.DateField()
+    status = models.BooleanField(default=False)
+    receipt = models.FileField(upload_to='Receipts/%Y/%m/', null=True, blank=True)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="payr_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="payr_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        db_table = "Invoice Items Request"
 
 
 class RentItemTransaction(models.Model):

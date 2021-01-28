@@ -120,6 +120,45 @@ def invoice_info(request, i_id):
 
 
 @login_required
+def record_payment_request(request, i_id):
+    invoice = Invoice.objects.get(uuid=i_id)
+    inv_items = InvoiceItems.objects.filter(invoice=invoice)
+
+    if request.method == "POST":
+        print(request.POST)
+        uuid = request.POST.getlist('uuid')
+        payment = request.POST.getlist('payment_mode')
+        amount = request.POST.getlist('amount')
+        trans = request.POST.getlist('trans')
+        remar = request.POST.getlist('remarks')
+        datepaid = request.POST.getlist('datepaid')
+
+
+        if request.FILES:
+            receipt = request.FILES.getlist('evidence')
+        else:
+            receipt = ''
+
+        for i in range(len(uuid)):
+            if amount[i] != '':
+                pay_item = InvoiceItemsRequest.objects.create(
+                    created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
+                    amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i], receipt=receipt[i]
+                )
+
+                pay_item.save()
+
+        return redirect('invoice', i_id=i_id)
+
+    context = {
+        'user': request.user,
+        'bills': inv_items,
+        'invoice': invoice,
+    }
+    return render(request, 'bills/add_payment_request.html', context)
+
+
+@login_required
 def invoice(request, i_id):
     invoice = Invoice.objects.get(uuid=i_id)
     inv_items = InvoiceItems.objects.filter(invoice=invoice)

@@ -108,8 +108,13 @@
                         {% if user.acc_type.id != 4 %}
                             <a href="{% url 'more-info' i_id=invoice.uuid %}"
                                class="btn btn-animate btn-animate-side btn-primary">
-                <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> Proceed
-                  to payment</span>
+                                <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> Proceed to payment</span>
+                            </a>
+                        {% endif %}
+                        {% if user.acc_type.id == 4 %}
+                            <a href="{% url 'record-payment' i_id=invoice.uuid %}"
+                               class="btn btn-animate btn-animate-side btn-primary">
+                                <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> Record payment</span>
                             </a>
                         {% endif %}
 
