@@ -7,6 +7,7 @@ import string
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.db.models import Count
 from django.http import HttpResponse, Http404
@@ -398,3 +399,78 @@ def unit_file_upload(request, uid):
         )
         created.save()
     return redirect('unit-list', u_uid=uid)
+
+
+@login_required
+def staff(request):
+    if request.user.acc_type.id == 4:
+        raise PermissionDenied
+    comp =  CompanyProfile.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).values_list('user', flat=True)
+    staff = Profile.objects.filter(user__in=comp, user__acc_type_id=5)
+    print(staff)
+    can_add = False
+    if staff.count() < CompanyProfile.objects.get(user=request.user).company.no_of_emp:
+        can_add = True
+    if request.method == "POST":
+        username = get_random_username_staff()
+        email = request.POST.get('email')
+        pwrd = ''.join((random.choice(string.ascii_letters + string.digits) for i in range(8)))
+        f_name = request.POST.get('f_name')
+        l_name = request.POST.get('l_name')
+        mobile = request.POST.get('mobile')
+        number = request.POST.get('id_no')
+        props = request.POST.getlist('prop')
+
+        try:
+            acc = AccTypes.objects.get(id=5)
+            user = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
+            user.save()
+
+            if user.pk:
+                profile = Profile.objects.create(first_name=f_name, last_name=l_name, msisdn=mobile, id_number=number,
+                                                 user=user)
+                profile.save()
+
+                cp = CompanyProfile.objects.create(user=user, company=CompanyProfile.objects.get(user=request.user).company)
+                cp.save()
+
+                for p in props:
+                    ps = PropertyStaff.objects.create(property_id=p, created_by=request.user, user=user)
+                    ps.save()
+
+        except:
+            raise PermissionDenied
+        inform_staff(username, pwrd, email, f_name, CompanyProfile.objects.get(user=request.user).company.name)
+
+    context = {
+        'user': request.user,
+        'staff': staff,
+        'props': Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company),
+        'can_add': can_add
+    }
+    return render(request, 'properties/comany_staff.html', context)
+
+
+def get_random_username_staff():
+    username = ''.join(random.sample(string.ascii_uppercase, 2)) + '-' + ''.join(random.sample(string.digits, 3))
+    if not Users.objects.filter(username=username).exists():
+        return username
+    else:
+        get_random_username_staff()
+
+
+def inform_staff(u, p, e, n, prop):
+    subject = "Welcome to {}".format(prop)
+    message = '''
+    Dear {}, 
+    This email is to let you know that we are continuing to utilise the latest technologies available to provide you with an even better service. 
+    A special login has been created for you as follows:
+    Web URL:	mnestafrica.com
+    username: {}
+    Password: {}
+    It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
+        n, u, p)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+    except:
+        print('failed')

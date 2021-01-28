@@ -130,8 +130,8 @@ dmypy.json
 
 .idea/
 */migrations
-tree_house/static
 /tree_house/static/
 /media/propPic/
 !/media/properties.csv
 /media/Lease/
+/tree_house/static/authapp

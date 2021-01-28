@@ -105,3 +105,14 @@ class Tenant(models.Model):
 
     class Meta:
         db_table = "Tenant"
+
+
+class PropertyStaff(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4(), editable=False, unique=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    property = models.ForeignKey(Properties, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="ps_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="ps_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
