@@ -37,18 +37,41 @@ def all_invoices(request):
     a = []
     for inv in invoice:
         total = 0
+        paid = 0
         inv_items = InvoiceItems.objects.filter(invoice=inv)
         for i in inv_items:
             total = total + i.amount
+            trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
 
         a.append({
             'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
             'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
-            'created_at': inv.created_at, 'paid': 0, "status": inv.status
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status
+        })
+    r_invoice = RentInvoice.objects.filter(
+        unit__property__company=CompanyProfile.objects.get(user=request.user).company).order_by('invoice_no')
+    r = []
+    for inv in r_invoice:
+        total = 0
+        paid = 0
+        inv_items = RentItems.objects.filter(invoice=inv)
+        for i in inv_items:
+            total = total + i.amount
+            trans = RentItemTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
+
+        r.append({
+            'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+            'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status
         })
     context = {
         'user': request.user,
         'bills': a,
+        'rent': r,
         'invoice': invoice,
     }
     return render(request, 'bills/all_invoices.html', context)
@@ -198,4 +221,16 @@ def increment_invoice_number():
     invoice_int = int(invoice_no.split('INV-')[-1])
     new_invoice_int = invoice_int + 1
     new_invoice_no = 'INV-' + str('%05d' % new_invoice_int)
+    return new_invoice_no
+
+
+def increment_rent_invoice_number():
+    last_invoice = RentInvoice.objects.all().order_by('id').last()
+    if not last_invoice:
+        return 'INV-REN-00001'
+    invoice_no = last_invoice.invoice_no
+    print()
+    invoice_int = int(invoice_no.split('INV-REN-')[-1])
+    new_invoice_int = invoice_int + 1
+    new_invoice_no = 'INV-REN-' + str('%05d' % new_invoice_int)
     return new_invoice_no

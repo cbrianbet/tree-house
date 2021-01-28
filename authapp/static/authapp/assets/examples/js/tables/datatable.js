@@ -92,6 +92,22 @@
 
             (0, _jquery2.default)('#exampleTableTools').dataTable(options);
         });
+        (0, _jquery2.default)(document).ready(function () {
+            var defaults = Plugin.getDefaults("dataTable");
+
+            var options = _jquery2.default.extend(true, {}, defaults, {
+                "aoColumnDefs": [{
+                    'bSortable': false,
+                    'aTargets': [-1]
+                }],
+                "iDisplayLength": 15,
+                "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                "sDom": '<"dt-panelmenu clearfix"Bfr>t<"dt-panelfooter clearfix"ip>',
+                "buttons": ['copy', 'excel', 'csv', 'pdf', 'print']
+            });
+
+            (0, _jquery2.default)('#exampleTableTools2').dataTable(options);
+        });
     })();
 
     // Table Add Row

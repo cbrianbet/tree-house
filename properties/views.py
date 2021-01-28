@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect
 
 from authapp.models import AccTypes
 from bills.models import Invoice, InvoiceItems, RentInvoice, RentItems
-from bills.views import increment_invoice_number
+from bills.views import increment_invoice_number, increment_rent_invoice_number
 from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
@@ -104,7 +104,7 @@ def list_units(request, u_uid):
 @login_required
 def add_units(request, floor, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
-    if Unit.objects.filter(property=prop).count() < prop.no_of_units:
+    if Unit.objects.filter(property=prop).count() >= prop.no_of_units:
         return redirect('unit-list', u_uid=u_uid)
 
     if request.method == "POST":
@@ -245,12 +245,14 @@ def get_random_username():
 
 
 def apply_invoice(rent, dep, user, tenant):
-    inv_no = increment_invoice_number()
+    inv_no = increment_rent_invoice_number()
     i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit)
     i.save()
+    d = Invoice.objects.create(created_by=user, invoice_no=increment_invoice_number(), invoice_for=tenant.profile.user, unit=tenant.unit)
+    d.save()
     inv_item1 = RentItems.objects.create(invoice=i, invoice_item='RENT', amount=round(rent, 2), description='RENT')
     inv_item1.save()
-    inv_item2 = RentItems.objects.create(invoice=i, invoice_item='DEPOSIT', amount=round(dep, 2), description='DEPOSIT')
+    inv_item2 = InvoiceItems.objects.create(invoice=d, invoice_item='DEPOSIT', amount=round(dep, 2), description='DEPOSIT')
     inv_item2.save()
     return True
 
