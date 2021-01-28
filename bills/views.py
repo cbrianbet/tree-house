@@ -135,17 +135,43 @@ def invoice(request, i_id):
         ten = Tenant.objects.get(profile__user=request.user).unit.property.company
 
         company = Companies.objects.get(id=ten.id)
-        owner = CompanyProfile.objects.get(company=company).user
+        owner = CompanyProfile.objects.filter(company=company).first().user
         profile = Profile.objects.get(user=owner)
     else:
         company = Companies.objects.get(id=CompanyProfile.objects.get(user=request.user).company.id)
         profile = Profile.objects.get(user=request.user)
-    if request.method == "POST":
-        print(request.POST)
-        trans = request.POST.getlist('term')
-        trans = request.POST.getlist('code')
-        trans = request.POST.getlist('code')
-        trans = request.POST.getlist('code')
+    context = {
+        'user': request.user,
+        'bills': inv_items,
+        'invoice': invoice,
+        'company': company,
+        'profile': profile,
+        'prop': prop.rent_collection
+    }
+    return render(request, 'bills/invoice.html', context)
+
+
+@login_required
+def rent_invoice(request, i_id):
+    invoice = RentInvoice.objects.get(uuid=i_id)
+    inv_items = RentItems.objects.filter(invoice=invoice)
+    prop = Properties.objects.get(id=invoice.unit.property.id)
+    if prop.rent_collection == 'Occ_date':
+        pass
+        # TODO code to pull next date
+    else:
+        pass
+        # TODO code to pull date and check month
+
+    if request.user.acc_type.id == 4:
+        ten = Tenant.objects.get(profile__user=request.user).unit.property.company
+
+        company = Companies.objects.get(id=ten.id)
+        owner = CompanyProfile.objects.filter(company=company).first().user
+        profile = Profile.objects.get(user=owner)
+    else:
+        company = Companies.objects.get(id=CompanyProfile.objects.get(user=request.user).company.id)
+        profile = Profile.objects.get(user=request.user)
     context = {
         'user': request.user,
         'bills': inv_items,
@@ -164,17 +190,40 @@ def personal_bills(request):
     a=[]
     for inv in invoice:
         total = 0
+        paid = 0
         inv_items = InvoiceItems.objects.filter(invoice=inv)
         for i in inv_items:
             total = total + i.amount
+            trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
 
         a.append({
             'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
             'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
-            'created_at': inv.created_at, 'paid': 0, "status": inv.status
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status
+        })
+
+    r_invoice = RentInvoice.objects.filter(invoice_for=tenant.profile.user)
+    r=[]
+    for inv in r_invoice:
+        total = 0
+        paid = 0
+        r_inv_items = RentItems.objects.filter(invoice=inv)
+        for i in r_inv_items:
+            total = total + i.amount
+            trans = RentItemTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
+
+        r.append({
+            'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+            'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status
         })
     context = {
         'bills': a,
+        'rent': r,
         'user': request.user,
     }
     return render(request, 'bills/tenant_bills_personal.html', context)

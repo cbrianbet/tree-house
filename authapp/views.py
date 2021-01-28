@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from authapp.forms import LoginForm
 from authapp.models import Users, Profile, AccTypes
-from bills.models import Invoice, InvoiceItems, InvoiceItemsTransaction
+from bills.models import *
 from properties.models import Companies, CompanyProfile, Tenant
 
 
@@ -42,13 +42,15 @@ def login(request):
 def dashboard(request):
     user = request.user
     if user.acc_type.id == 4:
-        num = 10000000
-        print(f"{num:,d}")
         prof = Profile.objects.get(user=user)
         tenant = Tenant.objects.get(profile=prof)
         invoice = Invoice.objects.filter(invoice_for=user, status=False)
         inv_item = InvoiceItems.objects.filter(invoice__in=invoice)
         inv_tran = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_item)
+
+        r_invoice = RentInvoice.objects.filter(invoice_for=user, status=False)
+        r_inv_item = RentItems.objects.filter(invoice__in=r_invoice)
+        r_inv_tran = RentItemTransaction.objects.filter(invoice_item__in=r_inv_item)
 
         bals = 0
         for due in inv_item:
@@ -58,12 +60,22 @@ def dashboard(request):
             bals = bals - due.amount_paid
 
         bals = '{0:,}'.format(bals)
+
+        r_bals = 0
+        for due in r_inv_item:
+            r_bals = due.amount + r_bals
+
+        for due in r_inv_tran:
+            r_bals = r_bals - due.amount_paid
+
+        r_bals = '{0:,}'.format(r_bals)
         context = {
             'user': user,
             'prof': prof,
             'tenant': tenant,
             'bals': bals,
-            'inv': invoice.count(),
+            'r_bals': r_bals,
+            'inv': invoice.count()+r_invoice.count(),
         }
         return render(request, 'authapp/tenant_dash.html', context)
 

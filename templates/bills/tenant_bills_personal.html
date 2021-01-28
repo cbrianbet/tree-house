@@ -50,55 +50,147 @@
                     <h3 class="panel-title">Table Tools</h3>
                 </header>
                 <div class="panel-body">
-                    <table class="table table-hover dataTable table-striped w-full" id="exampleTableTools">
-                        <thead>
-                        <tr>
-                            <th>Invoice</th>
-                            <th>Property</th>
-                            <th>Unit</th>
-                            <th>Amount</th>
-                            <th>Amount paid</th>
-                            <th>Status</th>
-                            <th>Created by</th>
-                            <th>Created at</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th>Invoice</th>
-                            <th>Property</th>
-                            <th>Unit</th>
-                            <th>Amount</th>
-                            <th>Amount paid</th>
-                            <th>Status</th>
-                            <th>Created by</th>
-                            <th>Created at</th>
-                            <th></th>
-                        </tr>
-                        </tfoot>
-                        <tbody>
-                        {% for b in bills %}
-                            <tr>
-                                <td>{{ b.invoice_no }}</td>
-                                <td>{{ b.property_name }} Pines</td>
-                                <td>{{ b.unit_name }}</td>
-                                <td>{{ b.amount }}</td>
-                                <td>{{ b.paid }}</td>
-                                <td>{% if b.status %}Closed{% else %}Open{% endif %}</td>
-                                <td>{{ b.username }}</td>
-                                <td>{{ b.created_at }}</td>
-                                <td>
-                                    <a class="btn" href="{% url 'invoice' i_id=b.uuid %}">
-                                        <i class="icon wb-plus" aria-hidden="true"></i>
-                                        <span class="hidden-sm-down">More</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
 
-                        </tbody>
-                    </table>
+                    <!-- Example Tabs -->
+                    <div class="example-wrap">
+                        <div class="nav-tabs-horizontal" data-plugin="tabs">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab"
+                                                                            href="#exampleTabsOne"
+                                                                            aria-controls="exampleTabsOne" role="tab">Rent
+                                    Invoices</a>
+                                </li>
+                                <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab"
+                                                                            href="#exampleTabsTwo"
+                                                                            aria-controls="exampleTabsTwo" role="tab">Other
+                                    Invoices</a>
+                                </li>
+                                <li class="dropdown nav-item" role="presentation">
+                                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#"
+                                       aria-expanded="false">Menu </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <a class="active dropdown-item" data-toggle="tab" href="#exampleTabsOne"
+                                           aria-controls="exampleTabsOne"
+                                           role="tab">Rent Invoices</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#exampleTabsTwo"
+                                           aria-controls="exampleTabsTwo"
+                                           role="tab">Other Invoices</a>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="tab-content pt-20">
+                                <div class="tab-pane active" id="exampleTabsOne" role="tabpanel">
+
+                                    <!-- End Example Tabs -->
+                                    <table class="table table-hover dataTable table-striped w-full"
+                                           id="exampleTableTools">
+                                        <thead>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Property</th>
+                                            <th>Unit</th>
+                                            <th>Amount</th>
+                                            <th>Amount paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Property</th>
+                                            <th>Unit</th>
+                                            <th>Amount</th>
+                                            <th>Amount paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                        {% for b in rent %}
+                                            <tr>
+                                                <td>{{ b.invoice_no }}</td>
+                                                <td>{{ b.property_name }} Pines</td>
+                                                <td>{{ b.unit_name }}</td>
+                                                <td>{{ b.amount }}</td>
+                                                <td>{{ b.paid }}</td>
+                                                <td>{% if b.status %}Closed{% else %}Open{% endif %}</td>
+                                                <td>{{ b.username }}</td>
+                                                <td>{{ b.created_at }}</td>
+                                                <td>
+                                                    <a class="btn" href="{% url 'rinvoice' i_id=b.uuid %}">
+                                                        <i class="icon wb-plus" aria-hidden="true"></i>
+                                                        <span class="hidden-sm-down">More</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="exampleTabsTwo" role="tabpanel">
+
+                                    <!-- End Example Tabs -->
+                                    <table class="table table-hover dataTable table-striped w-full"
+                                           id="exampleTableTools2">
+                                        <thead>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Property</th>
+                                            <th>Unit</th>
+                                            <th>Amount</th>
+                                            <th>Amount paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Property</th>
+                                            <th>Unit</th>
+                                            <th>Amount</th>
+                                            <th>Amount paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                        {% for b in bills %}
+                                            <tr>
+                                                <td>{{ b.invoice_no }}</td>
+                                                <td>{{ b.property_name }} Pines</td>
+                                                <td>{{ b.unit_name }}</td>
+                                                <td>{{ b.amount }}</td>
+                                                <td>{{ b.paid }}</td>
+                                                <td>{% if b.status %}Closed{% else %}Open{% endif %}</td>
+                                                <td>{{ b.username }}</td>
+                                                <td>{{ b.created_at }}</td>
+                                                <td>
+                                                    <a class="btn" href="{% url 'invoice' i_id=b.uuid %}">
+                                                        <i class="icon wb-plus" aria-hidden="true"></i>
+                                                        <span class="hidden-sm-down">More</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- End Panel Table Tools -->
@@ -127,6 +219,8 @@
     <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/bootbox/bootbox.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/responsive-tabs.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/tabs.js' %}"></script>
 
     <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
     <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>

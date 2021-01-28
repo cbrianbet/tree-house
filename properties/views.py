@@ -229,7 +229,7 @@ def inform_invoice(u, unit, e, n, prop):
     Dear {}, 
     This email is to let you know that an Invoice has been created for your unit {} at {}.
     login to your portal at	mnestafrica.com to view it under bills. 
-    Your username is : {} incase you forgot.'''.format(n, unit, prop, u)
+    Your username is : {} incase you forgot.'''.format(n, unit.unit_name, prop, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
     except:
