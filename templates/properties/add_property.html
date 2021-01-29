@@ -300,6 +300,7 @@
             $('#rest').hide();
             $('#spday').hide();
             document.getElementById('specify_day').required = false;
+            document.getElementById('b_type').required = false;
         });
         $('select').selectpicker();
         $('#p_type').change(function () {
@@ -307,9 +308,11 @@
             console.log(value)
             if (value === "Commercial") {
                 $('#rest').hide();
+                document.getElementById('b_type').required = false;
 
             } else if (value === "Residential") {
                 $('#rest').show();
+                document.getElementById('b_type').required = true;
             }
 
         });
