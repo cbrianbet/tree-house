@@ -361,6 +361,12 @@
                                 <span class="site-menu-title">Company staff</span>
                             </a>
                         </li>
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="{% url 'company_staff' %}">
+                                <i class="site-menu-icon wb-user" aria-hidden="true"></i>
+                                <span class="site-menu-title">Profile</span>
+                            </a>
+                        </li>
                     {% endif %}
 
                     {% if user.acc_type.id == 4 %}
