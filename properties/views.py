@@ -190,8 +190,9 @@ def add_tenant(request, u_uid):
             if dis_type == "Amount":
                 rent = float(rent) - float(discount)
                 print(rent)
-            apply_invoice(float(rent), float(unit.security_deposit), request.user, t)
-            inform_invoice(username, unit, email, f_name, Properties.objects.get(id=unit.property.id).property_name)
+            inv = apply_invoice(float(rent), float(unit.security_deposit), request.user, t)
+            inv.email_inform = inform_invoice(username, unit, email, f_name, Properties.objects.get(id=unit.property.id).property_name)
+            inv.save()
 
     if Tenant.objects.filter(unit=unit).exists():
         return redirect('view-tenant', u_uid=unit.uuid)
@@ -232,8 +233,10 @@ def inform_invoice(u, unit, e, n, prop):
     Your username is : {} incase you forgot.'''.format(n, unit.unit_name, prop, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+        return True
     except:
         print('failed')
+        return False
 
 
 def get_random_username():
@@ -254,7 +257,7 @@ def apply_invoice(rent, dep, user, tenant):
     inv_item1.save()
     inv_item2 = InvoiceItems.objects.create(invoice=d, invoice_item='DEPOSIT', amount=round(dep, 2), description='DEPOSIT')
     inv_item2.save()
-    return True
+    return i
 
 
 @login_required

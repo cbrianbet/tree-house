@@ -26,6 +26,7 @@ class RentInvoice(models.Model):
     status = models.BooleanField(default=False)
     invoice_for = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='user_re_invoiced')
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    email_inform = models.BooleanField(default=False)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="i_re_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="i_re_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -52,6 +53,7 @@ class RentItems(models.Model):
     invoice_item = models.CharField(max_length=50, default="RENT")
     description = models.CharField(max_length=150, null=True)
     amount = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
+    delay_penalties = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
 
     class Meta:
         db_table = "Rent Items"
