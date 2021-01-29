@@ -47,7 +47,7 @@
             <!-- Panel Table Tools -->
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">Table Tools</h3>
+                    <h3 class="panel-title">Invoices</h3>
                 </header>
                 <div class="panel-body">
 
@@ -114,7 +114,7 @@
                                         {% for b in rent %}
                                             <tr>
                                                 <td>{{ b.invoice_no }}</td>
-                                                <td>{{ b.property_name }} Pines</td>
+                                                <td>{{ b.property_name }} </td>
                                                 <td>{{ b.unit_name }}</td>
                                                 <td>{{ b.amount }}</td>
                                                 <td>{{ b.paid }}</td>
@@ -168,7 +168,7 @@
                                         {% for b in bills %}
                                             <tr>
                                                 <td>{{ b.invoice_no }}</td>
-                                                <td>{{ b.property_name }} Pines</td>
+                                                <td>{{ b.property_name }}</td>
                                                 <td>{{ b.unit_name }}</td>
                                                 <td>{{ b.amount }}</td>
                                                 <td>{{ b.paid }}</td>

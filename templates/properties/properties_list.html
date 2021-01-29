@@ -15,6 +15,22 @@
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
 
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/advanced/masonry.css' %}">
 
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
@@ -36,93 +52,169 @@
         </div>
 
         <div class="page-content blue-grey-500">
-            <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
-                {% for i in prop %}
-                    <li class="masonry-item">
-                        <div class="card card-shadow">
-                            <div class="card-header cover">
-                                {% if i.pics %}
-                                    <img class="cover-image" src="{{ i.pics.url }}" alt="{{ i.property_name }}">
-                                {% else %}
-                                    <img class="cover-image" src="{% static 'authapp/global/photos/placeholder.png' %}"
-                                         alt="...">
-                                {% endif %}
-                            </div>
-                            <div class="card-block">
-                                <h3 class="card-title">{{ i.property_name }}</h3>
-                                <p class="card-text type-link">
-                                    <small>
 
-                                        <a href="javascript:void(0)">{{ i.property_type }}</a>
-                                        <a href="javascript:void(0)"></a>
-                                        {#                                        <a href="javascript:void(0)">#}
-                                        {#                                            <span>3</span> Comments</a>#}
-                                    </small>
-                                </p>
-                                <p class="card-text">{{ i.location_desc }}</p>
-                            </div>
-                            <div class="card-block">
-                                <div class="card-actions float-right">
-                                            {% for key, value in tenant.items %}
-                                                {% if key == i.uuid %}
-                                    <a href="javascript:void(0)">
-                                        <i class="icon wb-users" aria-hidden="true"></i>
-                                        <span>
+            <!-- Example Tabs Icon -->
+            <div class="example-wrap">
+                <div class="nav-tabs-horizontal" data-plugin="tabs">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item" role="presentation"><a class="nav-link active" data-toggle="tab"
+                                                                    href="#exampleTabsIconOne"
+                                                                    aria-controls="exampleTabsIconOne" role="tab"><i
+                                class="icon wb-table m-0" aria-hidden="true"></i></a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" data-toggle="tab"
+                                                                    href="#exampleTabsIconTwo"
+                                                                    aria-controls="exampleTabsIconTwo" role="tab"><i
+                                class="icon wb-list-bulleted m-0" aria-hidden="true"></i></a></li>
+                    </ul>
+                    <div class="tab-content pt-15">
+                        <div class="tab-pane active" id="exampleTabsIconOne" role="tabpanel">
+                            <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
+                                {% for i in prop %}
+                                    <li class="masonry-item">
+                                        <div class="card card-shadow">
+                                            <div class="card-header cover">
+                                                {% if i.pics %}
+                                                    <img class="cover-image" src="{{ i.pics.url }}"
+                                                         alt="{{ i.property_name }}">
+                                                {% else %}
+                                                    <img class="cover-image"
+                                                         src="{% static 'authapp/global/photos/placeholder.png' %}"
+                                                         alt="...">
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-block">
+                                                <h3 class="card-title">{{ i.property_name }}</h3>
+                                                <p class="card-text type-link">
+                                                    <small>
+
+                                                        <a href="javascript:void(0)">{{ i.property_type }}</a>
+                                                        <a href="javascript:void(0)"></a>
+                                                        {#                                        <a href="javascript:void(0)">#}
+                                                        {#                                            <span>3</span> Comments</a>#}
+                                                    </small>
+                                                </p>
+                                                <p class="card-text">{{ i.location_desc }}</p>
+                                            </div>
+                                            <div class="card-block">
+                                                <div class="card-actions float-right">
+                                                    {% for key, value in tenant.items %}
+                                                        {% if key == i.uuid %}
+                                                            <a href="javascript:void(0)">
+                                                                <i class="icon wb-users" aria-hidden="true"></i>
+                                                                <span>
                                                     {{ value }}
                                                 </span>
-                                    </a>
+                                                            </a>
 
 
-                                                {% endif %}
-                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <button type="button" class="btn btn-outline btn-primary card-link">
+                                                    View
+                                                </button>
+                                                <a href="{% url 'unit-list' u_uid=i.uuid %}"
+                                                   class="btn btn-outline btn-warning card-link">Units</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                                <li class="masonry-item">
+                                    <div class="card card-shadow">
+                                        <div class="card-header cover">
+                                            <img class="cover-image"
+                                                 src="{% static 'authapp/global/photos/placeholder.png' %}"
+                                                 alt="...">
+                                        </div>
+                                        <div class="card-block">
+                                            <h3 class="card-title">Got a new property?</h3>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-actions float-right">
+                                                <a href="{% url 'add-list' %}">
+                                                    <i class="icon wb-plus" aria-hidden="true"></i>
+                                                    <span></span>
+                                                </a>
+                                            </div>
+                                            <a href="{% url 'add-list' %}" class="btn btn-outline btn-primary">Add
+                                                New</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="masonry-item">
+                                    <div class="card card-shadow">
+                                        <div class="card-header">
+                                            <form method="post" action="{% url 'file-prop' %}"
+                                                  enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <input type="file" name="logo" data-plugin="dropify"/>
+                                                <button type="submit" class="btn btn-outline btn-danger">Upload</button>
+                                            </form>
+                                        </div>
+                                        <div class="card-block">
+                                            <h3 class="card-title">Upload Via file</h3>
+                                        </div>
+                                        <div class="card-block">
+
+                                            <a href="{% url 'file-template' %}" class="btn btn-outline btn-secondary">Download
+                                                Template</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+                        <div class="tab-pane" id="exampleTabsIconTwo" role="tabpanel">
+                            <!-- Panel Table Tools -->
+                            <div class="panel">
+                                <header class="panel-heading">
+                                    <h3 class="panel-title">Properties</h3>
+                                </header>
+                                <div class="panel-body">
+                                    <!-- End Example Tabs -->
+                                    <table class="table table-hover dataTable table-striped w-full"
+                                           id="exampleTableTools">
+                                        <thead>
+                                        <tr>
+                                            <th>Property Name</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Property Name</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                        {% for b in prop %}
+                                            <tr>
+                                                <td>{{ b.property_name }} </td>
+                                                <td>{{ b.created_by.username }}</td>
+                                                <td>{{ b.created_at }}</td>
+                                                <td>
+                                                    <a class="btn" href="{% url 'rinvoice' i_id=b.uuid %}">
+                                                        <i class="icon wb-plus" aria-hidden="true"></i>
+                                                        <span class="hidden-sm-down">More</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <button type="button" class="btn btn-outline btn-primary card-link">View</button>
-                                <a href="{% url 'unit-list' u_uid=i.uuid %}"
-                                   class="btn btn-outline btn-warning card-link">Units</a>
                             </div>
                         </div>
-                    </li>
-                {% endfor %}
-                <li class="masonry-item">
-                    <div class="card card-shadow">
-                        <div class="card-header cover">
-                            <img class="cover-image" src="{% static 'authapp/global/photos/placeholder.png' %}"
-                                 alt="...">
-                        </div>
-                        <div class="card-block">
-                            <h3 class="card-title">Got a new property?</h3>
-                        </div>
-                        <div class="card-block">
-                            <div class="card-actions float-right">
-                                <a href="{% url 'add-list' %}">
-                                    <i class="icon wb-plus" aria-hidden="true"></i>
-                                    <span></span>
-                                </a>
-                            </div>
-                            <a href="{% url 'add-list' %}" class="btn btn-outline btn-primary">Add New</a>
-                        </div>
-                    </div>
-                </li>
-                <li class="masonry-item">
-                    <div class="card card-shadow">
-                        <div class="card-header">
-                            <form method="post" action="{% url 'file-prop' %}" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <input type="file" name="logo" data-plugin="dropify"/>
-                                <button type="submit" class="btn btn-outline btn-danger">Upload</button>
-                            </form>
-                        </div>
-                        <div class="card-block">
-                            <h3 class="card-title">Upload Via file</h3>
-                        </div>
-                        <div class="card-block">
 
-                            <a href="{% url 'file-template' %}" class="btn btn-outline btn-secondary">Download
-                                Template</a>
-                        </div>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
+            <!-- End Example Tabs Icon -->
         </div>
     </div>
 
@@ -134,6 +226,28 @@
     <script src="{% static 'authapp/global/js/Plugin/masonry.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
     <script src="{% static 'authapp/assets/examples/js/forms/uploads.js' %}"></script>
+
+    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootbox/bootbox.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/responsive-tabs.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/tabs.js' %}"></script>
+
+    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
     <script>
         (function (document, window, $) {
             'use strict';
