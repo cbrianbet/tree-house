@@ -1,0 +1,147 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>Property | MNEST Africa</title>
+{% endblock %}
+{% block headscripts %}
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/invoice.css' %}">
+
+{% endblock %}
+{% block page %}
+    <!-- Page -->
+    <div class="page">
+
+        <div class="page-header">
+            <h1 class="page-title">Property Info</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Properties</a></li>
+                <li class="breadcrumb-item active">Property information</li>
+            </ol>
+            <div class="page-header-actions">
+            </div>
+
+        </div>
+
+        <div class="page-content">
+            <!-- Panel -->
+            <div class="panel">
+                <div class="panel-body container-fluid">
+                    <div class="row">
+                    <div class="col-md-3"></div>
+                        <div class="col-lg-3">
+                            <h3>
+                                {% if t.pics %}
+                                    <img class="mr-10" src="{{ t.pics.url }}" style="height: 400px; widows: 400px;"
+                                         alt="...">
+                                {% endif %}
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div class="page-invoice-table table-responsive">
+                        <table class="table table-hover text-right">
+                            <tbody>
+                            <tr>
+                                <td class="text-center">
+                                    Name
+                                </td>
+                                <td class="text-left">
+                                    {{ t.property_name }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Value
+                                </td>
+                                <td class="text-left">
+                                    {{ t.property_value }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Property Type
+                                </td>
+                                <td class="text-left">
+                                    {{t.property_type}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Number of floors
+                                </td>
+                                <td class="text-left">
+                                    {{ t.no_of_floors }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Number of Units
+                                </td>
+                                <td class="text-left">
+                                    {{ t.no_of_units }}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Management Started on
+                                </td>
+                                <td class="text-left">
+                                    {{ t.mngmt_start }}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    Started Occupancy at
+                                </td>
+                                <td class="text-left">
+                                    {{ t.date_occupied }}
+                                </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-right clearfix">
+                        <div class="float-right">
+                        </div>
+                    </div>
+
+                    <div class="text-right">
+                        <a href="{% url 'edit-prop' p_id=t.uuid %}" class="btn btn-animate btn-animate-side btn-primary">
+                            <span><i class="icon wb-graph-up" aria-hidden="true"></i> Edit Property</span>
+{#                        </a>#}
+{#                        <a href="{% url 'swap-tenant' u_uid=t.unit.uuid %}" class="btn btn-animate btn-animate-side btn-primary">#}
+{#                            <span><i class="icon wb-graph-up" aria-hidden="true"></i> Move to another Unit</span>#}
+{#                        </a>#}
+{#                        <a href="{% url 'bills-tenant' u_uid=t.uuid %}" class="btn btn-animate btn-animate-side btn-secondary">#}
+{#                            <span><i class="icon wb-book" aria-hidden="true"></i> Bills</span>#}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel -->
+        </div>
+    </div>
+    <!-- End Page -->
+{% endblock %}
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/imagesloaded/imagesloaded.pkgd.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/masonry/masonry.pkgd.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/masonry.js' %}"></script>
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+    </body>
+
+{% endblock %}

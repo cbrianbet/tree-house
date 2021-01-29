@@ -84,6 +84,77 @@ def properties_add(request):
 
 
 @login_required
+def properties_edit(request, p_id):
+    user = request.user
+    prop = Properties.objects.get(uuid=p_id)
+    if request.method == "POST":
+        name = request.POST.get('p_name')
+        val = request.POST.get('val_prop')
+        start_date = request.POST.get('start_date')
+        prop_type = request.POST.get('p_type')
+        owner = request.POST.get('owner')
+        floors = request.POST.get('floors')
+        units = request.POST.get('units')
+        parking = request.POST.get('parking')
+        elec = request.POST.get('elec')
+        water = request.POST.get('water')
+        build = request.POST.get('b_type')
+        loc_desc = request.POST.get('loc_desc')
+        long = request.POST.get('longitude')
+        lat = request.POST.get('latitude')
+        rent_coll = request.POST.get('rent_coll')
+        spdate = request.POST.get('specify_day')
+        pen_type = request.POST.get('pen_type')
+        pen_val = request.POST.get('penalty')
+
+        if request.FILES:
+            picture = request.FILES['pic']
+        else:
+            picture = ''
+
+        prop.property_name=name
+        prop.property_value=val
+        prop.mngmt_start=start_date
+        prop.property_type=prop_type
+        prop.owner=owner
+        prop.no_of_floors=floors
+        prop.no_of_units=units
+        prop.parking=parking
+        prop.electricity=elec
+        prop.water=water
+        prop.location_desc=loc_desc
+        prop.long=long
+        prop.lat=lat
+        prop.created_by=request.user
+        prop.rent_collection=rent_coll
+        prop.pics=picture
+        prop.building_type=build
+        prop.specific_day=spdate
+        prop.penalty_type=pen_type
+        prop.penalty_value=pen_val
+
+        prop.save()
+        redirect('view-prop', p_id=p_id)
+    context = {
+        'u': user,
+        'user': request.user,
+        'prop': prop
+    }
+    return render(request, 'properties/edit_property.html', context)
+
+
+@login_required
+def view_prop(request, p_id):
+    prop = Properties.objects.get(uuid=p_id)
+    context = {
+        'p_id': p_id,
+        't': prop,
+        'user': request.user,
+    }
+    return render(request, 'properties/prop_view.html', context)
+
+
+@login_required
 def list_units(request, u_uid):
     prop = Properties.objects.get(uuid=u_uid)
     unit = Unit.objects.filter(property=prop)

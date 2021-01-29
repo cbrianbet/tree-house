@@ -1,5 +1,5 @@
+import datetime
 import uuid as u_id
-from datetime import date
 
 from django.db import models
 from django.utils import timezone
@@ -35,7 +35,7 @@ class Properties(models.Model):
     property_type = models.CharField(max_length=50)
     building_type = models.CharField(max_length=50, null=True, blank=True)
     property_value = models.CharField(max_length=20, null=True, blank=True)
-    mngmt_start = models.DateField(default=timezone.now)
+    mngmt_start = models.DateField(blank=True, null=True)
     no_of_units = models.PositiveIntegerField(default=1)
     no_of_floors = models.PositiveIntegerField(default=1)
     parking = models.PositiveIntegerField(default=0)

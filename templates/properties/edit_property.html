@@ -38,11 +38,11 @@
     <!-- Page -->
     <div class="page">
         <div class="page-header">
-            <h1 class="page-title">Add Properties</h1>
+            <h1 class="page-title">Edit Property</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Properties</a></li>
-                <li class="breadcrumb-item active">Add Properties</li>
+                <li class="breadcrumb-item active">Edit Properties</li>
             </ol>
             <div class="page-header-actions">
             </div>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="panel-body">
 
-                    <form id="exampleFullForm" enctype="multipart/form-data" action="{% url 'add-list' %}"
+                    <form id="exampleFullForm" enctype="multipart/form-data" action="{% url 'edit-prop' p_id=prop.uuid %}"
                           method="post">
                         {% csrf_token %}
                         <div class="row row-lg">
@@ -69,7 +69,8 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="text" class="form-control" name="p_name" required="required">
+                                        <input type="text" class="form-control" name="p_name" required="required"
+                                               value="{{ prop.property_name }}">
                                     </div>
                                 </div>
                                 {% if u.acc_type.id == 3 %}
@@ -89,7 +90,8 @@
                                     <label class="col-xl-12 col-md-3 form-control-label">Property Value
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="text" class="form-control" name="val_prop">
+                                        <input type="text" class="form-control" name="val_prop"
+                                               value="{{ prop.property_value }}">
                                     </div>
                                 </div>
 
@@ -97,7 +99,8 @@
                                     <label class="col-xl-12 col-md-3 form-control-label">Date Started Management
                                     </label>
                                     <div class="col-xl-12 col-md-9">
-                                        <input type="date" class="form-control" name="start_date"/>
+                                        <input type="date" class="form-control" name="start_date" required
+                                               value="{{ prop.mngmt_start }}"/>
                                     </div>
                                 </div>
 
@@ -105,20 +108,47 @@
                                     <label class="form-control-label" for="acc_type">Property Type *</label>
                                     <select data-plugin="selectpicker" title="Property Type" id="p_type"
                                             name="p_type" required="required">
-                                        <option value="Residential">Residential</option>
-                                        <option value="Commercial">Commercial</option>
+                                        {% if prop.property_type == "Residential" %}
+                                            <option value="Residential" selected>Residential</option>
+                                            <option value="Commercial">Commercial</option>
+                                        {% elif prop.property_type == "Residential" %}
+                                            <option value="Residential">Residential</option>
+                                            <option value="Commercial" selected>Commercial</option>
+
+                                        {% endif %}
                                     </select>
                                 </div>
-                                <div class="form-group" id="rest">
-                                    <label class="form-control-label" for="acc_type">Building Type *</label>
-                                    <select data-plugin="selectpicker" title="Building Type" id="b_type"
-                                            name="b_type" required="required">
-                                        <option value="Apartment">Apartment</option>
-                                        <option value="Bungalow">Bungalow</option>
-                                        <option value="Town House/Maisonette">Town House/Maisonette</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
+
+                                {% if prop.property_type == "Residential" %}
+                                    <div class="form-group" id="rest">
+                                        <label class="form-control-label" for="acc_type">Building Type *</label>
+                                        <select data-plugin="selectpicker" title="Building Type" id="b_type"
+                                                name="b_type" required="required">
+                                            {% if prop.building_type == "Apartment" %}
+                                                <option value="Apartment" selected>Apartment</option>
+                                                <option value="Bungalow">Bungalow</option>
+                                                <option value="Town House/Maisonette">Town House/Maisonette</option>
+                                                <option value="Other">Other</option>
+                                            {% elif prop.building_type == "Bungalow" %}
+                                                <option value="Apartment">Apartment</option>
+                                                <option value="Bungalow" selected>Bungalow</option>
+                                                <option value="Town House/Maisonette">Town House/Maisonette</option>
+                                                <option value="Other">Other</option>
+                                            {% elif prop.building_type == "Town House/Maisonette" %}
+                                                <option value="Apartment">Apartment</option>
+                                                <option value="Bungalow">Bungalow</option>
+                                                <option value="Town House/Maisonette" selected>Town House/Maisonette
+                                                </option>
+                                                <option value="Other">Other</option>
+                                            {% elif prop.building_type == "Other" %}
+                                                <option value="Apartment">Apartment</option>
+                                                <option value="Bungalow">Bungalow</option>
+                                                <option value="Town House/Maisonette">Town House/Maisonette</option>
+                                                <option value="Other" selected>Other</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                {% endif %}
                                 <div class="form-group row">
                                     <label class="col-xl-12 col-md-3 form-control-label">Rent Collection
                                         <span class="required">*</span>
@@ -126,29 +156,31 @@
                                     <div class="col-xl-12 col-md-9">
                                         <div class="d-flex flex-column" id="radio">
                                             <div class="radio-custom radio-primary">
+
                                                 <input type="radio" id="spe_date" name="rent_coll" value="Spec_date"
-                                                       required="">
+                                                       required=""{% if prop.rent_collection == "Spec_date" %} checked{% endif %}>
                                                 <label for="spe_date">On Date Specific Day</label>
                                             </div>
 
                                             <div class="radio-custom radio-primary">
                                                 <input type="radio" id="occ_date" name="rent_coll"
-                                                       value="Occ_date">
+                                                       value="Occ_date" {% if prop.rent_collection == "Occ_date" %} checked{% endif %}>
                                                 <label for="occ_date">On Date of Occupancy</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            {% if prop.rent_collection == "Spec_date" %}
                                 <div class="form-group row" id="spday">
                                     <label class="col-xl-12 col-md-3 form-control-label">Specify Day
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
                                         <input type="number" class="form-control" name="specify_day" id="specify_day"
-                                               required="" min="1"
-                                               max="31">
+                                               required="" min="1" max="31" value="{{ prop.specific_day }}">
                                     </div>
                                 </div>
+                            {% endif %}
                                 <div class="form-group row">
                                     <label class="col-xl-12 col-md-3 form-control-label">Rent Payment Delay Penalty/Day
                                         <span class="required">*</span>
@@ -157,12 +189,12 @@
                                         <div class="d-flex flex-column">
                                             <div class="radio-custom radio-primary">
                                                 <input type="radio" id="percent" name="pen_type" value="percent"
-                                                       required="">
+                                                       required="" {% if prop.penalty_type == "percent" %}checked{% endif %}>
                                                 <label for="percent">Percentage of rent</label>
                                             </div>
 
                                             <div class="radio-custom radio-primary">
-                                                <input type="radio" id="fixamnt" name="pen_type" value="fixed">
+                                                <input type="radio" id="fixamnt" name="pen_type" value="fixed" {% if prop.penalty_type == "fixed" %}checked{% endif %}>
                                                 <label for="fixamnt">Fixed amount</label>
                                             </div>
                                         </div>
@@ -173,12 +205,19 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="number" class="form-control" name="penalty" required="" min="0">
+                                        <input type="number" class="form-control" name="penalty" required="" min="0"
+                                               value="{{ prop.penalty_value }}">
                                     </div>
                                 </div>
                                 <label class="form-control-label" for="pic">Picture</label>
-                                <input type="file" id="pic" name="pic" data-plugin="dropify"
-                                       data-default-file="" accept="image/*"/>
+                                {% if prop.pics %}
+                                    <input type="file" id="pic" name="pic" data-plugin="dropify"
+                                           data-default-file="" accept="image/*" value="{{ prop.pics.url }}"/>
+                                {% else %}
+
+                                    <input type="file" id="pic" name="pic" data-plugin="dropify"
+                                           data-default-file="" accept="image/*"/>
+                                {% endif %}
                             </div>
 
                             <div class="col-xl-6 form-horizontal">
@@ -187,7 +226,8 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="number" class="form-control" name="floors" required="">
+                                        <input type="number" class="form-control" name="floors" required=""
+                                               value="{{ prop.no_of_floors }}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -195,13 +235,15 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="number" class="form-control" name="units" required="">
+                                        <input type="number" class="form-control" name="units" required=""
+                                               value="{{ prop.no_of_units }}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-xl-12 col-md-3 form-control-label">Number of parking</label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <input type="number" class="form-control" name="parking">
+                                        <input type="number" class="form-control" name="parking"
+                                               value="{{ prop.parking }}">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -212,13 +254,13 @@
                                         <div class="d-flex flex-column">
                                             <div class="radio-custom radio-primary">
                                                 <input type="radio" id="inputAwesome" name="elec" value="Prepaid"
-                                                       required="">
+                                                       required="" {% if prop.electricity == "Prepaid" %}checked{% endif %}>
                                                 <label for="inputAwesome">Prepaid</label>
                                             </div>
 
                                             <div class="radio-custom radio-primary">
                                                 <input type="radio" id="inputVeryAwesome" name="elec"
-                                                       value="Postpaid">
+                                                       value="Postpaid" {% if prop.electricity == "Postpaid" %}checked{% endif %}>
                                                 <label for="inputVeryAwesome">Postpaid</label>
                                             </div>
                                         </div>
@@ -233,12 +275,12 @@
                                         <div class="d-flex flex-column">
                                             <div class="radio-custom radio-primary">
                                                 <input type="radio" id="agent" name="water" value="agent"
-                                                       required="">
+                                                       required="" {% if prop.water == "agent" %}checked{% endif %}>
                                                 <label for="agent">On agent</label>
                                             </div>
 
                                             <div class="radio-custom radio-primary">
-                                                <input type="radio" id="tent" name="water" value="tenant">
+                                                <input type="radio" id="tent" name="water" value="tenant" {% if prop.water == "tenant" %}checked{% endif %}>
                                                 <label for="tent">On tenant</label>
                                             </div>
                                         </div>
@@ -251,7 +293,7 @@
                                     <div class="col-xl-12 col-md-9">
                                 <textarea class="form-control" name="loc_desc" rows="3"
                                           placeholder="Location description"
-                                          required=""></textarea>
+                                          required="">{{ prop.location_desc }}</textarea>
                                     </div>
                                 </div>
                                 <div id="mapid" style="height: 380px"></div>
@@ -297,8 +339,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#rest').hide();
-            $('#spday').hide();
             document.getElementById('specify_day').required = false;
         });
         $('select').selectpicker();
@@ -325,7 +365,7 @@
     </script>
 
     <script>
-        var mymap = L.map('mapid').setView([-1.28759, 36.8109], 13);
+        var mymap = L.map('mapid').setView([{{prop.lat}}, {{prop.long}}], 20);
         var theMarker = {};
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2JyaWFuYmV0IiwiYSI6ImNrZ3Ribm5kOTFkYjcyc2w4aXFjejYyZmcifQ.URkZ3ETN8Wezmq2uVk46XQ', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -336,7 +376,6 @@
             accessToken: 'your.mapbox.access.token'
         }).addTo(mymap);
 
-        mymap.locate({setView: true, maxZoom: 16});
         var arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider();
 
         L.esri.Geocoding.geosearch({
@@ -350,20 +389,12 @@
                 })
             ]
         }).addTo(mymap);
+        theMarker = L.marker([{{prop.lat}}, {{prop.long}}]).addTo(mymap);
 
-        function onLocationFound(e) {
-            var radius = e.accuracy;
-            lat = e.latlng.lat;
-            lon = e.latlng.lng;
 
-            theMarker = L.marker(e.latlng).addTo(mymap)
-                .bindPopup("You are within " + radius + " meters from this point").openPopup();
-            document.querySelector('#latitude').value = lat;
-            document.querySelector('#longitude').value = lon;
+        document.querySelector('#latitude').value = {{prop.lat}};
+        document.querySelector('#longitude').value = {{ prop.long }};
 
-        }
-
-        mymap.on('locationfound', onLocationFound);
 
         mymap.on('click', function (e) {
             lat = e.latlng.lat;
