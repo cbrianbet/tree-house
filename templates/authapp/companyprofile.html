@@ -59,6 +59,13 @@
                                        role="tab">Company Profile
                                     </a>
                                 </li>
+                                {% if user.acc_type.id == 2 or user.acc_type.id == 3 %}
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" data-toggle="tab" href="#sub" aria-controls="sub"
+                                           role="tab">Subscription
+                                        </a>
+                                    </li>
+                                {% endif %}
                                 <li class="nav-item dropdown">
                                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#"
                                        aria-expanded="false">Menu </a>
@@ -69,6 +76,11 @@
                                         <a class="dropdown-item" data-toggle="tab" href="#messages"
                                            aria-controls="messages"
                                            role="tab">Company Profile</a>
+                                        {% if user.acc_type.id == 2 or user.acc_type.id == 3 %}
+                                            <a class="dropdown-item" data-toggle="tab" href="#sub"
+                                               aria-controls="sub"
+                                               role="tab">Subscription</a>
+                                        {% endif %}
                                     </div>
                                 </li>
                             </ul>
@@ -97,12 +109,12 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-xl-12 col-md-3 form-control-label">Mobile Number
+                                                <label class="col-xl-12 col-md-3 form-control-label">Email
                                                     <span class="required">*</span>
                                                 </label>
                                                 <div class=" col-xl-12 col-md-9">
-                                                    <input type="tel" class="form-control" name="msisdn"
-                                                           required value="{{ profile.msisdn }}">
+                                                    <input type="email" class="form-control" name="msisdn"
+                                                           required value="{{ profile.user.email }}">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -130,59 +142,105 @@
 
                                 <div class="tab-pane animation-slide-left" id="messages" role="tabpanel">
 
-                                <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
-                                    <form id="profile" action="{% url 'profile' %}" method="post">
-                                        {% csrf_token %}
-                                        <div class="col-xl-6 ">
-                                            <div class="form-group row">
-                                                <label class="col-xl-12 col-md-3 form-control-label">First Name
-                                                    <span class="required">*</span>
-                                                </label>
-                                                <div class=" col-xl-12 col-md-9">
-                                                    <input type="text" class="form-control" name="f_name" required
-                                                           value="{{ profile.first_name }}">
+                                    <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
+                                        <form id="profile" action="{% url 'profile' %}" method="post">
+                                            {% csrf_token %}
+                                            {% if user.acc_type.id == 2 %}
+                                                <div class="col-xl-6 ">
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">Mobile
+                                                            Number
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="tel" class="form-control" name="mobile"
+                                                                   required value="{{ profile.msisdn }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">ID Number
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="number" class="form-control" name="no_emp"
+                                                                   required
+                                                                   value="{{ profile.id_number }}" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">Password
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="password" class="form-control" required
+                                                                   name="password">
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-xl-12 col-md-3 form-control-label">Last & Middle Name
-                                                    <span class="required">*</span>
-                                                </label>
-                                                <div class=" col-xl-12 col-md-9">
-                                                    <input type="text" class="form-control" name="l_name" required
-                                                           value="{{ profile.last_name }}">
+                                            {% elif user.acc_type.id == 3 %}
+                                                <div class="col-xl-6 ">
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">Company
+                                                            Name
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="text" class="form-control" name="f_name"
+                                                                   required
+                                                                   value="{{ comp.company.name }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">Logo
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="text" class="form-control" name="l_name"
+                                                                   required
+                                                                   value="{{ comp.company.name }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">Office
+                                                            Location
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="tel" class="form-control" name="comp_location"
+                                                                   required value="{{ comp.company.location }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">Number of
+                                                            Employees
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="number" class="form-control" name="no_emp"
+                                                                   required
+                                                                   value="{{ comp.company.no_of_emp }}" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-12 col-md-3 form-control-label">Password
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class=" col-xl-12 col-md-9">
+                                                            <input type="password" class="form-control" required
+                                                                   name="password">
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-xl-12 col-md-3 form-control-label">Mobile Number
-                                                    <span class="required">*</span>
-                                                </label>
-                                                <div class=" col-xl-12 col-md-9">
-                                                    <input type="tel" class="form-control" name="msisdn"
-                                                           required value="{{ profile.msisdn }}">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-xl-12 col-md-3 form-control-label">ID Number
-                                                    <span class="required">*</span>
-                                                </label>
-                                                <div class=" col-xl-12 col-md-9">
-                                                    <input type="text" class="form-control" name="id_no" required
-                                                           value="{{ profile.id_number }}" readonly>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-xl-12 col-md-3 form-control-label">Password
-                                                    <span class="required">*</span>
-                                                </label>
-                                                <div class=" col-xl-12 col-md-9">
-                                                    <input type="password" class="form-control" required
-                                                           name="password">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form>
+                                            {% endif %}
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </form>
+                                    </div>
                                 </div>
+
+                                <div class="tab-pane animation-slide-left" id="sub" role="tabpanel">
+
+                                    <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -210,7 +268,7 @@
 
 
     <script src="{% static 'authapp/global/js/Plugin/plyr.js' %}"></script>
-{#    <script src="{% static 'authapp/assets/examples/js/structure/timeline.js' %}"></script>#}
+    {#    <script src="{% static 'authapp/assets/examples/js/structure/timeline.js' %}"></script>#}
 
     <script>
         (function (document, window, $) {

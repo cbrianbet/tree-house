@@ -149,9 +149,6 @@ def profile(request):
                 return HttpResponse("wrong password")
             profile.first_name = request.POST.get('f_name')
             profile.last_name = request.POST.get('l_name')
-            profile.msisdn = request.POST.get('msisdn')
-            profile.id_number = request.POST.get('id_no')
-
 
             profile.save()
 
@@ -161,6 +158,12 @@ def profile(request):
             'comp': comp,
         }
 
+        return render(request, 'authapp/companyprofile.html', context)
+
+    else:
+        context = {
+            'user': user,
+        }
         return render(request, 'authapp/companyprofile.html', context)
 
     return render(request, 'authapp/profile.html', context)
