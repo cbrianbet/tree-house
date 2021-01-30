@@ -342,41 +342,62 @@
                             <span class="site-menu-title">Dashboard</span>
                         </a>
                     </li>
-                    {% if user.acc_type.id != 4 %}
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'prop-list' %}">
-                                <i class="site-menu-icon wb-library" aria-hidden="true"></i>
-                                <span class="site-menu-title">Properties</span>
-                            </a>
-                        </li>
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'all-invoices' %}">
-                                <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
-                                <span class="site-menu-title">Bills</span>
-                            </a>
-                        </li>
-                        {% if user.acc_type.id != 5 %}
+                    {% if user.acc_type.id == 1 %}
+                    <li class="site-menu-item">
+                        <a class="animsition-link" href="{% url 'all-users' %}">
+                            <i class="site-menu-icon wb-users" aria-hidden="true"></i>
+                            <span class="site-menu-title">Users List</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item">
+                        <a class="animsition-link" href="{% url 'dashboard' %}">
+                            <i class="site-menu-icon wb-list-bulleted" aria-hidden="true"></i>
+                            <span class="site-menu-title">Properties List</span>
+                        </a>
+                    </li>
+                    <li class="site-menu-item">
+                        <a class="animsition-link" href="{% url 'dashboard' %}">
+                            <i class="site-menu-icon wb-cloud" aria-hidden="true"></i>
+                            <span class="site-menu-title">Subscriptions</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if not user.acc_type.id == 4 %}
+                        {% if not user.acc_type.id == 1 %}
                             <li class="site-menu-item">
-                                <a class="animsition-link" href="{% url 'company_staff' %}">
-                                    <i class="site-menu-icon wb-user-add" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Staff</span>
+                                <a class="animsition-link" href="{% url 'prop-list' %}">
+                                    <i class="site-menu-icon wb-library" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Properties</span>
+                                </a>
+                            </li>
+                            <li class="site-menu-item">
+                                <a class="animsition-link" href="{% url 'all-invoices' %}">
+                                    <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Bills</span>
+                                </a>
+                            </li>
+                            {% if user.acc_type.id != 5 %}
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'company_staff' %}">
+                                        <i class="site-menu-icon wb-user-add" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Staff</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="site-menu-item">
+                                <a class="animsition-link" href="{% url 'change_password' %}">
+                                    <i class="site-menu-icon wb-link" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Change Password</span>
+                                </a>
+                            </li>
+                            <li class="site-menu-item">
+                                <a class="animsition-link" href="{% url 'profile' %}">
+                                    <i class="site-menu-icon wb-user" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Profile</span>
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'change_password' %}">
-                                <i class="site-menu-icon wb-link" aria-hidden="true"></i>
-                                <span class="site-menu-title">Change Password</span>
-                            </a>
-                        </li>
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'profile' %}">
-                                <i class="site-menu-icon wb-user" aria-hidden="true"></i>
-                                <span class="site-menu-title">Profile</span>
-                            </a>
-                        </li>
                     {% endif %}
-
                     {% if user.acc_type.id == 4 %}
 
                         <li class="site-menu-item">

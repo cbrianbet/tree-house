@@ -10,6 +10,7 @@ urlpatterns = [
     url('', include('properties.urls')),
     url('', include('bills.urls')),
     url('', include('chatApp.urls')),
+    url('', include('reports.urls')),
 
 ]
 

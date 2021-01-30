@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'properties',
     'bills',
     'chatApp',
+    'reports',
 ]
 
 MIDDLEWARE = [
