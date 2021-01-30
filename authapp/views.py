@@ -140,10 +140,29 @@ def profile(request):
             'user': user,
         }
 
-    else:
+    elif user.acc_type.id == 3 or user.acc_type.id ==2:
+        profile = Profile.objects.get(user=user)
+        comp = CompanyProfile.objects.get(user=profile.user)
+
+        if request.method == "POST":
+            if not request.user.check_password(request.POST.get('password')):
+                return HttpResponse("wrong password")
+            profile.first_name = request.POST.get('f_name')
+            profile.last_name = request.POST.get('l_name')
+            profile.msisdn = request.POST.get('msisdn')
+            profile.id_number = request.POST.get('id_no')
+
+
+            profile.save()
+
         context = {
             'user': user,
+            'profile': profile,
+            'comp': comp,
         }
+
+        return render(request, 'authapp/companyprofile.html', context)
+
     return render(request, 'authapp/profile.html', context)
 
 

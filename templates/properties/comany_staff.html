@@ -118,7 +118,7 @@
                                         <div class=" col-xl-12 col-md-9">
                                             <label class="col-xl-12 col-md-3 form-control-label" for="acc_type">Properties
                                                 *</label>
-                                            <select data-plugin="selectpicker" title="Properties" multiple
+                                            <select data-plugin="selectpicker" title="Properties" multiple name="prop"
                                                     data-live-search="true" data-size="5" data-actions-box="true">
                                                 {% for prop in props %}
                                                     <option value="{{ prop.id }}">{{ prop.property_name }}</option>

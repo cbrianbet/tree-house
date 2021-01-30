@@ -32,8 +32,13 @@ def tenant_bills(request, u_uid):
 
 @login_required
 def all_invoices(request):
-    invoice = Invoice.objects.filter(
-        unit__property__company=CompanyProfile.objects.get(user=request.user).company).order_by('invoice_no')
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
+        invoice = Invoice.objects.filter(
+            unit__property__company=CompanyProfile.objects.get(user=request.user).company).order_by('invoice_no')
+    if request.user.acc_type.id == 5:
+        prop = PropertyStaff.objects.filter(user=request.user).values_list('property__uuid', flat=True)
+        invoice = Invoice.objects.filter(unit__property__in=prop,
+            unit__property__company=CompanyProfile.objects.get(user=request.user).company).order_by('invoice_no')
     a = []
     for inv in invoice:
         total = 0

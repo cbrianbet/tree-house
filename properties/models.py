@@ -108,7 +108,6 @@ class Tenant(models.Model):
 
 
 class PropertyStaff(models.Model):
-    uuid = models.UUIDField(default=u_id.uuid4(), editable=False, unique=True)
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     property = models.ForeignKey(Properties, on_delete=models.CASCADE)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="ps_created_by")

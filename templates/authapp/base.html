@@ -355,14 +355,16 @@
                                 <span class="site-menu-title">Bills</span>
                             </a>
                         </li>
+                        {% if user.acc_type.id != 5 %}
+                            <li class="site-menu-item">
+                                <a class="animsition-link" href="{% url 'company_staff' %}">
+                                    <i class="site-menu-icon wb-user-add" aria-hidden="true"></i>
+                                    <span class="site-menu-title">Staff</span>
+                                </a>
+                            </li>
+                        {% endif %}
                         <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'company_staff' %}">
-                                <i class="site-menu-icon wb-user-add" aria-hidden="true"></i>
-                                <span class="site-menu-title">Staff</span>
-                            </a>
-                        </li>
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'company_staff' %}">
+                            <a class="animsition-link" href="{% url 'profile' %}">
                                 <i class="site-menu-icon wb-user" aria-hidden="true"></i>
                                 <span class="site-menu-title">Profile</span>
                             </a>

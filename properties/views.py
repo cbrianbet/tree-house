@@ -23,10 +23,18 @@ from .models import *
 
 @login_required
 def properties_list(request):
-    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
-    queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
-        count=Count('unit__property__uuid')).order_by(
-        'unit__property__uuid')
+    if request.user.acc_type.id == 5:
+        prop =PropertyStaff.objects.filter(user=request.user).values_list('property__uuid', flat=True)
+        p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company, uuid__in=prop)
+        queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
+            count=Count('unit__property__uuid')).order_by(
+            'unit__property__uuid')
+
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
+        p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
+        queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
+            count=Count('unit__property__uuid')).order_by(
+            'unit__property__uuid')
 
     tenants = {}
     for entry in queryset1:
@@ -112,26 +120,26 @@ def properties_edit(request, p_id):
         else:
             picture = ''
 
-        prop.property_name=name
-        prop.property_value=val
-        prop.mngmt_start=start_date
-        prop.property_type=prop_type
-        prop.owner=owner
-        prop.no_of_floors=floors
-        prop.no_of_units=units
-        prop.parking=parking
-        prop.electricity=elec
-        prop.water=water
-        prop.location_desc=loc_desc
-        prop.long=long
-        prop.lat=lat
-        prop.created_by=request.user
-        prop.rent_collection=rent_coll
-        prop.pics=picture
-        prop.building_type=build
-        prop.specific_day=spdate
-        prop.penalty_type=pen_type
-        prop.penalty_value=pen_val
+        prop.property_name = name
+        prop.property_value = val
+        prop.mngmt_start = start_date
+        prop.property_type = prop_type
+        prop.owner = owner
+        prop.no_of_floors = floors
+        prop.no_of_units = units
+        prop.parking = parking
+        prop.electricity = elec
+        prop.water = water
+        prop.location_desc = loc_desc
+        prop.long = long
+        prop.lat = lat
+        prop.created_by = request.user
+        prop.rent_collection = rent_coll
+        prop.pics = picture
+        prop.building_type = build
+        prop.specific_day = spdate
+        prop.penalty_type = pen_type
+        prop.penalty_value = pen_val
 
         prop.save()
         redirect('view-prop', p_id=p_id)
@@ -262,7 +270,8 @@ def add_tenant(request, u_uid):
                 rent = float(rent) - float(discount)
                 print(rent)
             inv = apply_invoice(float(rent), float(unit.security_deposit), request.user, t)
-            inv.email_inform = inform_invoice(username, unit, email, f_name, Properties.objects.get(id=unit.property.id).property_name)
+            inv.email_inform = inform_invoice(username, unit, email, f_name,
+                                              Properties.objects.get(id=unit.property.id).property_name)
             inv.save()
 
     if Tenant.objects.filter(unit=unit).exists():
@@ -320,13 +329,16 @@ def get_random_username():
 
 def apply_invoice(rent, dep, user, tenant):
     inv_no = increment_rent_invoice_number()
-    i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit)
+    i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user,
+                                   unit=tenant.unit)
     i.save()
-    d = Invoice.objects.create(created_by=user, invoice_no=increment_invoice_number(), invoice_for=tenant.profile.user, unit=tenant.unit)
+    d = Invoice.objects.create(created_by=user, invoice_no=increment_invoice_number(), invoice_for=tenant.profile.user,
+                               unit=tenant.unit)
     d.save()
     inv_item1 = RentItems.objects.create(invoice=i, invoice_item='RENT', amount=round(rent, 2), description='RENT')
     inv_item1.save()
-    inv_item2 = InvoiceItems.objects.create(invoice=d, invoice_item='DEPOSIT', amount=round(dep, 2), description='DEPOSIT')
+    inv_item2 = InvoiceItems.objects.create(invoice=d, invoice_item='DEPOSIT', amount=round(dep, 2),
+                                            description='DEPOSIT')
     inv_item2.save()
     return i
 
@@ -481,7 +493,8 @@ def unit_file_upload(request, uid):
 def staff(request):
     if request.user.acc_type.id == 4:
         raise PermissionDenied
-    comp =  CompanyProfile.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).values_list('user', flat=True)
+    comp = CompanyProfile.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).values_list(
+        'user', flat=True)
     staff = Profile.objects.filter(user__in=comp, user__acc_type_id=5)
     print(staff)
     can_add = False
@@ -497,6 +510,8 @@ def staff(request):
         number = request.POST.get('id_no')
         props = request.POST.getlist('prop')
 
+        print(request.POST)
+
         try:
             acc = AccTypes.objects.get(id=5)
             user = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
@@ -507,7 +522,8 @@ def staff(request):
                                                  user=user)
                 profile.save()
 
-                cp = CompanyProfile.objects.create(user=user, company=CompanyProfile.objects.get(user=request.user).company)
+                cp = CompanyProfile.objects.create(user=user,
+                                                   company=CompanyProfile.objects.get(user=request.user).company)
                 cp.save()
 
                 for p in props:
@@ -515,7 +531,7 @@ def staff(request):
                     ps.save()
 
         except:
-            raise PermissionDenied
+            print('error')
         inform_staff(username, pwrd, email, f_name, CompanyProfile.objects.get(user=request.user).company.name)
 
     context = {
