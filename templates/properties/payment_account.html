@@ -1,0 +1,382 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Company Staff | MNEST Africa</title>
+{% endblock %}
+{% block headscripts %}
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/formvalidation/formValidation.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/forms/validation.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-datepicker/bootstrap-datepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+{% endblock %}
+{% block page %}
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Payment Methods</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Properties</a></li>
+                <li class="breadcrumb-item active">Payment Methods</li>
+            </ol>
+            <div class="page-header-actions">
+            </div>
+        </div>
+
+        <div class="page-content container-fluid">
+            <!-- Panel Full Example -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="panel-desc"> Add Payments </span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+
+                    <form id="exampleFullForm" enctype="multipart/form-data"
+                          action="{% url 'payment-list' u_id=uuid %}" method="post">
+                        {% csrf_token %}
+                        <div class="row row-lg">
+                            <div class="col-xl-6 form-horizontal">
+
+                                <div class="form-group row">
+                                    <div class=" col-xl-12 col-md-9">
+                                        <label class="col-xl-12 col-md-3 form-control-label" for="bank">Payment Mode
+                                            *</label>
+                                        <select data-plugin="selectpicker" title="Payment mode" name="p_mode"
+                                                data-size="5" data-actions-box="true" id="p_mode">
+                                            <option value="MPESA">MPESA</option>
+                                            <option value="BANK">BANK</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-xl-6 form-horizontal" id="bank">
+
+                                <div class="form-group row">
+                                    <div class=" col-xl-12 col-md-9">
+                                        <label class="col-xl-12 col-md-3 form-control-label" for="bank">Bank
+                                            *</label>
+                                        <select data-plugin="selectpicker" title="Bank" name="bank"
+                                                data-live-search="true" data-size="5" data-actions-box="true">
+                                            {% for b in bank %}
+                                                <option value="{{ b.id }}">{{ b.bank }}</option>
+
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-12 col-md-3 form-control-label">Account Number
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class=" col-xl-12 col-md-9">
+                                        <input type="text" class="form-control" name="b_acc_no" required>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-xl-6 form-horizontal" id="mpesa">
+
+                                <div class="form-group row">
+                                    <div class=" col-xl-12 col-md-9">
+                                        <label class="col-xl-12 col-md-3 form-control-label" for="bank">Lipa Na Mpesa
+                                            Mode
+                                            *</label>
+                                        <select data-plugin="selectpicker" title="Lipa Na Mpesa Mode" name="lipa"
+                                                data-size="5" data-actions-box="true" id="lipa">
+                                            <option value="paybill">Paybill</option>
+                                            <option value="tillnumber">Till Number</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="till">
+                                    <div class="form-group row">
+                                        <label class="col-xl-12 col-md-3 form-control-label">Till Number
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class=" col-xl-12 col-md-9">
+                                            <input type="text" class="form-control" name="t_acc_no" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="paybill">
+                                    <div class="form-group row">
+                                        <label class="col-xl-12 col-md-3 form-control-label">Paybill Number
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class=" col-xl-12 col-md-9">
+                                            <input type="text" class="form-control" name="paybill" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-xl-12 col-md-3 form-control-label">Account Number Instructions
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class=" col-xl-12 col-md-9">
+                                            <input type="text" class="form-control" name="p_acc_no" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xl-12 text-right padding-top-m">
+                                <button type="submit" class="btn btn-primary" id="validateButton1">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- End Panel Full Example -->
+        </div>
+
+        <div class="page-content container-fluid">
+
+            <!-- Panel Full Example -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="panel-desc"> Bank Accounts </span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover dataTable table-striped w-full" id="exampleTableTools">
+                        <thead>
+                        <tr>
+                            <th>Bank</th>
+                            <th>Account Number</th>
+                            <th>Created by</th>
+                            <th>Created at</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Bank</th>
+                            <th>Account Number</th>
+                            <th>Created by</th>
+                            <th>Created at</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        {% for b in accb %}
+                            <tr>
+                                <td>{{ b.bank.bank }}</td>
+                                <td>{{ b.acc }}</td>
+                                <td>{{ b.prop.created_by.username }}</td>
+                                <td>{{ b.prop.created_at }}</td>
+                                <td>
+                                    <a class="btn btn-outline btn-dark" href="">
+                                        <span class="hidden-sm-down">Edit</span>
+                                    </a>
+                                    <a class="btn btn-outline btn-dark" href="">
+                                        <span class="hidden-sm-down">Remove</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content container-fluid">
+
+            <!-- Panel Full Example -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="panel-desc"> Mpesa Paybills </span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover dataTable table-striped w-full" id="exampleTableTools">
+                        <thead>
+                        <tr>
+                            <th>Paybill</th>
+                            <th>Account number instruction</th>
+                            <th>Created by</th>
+                            <th>Created at</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Paybill</th>
+                            <th>Account number instruction</th>
+                            <th>Created by</th>
+                            <th>Created at</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        {% for b in accp %}
+                            <tr>
+                                <td>{{ b.paybill }}</td>
+                                <td>{{ b.acc }}</td>
+                                <td>{{ b.prop.created_by.username }}</td>
+                                <td>{{ b.prop.created_at }}</td>
+                                <td>
+                                    <a class="btn btn-outline btn-dark" href="">
+                                        <span class="hidden-sm-down">Edit</span>
+                                    </a>
+                                    <a class="btn btn-outline btn-dark" href="">
+                                        <span class="hidden-sm-down">Remove</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Panel Full Example -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="panel-desc"> Mpesa Till Numbers </span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover dataTable table-striped w-full" id="exampleTableTools">
+                        <thead>
+                        <tr>
+                            <th>Till Number</th>
+                            <th>Created by</th>
+                            <th>Created at</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Till Number</th>
+                            <th>Created by</th>
+                            <th>Created at</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        {% for b in acct %}
+                            <tr>
+                                <td>{{ b.till}} </td>
+                                <td>{{ b.prop.created_by.username }}</td>
+                                <td>{{ b.prop.created_at }}</td>
+                                <td>
+                                    <a class="btn btn-outline btn-dark" href="">
+                                        <span class="hidden-sm-down">Edit</span>
+                                    </a>
+                                    <a class="btn btn-outline btn-dark" href="">
+                                        <span class="hidden-sm-down">Remove</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Page -->
+
+
+{% endblock %}
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/formvalidation/formValidation.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/formvalidation/framework/bootstrap4.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/dropify/dropify.min.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/forms/uploads.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootstrap-datepicker/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/dropify/dropify.min.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
+
+    <script src="{% static 'authapp/assets/examples/js/forms/validation.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}">
+    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $('#bank').hide();
+            $('#mpesa').hide();
+            $('#paybill').hide();
+        });
+        $('select').selectpicker();
+        $('#p_mode').change(function () {
+            var value = $(this).val();
+            if (value === "BANK") {
+                $('#bank').show();
+                $('#mpesa').hide();
+
+            } else {
+                $('#mpesa').show();
+                $('#bank').hide();
+            }
+
+        });
+        $('#lipa').change(function () {
+            var value = $(this).val();
+            if (value === "paybill") {
+                $('#paybill').show();
+                $('#till').hide();
+
+            } else {
+                $('#paybill').hide();
+                $('#till').show();
+            }
+
+        });
+
+    </script>
+{% endblock %}

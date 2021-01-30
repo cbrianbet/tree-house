@@ -92,6 +92,40 @@ def properties_add(request):
 
 
 @login_required
+def properties_payment(request, u_id):
+    user = request.user
+    prop = Properties.objects.get(uuid=u_id)
+    if request.method == "POST":
+        print(request.POST)
+        name = request.POST.get('p_mode')
+        pay = PaymentAccount.objects.create(payment_mode=name, created_by=request.user, prop=prop)
+        pay.save()
+        if name == 'MPESA':
+            lipa = request.POST.get('lipa')
+            if lipa == 'paybill':
+                paybill = PaymentPaybill.objects.create(prop=pay, acc=request.POST.get('p_acc_no'), paybill=request.POST.get('paybill'))
+                paybill.save()
+            if lipa == 'tillnumber':
+                goods = PaymentTill.objects.create(prop=pay, till=request.POST.get('t_acc_no'))
+                goods.save()
+
+        if name == 'BANK':
+            bank_acc = BankAcc.objects.create(prop=pay, bank_id=request.POST.get('bank'), acc=request.POST.get('b_acc_no'))
+            bank_acc.save()
+
+    context = {
+        'u': user,
+        'user': request.user,
+        'bank': Banks.objects.all(),
+        'uuid': u_id,
+        'accb': BankAcc.objects.filter(prop__prop=prop),
+        'accp': PaymentPaybill.objects.filter(prop__prop=prop),
+        'acct': PaymentTill.objects.filter(prop__prop=prop),
+    }
+    return render(request, 'properties/payment_account.html', context)
+
+
+@login_required
 def properties_edit(request, p_id):
     user = request.user
     prop = Properties.objects.get(uuid=p_id)

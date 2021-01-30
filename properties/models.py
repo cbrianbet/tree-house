@@ -64,6 +64,61 @@ class Properties(models.Model):
         super().delete(*args, **kwargs)
 
 
+class PaymentAccount(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
+    payment_mode = models.CharField(max_length=30)
+    prop = models.ForeignKey(Properties, on_delete=models.CASCADE)
+
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="p_m_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="p_m_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        db_table = "Payment Account"
+
+
+class PaymentPaybill(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
+    acc = models.CharField(max_length=30)
+    paybill = models.CharField(max_length=30)
+    prop = models.ForeignKey(PaymentAccount, on_delete=models.CASCADE)
+
+
+    class Meta:
+        db_table = "Payment Paybill"
+
+
+class PaymentTill(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
+    till = models.CharField(max_length=30)
+    prop = models.ForeignKey(PaymentAccount, on_delete=models.CASCADE)
+
+
+    class Meta:
+        db_table = "Payment Till"
+
+
+class Banks(models.Model):
+    bank = models.CharField(max_length=60)
+
+
+    class Meta:
+        db_table = "Banks"
+
+
+class BankAcc(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
+    acc = models.CharField(max_length=130)
+    bank = models.ForeignKey(Banks, on_delete=models.CASCADE)
+    prop = models.ForeignKey(PaymentAccount, on_delete=models.CASCADE)
+
+
+    class Meta:
+        db_table = "Bank Account"
+
+
 class Unit(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
     unit_name = models.CharField(max_length=40)
