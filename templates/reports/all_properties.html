@@ -3,7 +3,7 @@
 
 {% block title %}
 
-    <title> All Users | MNEST Africa</title>
+    <title> All Properties | MNEST Africa</title>
 {% endblock %}
 
 {% block headscripts %}
@@ -31,10 +31,10 @@
     <!-- Page -->
     <div class="page">
         <div class="page-header">
-            <h1 class="page-title">Users List</h1>
+            <h1 class="page-title">Properties List</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-                <li class="breadcrumb-item active">All Users</li>
+                <li class="breadcrumb-item active">All Properties</li>
             </ol>
 
         </div>
@@ -44,7 +44,7 @@
             <!-- Panel Table Tools -->
             <div class="panel">
                 <header class="panel-heading">
-                    <h3 class="panel-title">All Users</h3>
+                    <h3 class="panel-title">All Properties</h3>
                 </header>
                 <div class="panel-body">
 
@@ -54,53 +54,42 @@
                         <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Account Type</th>
-                            <th>Is Active</th>
-                            <th>Date joined</th>
-                            <th>Last login</th>
+                            <th>Property type</th>
+                            <th>Property Value</th>
+                            <th>Floors</th>
+                            <th>Units</th>
+                            <th>Date management started</th>
+                            <th>Company</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tfoot>
                         <tr>
                             <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Account Type</th>
-                            <th>Is Active</th>
-                            <th>Date joined</th>
-                            <th>Last login</th>
+                            <th>Property type</th>
+                            <th>Property Value</th>
+                            <th>Floors</th>
+                            <th>Units</th>
+                            <th>Date management started</th>
+                            <th>Company</th>
                             <th></th>
                         </tr>
                         </tfoot>
                         <tbody>
                         {% for b in list %}
                             <tr>
-                                <td>{{ b.first_name }} {{ b.last_name }}</td>
-                                <td>{{ b.user.username }}</td>
-                                <td>{{ b.user.email }}</td>
-                                <td>{{ b.user.acc_type.acc_type }}</td>
-                                <td>{{ b.user.is_active }}</td>
-                                <td>{{ b.user.date_joined }}</td>
-                                <td>{{ b.user.last_login }}</td>
+                                <td>{{ b.property_name }}</td>
+                                <td>{{ b.property_type }}</td>
+                                <td>{{ b.property_value }}</td>
+                                <td>{{ b.no_of_floors }}</td>
+                                <td>{{ b.no_of_units }}</td>
+                                <td>{{ b.mngmt_start }}</td>
+                                <td>{{ b.company.name }}</td>
                                 <td>
-                                    {% if b.user.is_active %}
-                                    <a class="btn btn-primary btn-outline" href="">
-                                        <i class="icon wb-pencil" aria-hidden="true"></i>
-                                        <span class="hidden-sm-down">Suspend User</span>
-                                    </a>
-                                        {% else %}
 
                                     <a class="btn btn-primary btn-outline" href="">
-                                        <i class="icon wb-pencil" aria-hidden="true"></i>
-                                        <span class="hidden-sm-down">Activate User</span>
-                                    </a>
-                                    {% endif %}
-                                    <a class="btn btn-primary btn-outline" href="">
                                         <i class="icon wb-close" aria-hidden="true"></i>
-                                        <span class="hidden-sm-down">Delete User</span>
+                                        <span class="hidden-sm-down">Delete Property</span>
                                     </a>
                                 </td>
                             </tr>
