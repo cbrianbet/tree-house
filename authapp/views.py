@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from authapp.forms import LoginForm
-from authapp.models import Users, Profile, AccTypes
+from authapp.models import *
 from bills.models import *
 from properties.models import Companies, CompanyProfile, Tenant
 
@@ -179,6 +179,7 @@ def change_password(request):
 
 
 def signup(request):
+    sub = Subscriptions.objects.all()
     if request.method == "POST":
         print(request.POST)
         username = request.POST.get('username')
@@ -222,7 +223,7 @@ def signup(request):
             raise PermissionDenied
 
         return redirect('web-login')
-    return render(request, 'authapp/register.html')
+    return render(request, 'authapp/register.html', {'sub': sub})
 
 
 @login_required

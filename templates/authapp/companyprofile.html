@@ -1,0 +1,249 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Profile | MNEST Africa</title>
+{% endblock %}
+
+{% block headscripts %}
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/plyr/plyr.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/structure/timeline.css' %}">
+
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-content container-fluid">
+            <div class="row">
+                <div class="col-lg-3">
+                    <!-- Page Widget -->
+                    <div class="card card-shadow text-center">
+                        <div class="card-block">
+                            <a class="avatar avatar-lg" href="javascript:void(0)">
+                                <img src="{% static 'authapp/assets/images/logo-blue.png' %}" alt="..">
+                            </a>
+                            <h4 class="profile-user">{{ profile.first_name }} {{ profile.last_name }}</h4>
+                            <p class="profile-job">{{ profile.user.acc_type.acc_type }}</p>
+                            <p></p>
+
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="row no-space">
+                                <div class="col-12">
+                                    <strong class="profile-stat-count"></strong>
+                                    <span>PROFILE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Page Widget -->
+                </div>
+
+                <div class="col-lg-9">
+                    <!-- Panel -->
+                    <div class="panel">
+                        <div class="panel-body nav-tabs-animate nav-tabs-horizontal" data-plugin="tabs">
+                            <ul class="nav nav-tabs nav-tabs-line" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="active nav-link" data-toggle="tab" href="#activities"
+                                       aria-controls="activities" role="tab">Information
+                                    </a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" data-toggle="tab" href="#messages" aria-controls="messages"
+                                       role="tab">Timeline
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#"
+                                       aria-expanded="false">Menu </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <a class="active dropdown-item" data-toggle="tab" href="#activities"
+                                           aria-controls="activities"
+                                           role="tab">Information</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#messages"
+                                           aria-controls="messages"
+                                           role="tab">Timeline</a>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
+                                    <form id="profile" action="{% url 'profile' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="col-xl-6 ">
+                                            <div class="form-group row">
+                                                <label class="col-xl-12 col-md-3 form-control-label">First Name
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class=" col-xl-12 col-md-9">
+                                                    <input type="text" class="form-control" name="f_name" required
+                                                           value="{{ profile.first_name }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-xl-12 col-md-3 form-control-label">Last & Middle Name
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class=" col-xl-12 col-md-9">
+                                                    <input type="text" class="form-control" name="l_name" required
+                                                           value="{{ profile.last_name }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-xl-12 col-md-3 form-control-label">Mobile Number
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class=" col-xl-12 col-md-9">
+                                                    <input type="tel" class="form-control" name="msisdn"
+                                                           required value="{{ profile.msisdn }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-xl-12 col-md-3 form-control-label">ID Number
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class=" col-xl-12 col-md-9">
+                                                    <input type="text" class="form-control" name="id_no" required
+                                                           value="{{ profile.id_number }}" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-xl-12 col-md-3 form-control-label">Secondary Mobile
+                                                </label>
+                                                <div class=" col-xl-12 col-md-9">
+                                                    <input type="text" class="form-control" name="sec_msisdn"
+                                                           value="{{ ten.secondary_msisdn }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-xl-12 col-md-3 form-control-label">Password
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class=" col-xl-12 col-md-9">
+                                                    <input type="password" class="form-control" required
+                                                           name="password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane animation-slide-left" id="messages" role="tabpanel">
+
+                                    <ul class="timeline timeline-simple">
+                                        {% for i in timeline %}
+                                            <li class="timeline-item timeline-reverse">
+                                                <div class="timeline-dot" data-placement="right" data-toggle="tooltip"
+                                                     data-trigger="hover"
+                                                     data-original-title="{{ i.days }} days ago"></div>
+                                                <div class="timeline-content">
+                                                    <div class="card card-shadow">
+                                                        <div class="card-block p-30">
+                                                            <h3 class="card-title">{{ i.event }}</h3>
+                                                            <p class="card-text">
+                                                                <small>{{ i.time }}</small>
+                                                            </p>
+                                                            <p></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Panel -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Page -->
+{% endblock %}
+
+{% block footscripts %}
+    <script src="{% static 'authapp/global/js/Plugin/responsive-tabs.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/tabs.js' %}"></script>
+
+    <script src="{% static 'authapp/global/vendor/formvalidation/formValidation.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/formvalidation/framework/bootstrap4.min.js' %}"></script>
+
+    <script src="{% static 'authapp/assets/examples/js/forms/validation.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/jquery-appear/jquery.appear.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/plyr/plyr.js' %}"></script>
+
+
+    <script src="{% static 'authapp/global/js/Plugin/plyr.js' %}"></script>
+{#    <script src="{% static 'authapp/assets/examples/js/structure/timeline.js' %}"></script>#}
+
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+
+    <script>
+        var loginForm = $("#profile");
+        loginForm.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait !",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === 'wrong password') {
+                        swal({
+                            title: 'Error!!',
+                            text: data,
+                            type: 'error'
+                        });
+                    } else {
+                        swal({
+                            title: 'Saved',
+                            type: "success",
+                            showConfirmButton: true,
+                        });
+                        location.reload();
+                    }
+                },
+                error: function (er) {
+                    console.log("Login error");
+                    // console.log(er.responseText);
+                    swal('Wrong credentials!!', 'Password incorrect!!', 'error');
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

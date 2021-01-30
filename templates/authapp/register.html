@@ -95,6 +95,10 @@
                             <span class="pearl-title">Company Info</span>
                         </div>
                         <div class="pearl col-4">
+                            <div class="pearl-icon"><i class="icon wb-cloud" aria-hidden="true"></i></div>
+                            <span class="pearl-title">Subscription Plan</span>
+                        </div>
+                        <div class="pearl col-4">
                             <div class="pearl-icon"><i class="icon wb-check" aria-hidden="true"></i></div>
                             <span class="pearl-title">Confirmation</span>
                         </div>
@@ -102,7 +106,7 @@
                     <!-- End Steps -->
 
                     <!-- Wizard Content -->
-                    <form id="exampleFormContainer" action="{% url 'register' %}" method="post"
+                    <form id="exampleFormContainer" action="{% url 'register' %}" method="post" autocomplete="off"
                           enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="wizard-content">
@@ -180,6 +184,25 @@
                                 {#                                <input type="file" id="input-file-now-custom-1" data-plugin="dropify"#}
                                 {#                                       data-default-file="../../../global/photos/placeholder.png"#}
                                 {#                                />#}
+                            </div>
+                            <div class="wizard-pane" id="exampleGettingOne" role="tabpanel">
+                                <div class="text-center my-20">
+                                    <div class="form-group clearfix">
+                                        {% for foo in sub %}
+                                            <div class="card">
+                                                <div class="card-header">{{ foo.name }}</div>
+                                                <div class="card-body">
+                                                    <span>{{ foo.description }}</span>
+                                                    <div class="checkbox-custom checkbox-inline checkbox-primary float-left">
+                                                        <input type="radio" id="inputCheckbox" name="sub">
+                                                        <label for="inputCheckbox">Select</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
                             </div>
                             <div class="wizard-pane" id="exampleGettingOne" role="tabpanel">
                                 <div class="text-center my-20">
