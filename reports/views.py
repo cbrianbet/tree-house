@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render
 
-from authapp.models import Users, Profile
+from authapp.models import Users, Profile, Subscriptions
 from properties.models import Properties, Companies, CompanyProfile
 
 
@@ -37,3 +37,22 @@ def all_comps(request):
         'list': all_comp,
     }
     return render(request, 'reports/all_companies.html', context)
+
+
+@login_required
+def all_subs(request):
+    subs = Subscriptions.objects.all()
+    if request.method == "POST":
+        val = request.POST.get('val')
+        name = request.POST.get('name')
+        duration = request.POST.get('duration')
+        desc = request.POST.get('desc')
+
+        sub = Subscriptions.objects.create(created_by=request.user, value=val, name=name, duration=duration, description=desc)
+        sub.save()
+
+    context = {
+        'user': request.user,
+        'list': subs,
+    }
+    return render(request, 'reports/subs.html', context)
