@@ -58,7 +58,7 @@
                 <div class="panel-body">
 
                     <form id="exampleFullForm" enctype="multipart/form-data"
-                          action="{% url 'company_staff' %}" method="post">
+                          action="{% url 'all-subs' %}" method="post">
                         {% csrf_token %}
                         <div class="row row-lg">
                             <div class="col-xl-6 form-horizontal">
@@ -156,6 +156,10 @@
                                     <a class="btn btn-warning btn-outline" href="">
                                         <i class="icon wb-edit" aria-hidden="true"></i>
                                         <span class="hidden-sm-down">Edit</span>
+                                    </a>
+                                    <a class="btn btn-danger btn-outline" href="">
+                                        <i class="icon wb-close" aria-hidden="true"></i>
+                                        <span class="hidden-sm-down">Delete</span>
                                     </a>
                                 </td>
                             </tr>

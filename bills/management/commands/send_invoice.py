@@ -41,27 +41,41 @@ class Command(BaseCommand):
                     if coll_day > last_day:
                         coll_day = last_day
                     if today == (coll_day - 3):
-                        apply_invoice(t.unit.value, calendar.month_name[month], Users.objects.get(id=1), t,
-                                      '{}-{}-{}'.format(coll_day, calendar.month_name[month], month.year))
+                        apply_invoice(t.unit.value, calendar.month_name[month.month], Users.objects.get(id=1), t,
+                                      '{}-{}-{}'.format(coll_day, calendar.month_name[month.month], month.year))
                     elif coll_day == today:
                         # TODO send reminder
                         pass
+
                 elif coll_day == 0:
-                    # TODO extract day in prev month
-                    pass
-                elif coll_day < 3:
-                    # TODO extract day in prev month
-                    pass
+                    print('Not assigned')
+
+                elif coll_day <= 3:
+                    month = date.today()
+                    year = month.year
+                    month = month.month
+                    if month - 1 == 0:
+                        month = 12
+                        year = year - 1
+                    else:
+                        month = month - 1
+
+                    last_day = calendar.monthrange(year, month)[1]
+                    last_day = int(last_day)
+
+                    if coll_day > last_day:
+                        coll_day = last_day
+
+                    if today == (coll_day - 3):
+                        apply_invoice(t.unit.value, calendar.month_name[month], Users.objects.get(id=1), t,
+                                      '{}-{}-{}'.format(coll_day, calendar.month_name[month], year))
+
 
 
 
         except Tenant.DoesNotExist:
             raise CommandError('Tenant does not exist')
 
-            # poll.opened = False
-            # poll.save()
-            #
-            # self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))
 
 
 def apply_invoice(rent, month, user, tenant, date):

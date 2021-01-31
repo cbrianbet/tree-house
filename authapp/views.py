@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login as log_in, logout, update_se
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.exceptions import PermissionDenied
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -13,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from authapp.forms import LoginForm
 from authapp.models import *
 from bills.models import *
-from properties.models import Companies, CompanyProfile, Tenant
+from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies
 
 
 def login(request):
@@ -80,8 +81,17 @@ def dashboard(request):
         return render(request, 'authapp/tenant_dash.html', context)
 
     elif user.acc_type.id == 1:
-        context = {'user': user}
-        return render(request, 'authapp/analytics.html', context)
+        sub = SubscriptionsCompanies.objects.values('subs__name').annotate(c=Count('subs__name')).order_by('-c')
+        active_u = Users.objects.all()
+        context = {
+            'user': user,
+            'subs': sub,
+            'land': active_u.filter(acc_type_id=2).count(),
+            'ag': active_u.filter(acc_type_id=3).count(),
+            'staff': active_u.filter(acc_type_id=5).count(),
+            'tena': active_u.filter(acc_type_id=4).count(),
+        }
+        return render(request, 'authapp/Super_analytics.html', context)
 
     else:
         context = {'user': user}

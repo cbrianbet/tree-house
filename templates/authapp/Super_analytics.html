@@ -1,0 +1,505 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>Dashboard | MNEST Africa</title>
+{% endblock %}
+{% block headscripts %}
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/morris/morris.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/chartist/chartist.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/dashboard/analytics.css' %}">
+{% endblock %}
+{% block page %}
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+        </div>
+
+        <!-- Page Content -->
+        <div class="page-content container-fluid">
+            <div class="row" data-plugin="matchHeight" data-by-row="true">
+                <div class="col-12">
+                    <!-- Product Overview Card -->
+                    <div id="productOverviewWidget" class="card card-shadow card-md">
+                        <!-- The Header Of First Card -->
+                        <div class="card-header card-header-transparent py-20">
+                            <div class="card-header-actions">
+                                <ul class="nav nav-pills nav-pills-rounded product-filters">
+                                    <li class="nav-item">
+                                        <a class="active nav-link" href="#scoreLineToDay" data-toggle="tab">Day</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#scoreLineToWeek" data-toggle="tab">Week</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#scoreLineToMonth" data-toggle="tab">Month</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- End The Header Of First Card -->
+                        <div id="productOptionsData" class="text-center">
+                            <div class="row no-space">
+                                <!-- The First Counter Block-->
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="counter">
+                                        <div class="counter-label">Landlords</div>
+                                        <div class="counter-number-group text-truncate">
+{#                                            <span class="counter-number-related red-600">+</span>#}
+                                            <span class="counter-number">{{ land }}</span>
+                                        </div>
+                                        <div class="ct-chart" data-counter-type="productVist"></div>
+                                    </div>
+                                </div>
+                                <!-- End The First Counter Block-->
+
+                                <!-- The Second Counter Block-->
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="counter">
+                                        <div class="counter-label">Agents</div>
+                                        <div class="counter-number-group text-truncate">
+{#                                            <span class="counter-number-related green-600">-</span>#}
+                                            <span class="counter-number">{{ ag }}</span>
+                                        </div>
+                                        <div class="ct-chart" data-counter-type="productVistors"></div>
+                                    </div>
+                                </div>
+                                <!-- End The Second Counter Block-->
+
+                                <!-- The Third Counter Block-->
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="counter">
+                                        <div class="counter-label">Tenants</div>
+                                        <div class="counter-number-group text-truncate">
+{#                                            <span class="counter-number-related green-600">-</span>#}
+                                            <span class="counter-number">{{ tena }}</span>
+                                        </div>
+                                        <div class="ct-chart" data-counter-type="productPageViews"></div>
+                                    </div>
+                                </div>
+                                <!-- End The Third Counter Block-->
+
+                                <!-- The fourth Counter Block-->
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="counter">
+                                        <div class="counter-label">Staff</div>
+                                        <div class="counter-number-group text-truncate">
+{#                                            <span class="counter-number-related red-600">+</span>#}
+                                            <span class="counter-number">{{ staff }}</span>
+                                        </div>
+                                        <div class="ct-chart" data-counter-type="productBounceRate"></div>
+                                    </div>
+                                </div>
+                                <!-- End The fourth Counter Block-->
+                            </div>
+                        </div>
+
+                        <!-- The Content Of First Card -->
+                        <div class="card-block p-20">
+                            <div class="tab-content">
+                                <div class="ct-chart tab-pane" id="scoreLineToWeek"></div>
+                                <div class="ct-chart tab-pane" id="scoreLineToMonth"></div>
+                            </div>
+                        </div>
+                        <!-- End The Content Of First Card -->
+                    </div>
+                    <!-- End Product Overview Card -->
+                </div>
+                {##}
+                {#                <div class="col-xl-7 col-12">#}
+                {#                    <!-- Browser Flow Card -->#}
+                {#                    <div id="browsersFlowWidget" class="card card-shadow card-md">#}
+                {#                        <div class="card-header card-header-transparent pb-15">#}
+                {#                            <p class="font-size-14 blue-grey-700 mb-0">BROWSER FLOW</p>#}
+                {#                        </div>#}
+                {#                        <div class="card-block px-30">#}
+                {#                            <div class="row">#}
+                {#                                <div class="col-md-6">#}
+                {#                                    <!-- Browsers Vists Table -->#}
+                {#                                    <table class="table table-analytics mb-0">#}
+                {#                                        <thead>#}
+                {#                                        <tr>#}
+                {#                                            <th>#</th>#}
+                {#                                            <th>Browser</th>#}
+                {#                                            <th>Vists</th>#}
+                {#                                        </tr>#}
+                {#                                        </thead>#}
+                {#                                        <tbody>#}
+                {#                                        <tr>#}
+                {#                                            <td>#}
+                {#                                                <img src="{% static 'authapp/assets/examples/images/browser/chrome-logo.png' %}"#}
+                {#                                                     title="Chrome"#}
+                {#                                                     alt="Chrome">#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                Chrome#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                11,976#}
+                {#                                            </td>#}
+                {#                                        </tr>#}
+                {#                                        <tr>#}
+                {#                                            <td>#}
+                {#                                                <img src="../../assets/examples/images/browser/firefox-logo.png"#}
+                {#                                                     title="Firefox"#}
+                {#                                                     alt="Firefox">#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                Firefox#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                1,706#}
+                {#                                            </td>#}
+                {#                                        </tr>#}
+                {#                                        <tr>#}
+                {#                                            <td>#}
+                {#                                                <img src="../../assets/examples/images/browser/safari-logo.png"#}
+                {#                                                     title="Safari"#}
+                {#                                                     alt="Safari">#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                Safari#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                1,677#}
+                {#                                            </td>#}
+                {#                                        </tr>#}
+                {#                                        <tr>#}
+                {#                                            <td>#}
+                {#                                                <img src="../../assets/examples/images/browser/internet-logo.png"#}
+                {#                                                     title="Internet"#}
+                {#                                                     alt="Internet">#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                Internet#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                1,268#}
+                {#                                            </td>#}
+                {#                                        </tr>#}
+                {#                                        <tr>#}
+                {#                                            <td>#}
+                {#                                                <img src="../../assets/examples/images/browser/opera-logo.png"#}
+                {#                                                     title="Opera"#}
+                {#                                                     alt="Opera">#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                Opera#}
+                {#                                            </td>#}
+                {#                                            <td>#}
+                {#                                                915#}
+                {#                                            </td>#}
+                {#                                        </tr>#}
+                {#                                        </tbody>#}
+                {#                                    </table>#}
+                {#                                    <!-- End Browsers Vists Table -->#}
+                {#                                </div>#}
+                {#                                <div class="col-md-6 px-0">#}
+                {#                                    <!-- MorrisDonut -->#}
+                {#                                    <div id="browersVistsDonut"></div>#}
+                {#                                    <!-- End MorrisDonut -->#}
+                {#                                    <!-- Stacked BarChart -->#}
+                {#                                    <div id="weekStackedBarChart"></div>#}
+                {#                                    <!--End Stacked BarChart -->#}
+                {#                                </div>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                    <!-- End Browser Flow Card -->#}
+                {#                </div>#}
+
+                <div class="col-xl-5 col-12">
+                    <!-- Countries Vists Card -->
+                    <div id="countriesVistsWidget" class="card card-shadow card-md">
+                        <div class="card-header card-header-transparent pb-15">
+                            <p class="font-size-14 blue-grey-700 mb-0">Companies by subscriptions</p>
+                        </div>
+                        <div class="card-block px-30 pt-0">
+                            <div class="table-responsive">
+                                <table class="table table-analytics mb-0 text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th class="language">Subscription</th>
+                                        <th class="vists-percent">Number of companies</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for sub in subs %}
+                                        <tr>
+                                            <td>{{ sub.subs__name }}</td>
+                                            <td>
+                                                <span class="progress-percent">{{ sub.c }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Countries Vists Card -->
+                </div>
+            </div>
+        </div>
+        <!-- End Page Content -->
+    </div>
+    <!-- End Page -->
+{% endblock %}
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/chartist/chartist.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/raphael/raphael.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/morris/morris.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js' %}"></script>
+
+    {#    <script src="{% static 'authapp/assets/examples/js/dashboard/analytics.js' %}"></script>#}
+    <script>
+        (function (global, factory) {
+            if (typeof define === "function" && define.amd) {
+                define('/dashboard/analytics', ['jquery', 'Site'], factory);
+            } else if (typeof exports !== "undefined") {
+                factory(require('jquery'), require('Site'));
+            } else {
+                var mod = {
+                    exports: {}
+                };
+                factory(global.jQuery, global.Site);
+                global.dashboardAnalytics = mod.exports;
+            }
+        })(this, function (_jquery, _Site) {
+            'use strict';
+
+            var _jquery2 = babelHelpers.interopRequireDefault(_jquery);
+
+            (0, _jquery2.default)(document).ready(function ($$$1) {
+                (0, _Site.run)();
+            });
+
+            // Top Line Chart With Tooltips
+            // ----------------------------
+            (function () {
+
+                // common options for common style
+                var options = {
+                    showArea: true,
+                    low: 0,
+                    high: 8000,
+                    height: 240,
+                    fullWidth: true,
+                    axisX: {
+                        offset: 40
+                    },
+                    axisY: {
+                        offset: 30,
+                        labelInterpolationFnc: function labelInterpolationFnc(value) {
+                            if (value == 0) {
+                                return null;
+                            }
+                            return value / 1000 + 'k';
+                        },
+                        scaleMinSpace: 40
+                    },
+                    plugins: [Chartist.plugins.tooltip()]
+                };
+
+                //day data
+                var dayLabelList = ['AUG 8', 'SEP 15', 'OCT 22', 'NOV 29', 'DEC 8', 'JAN 15', 'FEB 22', ''];
+                var daySeries1List = {
+                    name: 'series-1',
+                    data: [0, 7300, 6200, 6833, 7568, 4620, 4856, 2998]
+                };
+                var daySeries2List = {
+                    name: 'series-2',
+                    data: [0, 3100, 7200, 5264, 5866, 2200, 3850, 1032]
+                };
+
+                //week data
+                var weekLabelList = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', ''];
+                var weekSeries1List = {
+                    name: 'series-1',
+                    data: [0, 2400, 6200, 7833, 5568, 3620, 4856, 2998]
+                };
+                var weekSeries2List = {
+                    name: 'series-2',
+                    data: [0, 4100, 6800, 5264, 5866, 3200, 2850, 1032]
+                };
+
+                //month data
+                var monthLabelList = ['AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'JAN', 'FEB', ''];
+                var monthSeries1List = {
+                    name: 'series-1',
+                    data: [0, 6400, 5200, 7833, 5568, 3620, 5856, 0]
+                };
+                var monthSeries2List = {
+                    name: 'series-2',
+                    data: [0, 3100, 4800, 5264, 6866, 3200, 2850, 1032]
+                };
+
+                var newScoreLineChart = function newScoreLineChart(chartId, labelList, series1List, series2List, options) {
+
+                    var lineChart = new Chartist.Line(chartId, {
+                        labels: labelList,
+                        series: [series1List, series2List]
+                    }, options);
+
+                    //start create
+                    lineChart.on('draw', function (data) {
+                        var elem, parent;
+                        if (data.type === 'point') {
+                            elem = data.element;
+                            parent = new Chartist.Svg(elem._node.parentNode);
+
+                            parent.elem('line', {
+                                x1: data.x,
+                                y1: data.y,
+                                x2: data.x + 0.01,
+                                y2: data.y,
+                                "class": 'ct-point-content'
+                            });
+                        }
+                    });
+                    //end create
+                };
+
+                //finally new a chart according to the state
+                var createKindChart = function createKindChart(clickli) {
+                    var clickli = clickli || (0, _jquery2.default)("#productOverviewWidget .product-filters").find(".active");
+
+                    var chartId = clickli.attr("href");
+                    switch (chartId) {
+                        case "#scoreLineToDay":
+                            newScoreLineChart(chartId, dayLabelList, daySeries1List, daySeries2List, options);
+                            break;
+                        case "#scoreLineToWeek":
+                            newScoreLineChart(chartId, weekLabelList, weekSeries1List, weekSeries2List, options);
+                            break;
+                        case "#scoreLineToMonth":
+                            newScoreLineChart(chartId, monthLabelList, monthSeries1List, monthSeries2List, options);
+                            break;
+                    }
+                };
+
+                //default create chart whithout click
+                createKindChart();
+
+                //create for click
+                (0, _jquery2.default)(".product-filters li a").on("click", function () {
+                    createKindChart((0, _jquery2.default)(this));
+                });
+            })();
+
+            //// Overlapping Bars One ~ Four
+            // ------------------------------
+            (function () {
+                //Four Overlapping Bars Data
+                var overlappingBarsDataOne = {
+                    labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+                    series: [[3, 4, 6, 10, 8, 6, 3, 4], [2, 3, 5, 8, 6, 5, 4, 3]]
+                };
+                var overlappingBarsDataTwo = {
+                    labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+                    series: [[2, 4, 5, 10, 6, 8, 3, 5], [3, 5, 6, 5, 4, 6, 3, 3]]
+                };
+                var overlappingBarsDataThree = {
+                    labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+                    series: [[5, 2, 6, 7, 10, 8, 6, 5], [4, 3, 5, 6, 8, 6, 4, 3]]
+                };
+                var barsData = [overlappingBarsDataOne, overlappingBarsDataTwo, overlappingBarsDataThree, overlappingBarsDataThree];
+
+                //Common OverlappingBarsOptions
+                var overlappingBarsOptions = {
+                    low: 0,
+                    high: 10,
+                    seriesBarDistance: 6,
+                    fullWidth: true,
+                    axisX: {
+                        showLabel: false,
+                        showGrid: false,
+                        offset: 0
+                    },
+                    axisY: {
+                        showLabel: false,
+                        showGrid: false,
+                        offset: 0
+                    },
+                    chartPadding: {
+                        //   top: 20,
+                        //   right: 115,
+                        //   bottom: 55,
+                        left: 30
+                    }
+                };
+
+                var responsiveOptions = [['screen and (max-width: 640px)', {
+                    seriesBarDistance: 6,
+                    axisX: {
+                        labelInterpolationFnc: function labelInterpolationFnc(value) {
+                            return value[0];
+                        }
+                    }
+                }]];
+
+                // create Four Bars
+                var createBar = function createBar(chartId, data, options, responsiveOptions) {
+                    new Chartist.Bar(chartId, data, options, responsiveOptions);
+                };
+
+                (0, _jquery2.default)("#productOptionsData .ct-chart").each(function (index) {
+                    createBar(this, barsData[index], overlappingBarsOptions, responsiveOptions);
+                });
+            })();
+
+            //// Stacked Week Bar Chart
+            // ------------------------
+            (function () {
+                new Chartist.Bar('#weekStackedBarChart', {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    series: [[4, 4.5, 5, 6, 7, 7.5, 7], [6, 5.5, 5, 4, 3, 2.5, 3]]
+                }, {
+                    stackBars: true,
+                    axisY: {
+                        offset: 0
+                    },
+                    axisX: {
+                        offset: 60
+                    }
+                }).on('draw', function (data) {
+                    if (data.type === 'bar') {
+                        data.element.attr({
+                            style: 'stroke-width: 20px'
+                        });
+                    }
+                });
+            })();
+
+            // Example Morris Donut
+            // --------------------
+            (function () {
+
+                Morris.Donut({
+                    resize: true,
+                    element: 'browersVistsDonut',
+                    data: [{
+                        label: 'Chrome',
+                        value: 4625
+                        //label: 'From last week'
+                    }, {
+                        label: 'Firfox',
+                        value: 1670
+                        //label: 'From last month'
+                    }, {
+                        label: 'Safari',
+                        value: 1100
+                        //label: 'From last year'
+                    }],
+                    colors: ['#f96868', '#62a9eb', '#f3a754']
+                    //valueColors: ['#37474f', '#f96868', '#76838f']
+                }).on('click', function (i, row) {
+                    console.log(i, row);
+                });
+            })();
+        });
+    </script>
+{% endblock %}
