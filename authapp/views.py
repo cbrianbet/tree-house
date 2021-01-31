@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as log_in, logout, update_session_auth_hash
@@ -15,6 +16,7 @@ from authapp.forms import LoginForm
 from authapp.models import *
 from bills.models import *
 from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies
+from tree_house import settings
 
 
 def login(request):
@@ -212,6 +214,10 @@ def change_password(request):
 
 def signup(request):
     sub = Subscriptions.objects.all()
+    term = open(os.path.join(settings.MEDIA_ROOT, 'terms.txt'), "r").readlines()
+    privacy = open(os.path.join(settings.MEDIA_ROOT, 'privacy.txt'), "r").readlines()
+    # privacy = open("../media/privacy.txt", "r")
+    # print(term.readlines())
     if request.method == "POST":
         print(request.POST)
         username = request.POST.get('username')
@@ -255,7 +261,7 @@ def signup(request):
             raise PermissionDenied
 
         return redirect('web-login')
-    return render(request, 'authapp/register.html', {'sub': sub})
+    return render(request, 'authapp/register.html', {'sub': sub, 'terms': term, 'privacy': privacy})
 
 
 @login_required

@@ -73,9 +73,11 @@
                 if (isValidStep === false || isValidStep === null) {
                     return false;
                 }
-                if ($('#uname_response') === '' || $('#uname_response') === '<span id="resp" style="color: green;">Available.</span>') {
+                if ($('#uname_response').html() === '' || $('#uname_response').html() === '<span id="resp" style="color: green;">Available.</span>') {
+                    console.log('true')
                     return true;
                 }else {
+                    console.log('false')
                     return false;
                 }
 
