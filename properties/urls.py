@@ -21,6 +21,7 @@ urlpatterns = [
     path('property/tenant/file/upload', views.tenant_file_upload, name='file-tenant'),
     path('staff/', views.staff, name='company_staff'),
     path('profile/company', views.staff, name='company_profile'),
+    path('attach_people/', views.attach_people, name='attach_people'),
 
 
 ]

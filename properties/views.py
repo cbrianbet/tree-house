@@ -24,7 +24,7 @@ from .models import *
 @login_required
 def properties_list(request):
     if request.user.acc_type.id == 5:
-        prop =PropertyStaff.objects.filter(user=request.user).values_list('property__uuid', flat=True)
+        prop = PropertyStaff.objects.filter(user=request.user).values_list('property__uuid', flat=True)
         p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company, uuid__in=prop)
         queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
             count=Count('unit__property__uuid')).order_by(
@@ -103,14 +103,16 @@ def properties_payment(request, u_id):
         if name == 'MPESA':
             lipa = request.POST.get('lipa')
             if lipa == 'paybill':
-                paybill = PaymentPaybill.objects.create(prop=pay, acc=request.POST.get('p_acc_no'), paybill=request.POST.get('paybill'))
+                paybill = PaymentPaybill.objects.create(prop=pay, acc=request.POST.get('p_acc_no'),
+                                                        paybill=request.POST.get('paybill'))
                 paybill.save()
             if lipa == 'tillnumber':
                 goods = PaymentTill.objects.create(prop=pay, till=request.POST.get('t_acc_no'))
                 goods.save()
 
         if name == 'BANK':
-            bank_acc = BankAcc.objects.create(prop=pay, bank_id=request.POST.get('bank'), acc=request.POST.get('b_acc_no'))
+            bank_acc = BankAcc.objects.create(prop=pay, bank_id=request.POST.get('bank'),
+                                              acc=request.POST.get('b_acc_no'))
             bank_acc.save()
 
     context = {
@@ -600,3 +602,22 @@ def inform_staff(u, p, e, n, prop):
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
     except:
         print('failed')
+
+
+def attach_people(request):
+    pa = PeopleAttached.objects.filter(tenant__profile__user=request.user)
+    if request.method == "POST":
+        relation = request.POST.get('relation')
+        fname = request.POST.get('fname')
+        lname = request.POST.get('lname')
+        mobile = request.POST.get('mobile')
+
+        people = PeopleAttached.objects.create(relationship=relation, created_by=request.user, f_name=fname,
+                                               l_name=lname, tenant=Tenant.objects.get(profile__user=request.user),
+                                               mobile_number=mobile)
+        people.save()
+    context = {
+        'user': request.user,
+        'people': pa
+    }
+    return render(request, 'properties/attach_extras.html', context)

@@ -169,3 +169,19 @@ class SubscriptionsCompanies(models.Model):
 
     class Meta:
         db_table = "Subscription_Company"
+
+
+class PeopleAttached(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    f_name = models.CharField(max_length=140)
+    l_name = models.CharField(max_length=40, null=True, blank=True)
+    relationship = models.CharField(max_length=140)
+    mobile_number = models.CharField(max_length=40, null=True, blank=True)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="pa_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="pa_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "People Attached"
