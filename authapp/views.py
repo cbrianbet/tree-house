@@ -79,7 +79,7 @@ def dashboard(request):
             'tenant': tenant,
             'bals': bals,
             'r_bals': r_bals,
-            'inv': invoice.count()+r_invoice.count(),
+            'inv': invoice.count() + r_invoice.count(),
         }
         return render(request, 'authapp/tenant_dash.html', context)
 
@@ -145,7 +145,7 @@ def profile(request):
             'user': user,
             'profile': profile,
             'ten': tenant,
-            'timeline': sorted(events, key = lambda i: (i['days'])),
+            'timeline': sorted(events, key=lambda i: (i['days'])),
         }
 
     elif user.acc_type.id == 1:
@@ -153,7 +153,7 @@ def profile(request):
             'user': user,
         }
 
-    elif user.acc_type.id == 3 or user.acc_type.id ==2:
+    elif user.acc_type.id == 3 or user.acc_type.id == 2:
         profile = Profile.objects.get(user=user)
         comp = CompanyProfile.objects.get(user=profile.user)
 
@@ -259,7 +259,11 @@ def signup(request):
 
                 cp = CompanyProfile.objects.create(user=user, company=company)
                 cp.save()
-                sub = SubscriptionsCompanies.objects.create(subs=Subscriptions.objects.get(uuid=sub_picked), company=company, date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=sub_picked).duration) ,date_started=datetime.date.today())
+                sub = SubscriptionsCompanies.objects.create(
+                    subs=Subscriptions.objects.get(uuid=sub_picked), company=company,
+                    date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=sub_picked).duration),
+                    date_started=datetime.date.today()
+                )
                 sub.save()
         except:
             raise PermissionDenied
@@ -272,7 +276,7 @@ def add_months(sourcedate, months):
     month = sourcedate.month - 1 + months
     year = sourcedate.year + month // 12
     month = month % 12 + 1
-    day = min(sourcedate.day, calendar.monthrange(year,month)[1])
+    day = min(sourcedate.day, calendar.monthrange(year, month)[1])
     return datetime.date(year, month, day)
 
 
