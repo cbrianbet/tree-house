@@ -70,6 +70,8 @@
                                 <th class="text-left">Invoice Item</th>
                                 <th>Description</th>
                                 <th class="text-right">Cost</th>
+                                <th class="text-right">Paid</th>
+
                             </tr>
                             </thead>
                             <tbody>
@@ -86,6 +88,9 @@
                                     </td>
                                     <td>
                                         {{ bill.amount }}
+                                    </td>
+                                    <td>
+                                        {{ bill.paid }}
                                     </td>
                                 </tr>
 
@@ -105,6 +110,7 @@
                         </div>
                     </div>
                     <div class="text-right">
+                    {% if not invoice.status %}
                         {% if user.acc_type.id != 4 %}
                             <a href="{% url 'more-info' i_id=invoice.uuid %}"
                                class="btn btn-animate btn-animate-side btn-primary">
@@ -117,6 +123,7 @@
                                 <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> Record payment</span>
                             </a>
                         {% endif %}
+                    {% endif %}
 
                         <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"
                                 onclick="javascript:window.print();">

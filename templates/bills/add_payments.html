@@ -3,7 +3,7 @@
 
 {% block title %}
 
-    <title> Add Tenant Invoice | MNEST Africa</title>
+    <title> Record Invoice Payment | MNEST Africa</title>
 {% endblock %}
 
 {% block headscripts %}
@@ -47,8 +47,8 @@
             <h1 class="page-title">Invoice {{ invoice.invoice_no }}</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Bills</a></li>
-                <li class="breadcrumb-item active">Invoice Info</li>
+                <li class="breadcrumb-item"><a href="{% url 'all-invoices' %}">Bills</a></li>
+                <li class="breadcrumb-item active">Record Invoice Payment</li>
             </ol>
         </div>
 
@@ -85,7 +85,8 @@
                                     <td>{{ foo.description }}</td>
                                     <td>
                                         <div class="form-group">
-                                            <input class="form-control" type="number" name="amount" min="0"
+                                            <input class="form-control full" type="number" name="amount" min="0"
+                                                   id="pay"
                                                    onkeyup="calculateColumn()">
                                         </div>
                                     </td>
@@ -221,6 +222,32 @@
         }
     </script>
 
+    <script>
+        $(document).ready(function () {
+            $(".full").keyup(function () {
+                console.log($("#pay"))
+                var l = $('.full').length;
+                var sum2 = 0;
+//Initialize default array
+                var result = [];
+                for (i = 0; i < l; i++) {
+                    //Push each element to the array
+                    let a = 0
+                    result.push(parseFloat($('.full').eq(i).val()));
+                    if (!Number.isNaN(parseFloat($('.full').eq(i).val()))){
+                        a = parseFloat($('.full').eq(i).val());
+                    }
+                    sum2 += a;
+                }
+                console.log(result)
+
+            $("#sum1").text('KSHS. ' + sum2);
+
+            });
+            console.log($('#resp'))
+
+        });
+    </script>
 
 
     <script>

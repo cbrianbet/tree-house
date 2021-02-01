@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from properties.models import *
@@ -84,8 +85,12 @@ def all_invoices(request):
 
 @login_required
 def invoice_info(request, i_id):
-    invoice = Invoice.objects.get(uuid=i_id)
-    inv_items = InvoiceItems.objects.filter(invoice=invoice)
+    try:
+        invoice = Invoice.objects.get(uuid=i_id)
+        inv_items = InvoiceItems.objects.filter(invoice=invoice)
+    except Invoice.DoesNotExist:
+        invoice = RentInvoice.objects.get(uuid=i_id)
+        inv_items = RentItems.objects.filter(invoice=invoice)
     a = []
     if request.method == "POST":
         print(request.POST)
@@ -95,26 +100,41 @@ def invoice_info(request, i_id):
         trans = request.POST.getlist('trans')
         remar = request.POST.getlist('remarks')
         datepaid = request.POST.getlist('datepaid')
-        term = request.POST.getlist('term')
+        term = request.POST.get('term')
         close = False
 
-        if term[0] == 'on':
+        if term == 'on':
             close = not close
 
         for i in range(len(uuid)):
             if amount[i] != '':
-                pay_item = InvoiceItemsTransaction.objects.create(
-                    created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
-                    amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
-                )
+                try:
+                    pay_item = InvoiceItemsTransaction.objects.create(
+                        created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
+                        amount_paid=float(amount[i]), payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
+                    )
 
-                pay_item.save()
+                    pay_item.save()
+                except:
+                    pay_item = RentItemTransaction.objects.create(
+                        created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
+                        amount_paid=float(amount[i]), payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
+                    )
+
+                    pay_item.save()
+
         if close:
-            invoice = Invoice.objects.get(uuid=InvoiceItems.objects.get(uuid=uuid[0]).invoice.uuid)
-            invoice.status = close
-            invoice.save()
+            try:
+                invoice = Invoice.objects.get(uuid=InvoiceItems.objects.get(uuid=uuid[0]).invoice.uuid)
+                invoice.status = close
+                invoice.save()
+                return redirect('all-invoices')
+            except:
+                invoice = RentInvoice.objects.get(uuid=RentItems.objects.get(uuid=uuid[0]).invoice.uuid)
+                invoice.status = close
+                invoice.save()
+                return redirect('all-invoices')
 
-        return redirect('invoice', i_id=i_id)
 
     context = {
         'user': request.user,
@@ -126,8 +146,12 @@ def invoice_info(request, i_id):
 
 @login_required
 def record_payment_request(request, i_id):
-    invoice = Invoice.objects.get(uuid=i_id)
-    inv_items = InvoiceItems.objects.filter(invoice=invoice)
+    try:
+        invoice = Invoice.objects.get(uuid=i_id)
+        inv_items = InvoiceItems.objects.filter(invoice=invoice)
+    except Invoice.DoesNotExist:
+        invoice = RentInvoice.objects.get(uuid=i_id)
+        inv_items = RentItems.objects.filter(invoice=invoice)
 
     if request.method == "POST":
         print(request.POST)
@@ -168,6 +192,19 @@ def invoice(request, i_id):
     invoice = Invoice.objects.get(uuid=i_id)
     inv_items = InvoiceItems.objects.filter(invoice=invoice)
     prop = Properties.objects.get(id=invoice.unit.property.id)
+    bills =[]
+    for b in inv_items:
+        try:
+            paid = 0
+            p = InvoiceItemsTransaction.objects.filter(invoice_item=b)
+            for i in p:
+                paid = paid + i.amount_paid
+                print(p)
+
+        except:
+            paid = 0
+        bills.append({
+            'invoice_item':b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid})
     if prop.rent_collection == 'Occ_date':
         pass
         # TODO code to pull next date
@@ -186,7 +223,7 @@ def invoice(request, i_id):
         profile = Profile.objects.get(user=request.user)
     context = {
         'user': request.user,
-        'bills': inv_items,
+        'bills': bills,
         'invoice': invoice,
         'company': company,
         'profile': profile,
@@ -200,12 +237,18 @@ def rent_invoice(request, i_id):
     invoice = RentInvoice.objects.get(uuid=i_id)
     inv_items = RentItems.objects.filter(invoice=invoice)
     prop = Properties.objects.get(id=invoice.unit.property.id)
-    if prop.rent_collection == 'Occ_date':
-        pass
-        # TODO code to pull next date
-    else:
-        pass
-        # TODO code to pull date and check month
+    bills = []
+    for b in inv_items:
+
+        paid = 0
+        p = RentItemTransaction.objects.filter(invoice_item=b)
+        for i in p:
+            paid = paid + i.amount_paid
+            print(p)
+
+        bills.append({
+            'invoice_item': b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid})
+
 
     if request.user.acc_type.id == 4:
         ten = Tenant.objects.get(profile__user=request.user).unit.property.company
@@ -218,7 +261,7 @@ def rent_invoice(request, i_id):
         profile = Profile.objects.get(user=request.user)
     context = {
         'user': request.user,
-        'bills': inv_items,
+        'bills': bills,
         'invoice': invoice,
         'company': company,
         'profile': profile,
