@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import os
 
@@ -232,6 +233,7 @@ def signup(request):
         type = request.POST.get('acc_type')
         number = request.POST.get('id_no')
         location = request.POST.get('location')
+        sub_picked = request.POST.get('sub_picked')
 
         if request.FILES:
             logo = request.FILES['logo']
@@ -257,11 +259,21 @@ def signup(request):
 
                 cp = CompanyProfile.objects.create(user=user, company=company)
                 cp.save()
+                sub = SubscriptionsCompanies.objects.create(subs=Subscriptions.objects.get(uuid=sub_picked), company=company, date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=sub_picked).duration) ,date_started=datetime.date.today())
+                sub.save()
         except:
             raise PermissionDenied
 
         return redirect('web-login')
     return render(request, 'authapp/register.html', {'sub': sub, 'terms': term, 'privacy': privacy})
+
+
+def add_months(sourcedate, months):
+    month = sourcedate.month - 1 + months
+    year = sourcedate.year + month // 12
+    month = month % 12 + 1
+    day = min(sourcedate.day, calendar.monthrange(year,month)[1])
+    return datetime.date(year, month, day)
 
 
 @login_required
