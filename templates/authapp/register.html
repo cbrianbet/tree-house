@@ -87,19 +87,19 @@
                 <div class="panel-body">
                     <!-- Steps -->
                     <div class="pearls row">
-                        <div class="pearl current col-4">
+                        <div class="pearl current col-3">
                             <div class="pearl-icon"><i class="icon wb-user" aria-hidden="true"></i></div>
                             <span class="pearl-title">Account Info</span>
                         </div>
-                        <div class="pearl col-4">
+                        <div class="pearl col-3">
                             <div class="pearl-icon"><i class="icon wb-payment" aria-hidden="true"></i></div>
                             <span class="pearl-title">Company Info</span>
                         </div>
-                        <div class="pearl col-4">
+                        <div class="pearl col-3">
                             <div class="pearl-icon"><i class="icon wb-cloud" aria-hidden="true"></i></div>
                             <span class="pearl-title">Subscription Plan</span>
                         </div>
-                        <div class="pearl col-4">
+                        <div class="pearl col-3">
                             <div class="pearl-icon"><i class="icon wb-check" aria-hidden="true"></i></div>
                             <span class="pearl-title">Confirmation</span>
                         </div>
@@ -195,6 +195,8 @@
                                                 <div class="card-body">
                                                     <h4 class="text-uppercase">{{ foo.name }}</h4>
                                                     <span>{{ foo.description }}</span>
+                                                    <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
+                                                    <h5 class="card-title">Period: {{ foo.duration }} months</h5>
                                                     <div class="radio-custom radio-primary">
                                                         <input type="radio" name="rent_coll" required
                                                                value="{{ foo.uuid }}">
@@ -207,11 +209,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="wizard-pane" id="exampleGettingOne" role="tabpanel">
+                            <div class="wizard-pane" id="exampleGettingOne1" role="tabpanel">
                                 <div class="text-center my-20">
                                     <div class="form-group clearfix">
                                         <div class="checkbox-custom checkbox-inline checkbox-primary float-left">
-                                            <input type="checkbox" id="inputCheckbox" name="term">
+                                            <input type="checkbox" id="inputCheckbox" name="term" required>
                                             <label for="inputCheckbox"></label>
                                         </div>
                                         <p class="ml-40">By clicking Sign Up, you agree to our

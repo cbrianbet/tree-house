@@ -103,7 +103,7 @@ class RentItemTransaction(models.Model):
     transaction_code = models.CharField(max_length=150, null=True)
     payment_mode = models.CharField(max_length=50, null=True)
     remarks = models.CharField(max_length=150, null=True)
-    amount_paid = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    amount_paid = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
     date_paid = models.DateField()
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="rit_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="rit_updated_by", null=True)
