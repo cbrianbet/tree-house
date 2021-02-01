@@ -214,8 +214,8 @@ def change_password(request):
 
 def signup(request):
     sub = Subscriptions.objects.all()
-    term = open(os.path.join(settings.MEDIA_ROOT, 'terms.txt'), "r").readlines()
-    privacy = open(os.path.join(settings.MEDIA_ROOT, 'privacy.txt'), "r").readlines()
+    term = open(os.path.join(settings.MEDIA_ROOT, 'terms.txt'), "r").read()
+    privacy = open(os.path.join(settings.MEDIA_ROOT, 'privacy.txt'), "r").read()
     # privacy = open("../media/privacy.txt", "r")
     # print(term.readlines())
     if request.method == "POST":
