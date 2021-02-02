@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from authapp.forms import LoginForm
 from authapp.models import *
 from bills.models import *
-from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies
+from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies, Properties
 from tree_house import settings
 
 
@@ -96,8 +96,20 @@ def dashboard(request):
         }
         return render(request, 'authapp/Super_analytics.html', context)
 
-    else:
-        context = {'user': user}
+    elif user.acc_type == 2 or 3:
+        prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
+        unit = Unit.objects.filter(property__in=prop)
+        print(unit)
+
+        sub = SubscriptionsCompanies.objects.values('subs__name').annotate(c=Count('subs__name')).order_by('-c')
+        active_u = Users.objects.all()
+        context = {
+            'user': user,
+            'total_units': unit.count(),
+            'vacant': unit.filter(unit_status="Vacant").count(),
+            'occ': unit.filter(unit_status="Occupied").count(),
+        }
+        # context = {'user': user}
         return render(request, 'authapp/analytics.html', context)
 
 

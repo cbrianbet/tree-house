@@ -20,6 +20,59 @@
         <!-- Page Content -->
         <div class="page-content container-fluid">
             <div class="row" data-plugin="matchHeight" data-by-row="true">
+
+
+                <div class="col-xl-7 col-12">
+                    <!-- Browser Flow Card -->
+                    <div id="browsersFlowWidget" class="card card-shadow card-md">
+                        <div class="card-header card-header-transparent pb-15">
+                            <p class="font-size-14 blue-grey-700 mb-0"></p>
+                        </div>
+                        <div class="card-block px-30">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="productOptionsData" class="text-center">
+                                        <div class="row no-space">
+                                            <!-- The First Counter Block-->
+                                            <div class="col-xl-12 col-md-12">
+                                                <div class="counter">
+                                                    <div class="counter-label">Vacant Units</div>
+                                                    <div class="counter-number-group text-truncate">
+                                                        <span class="counter-number-related red-600"></span>
+                                                        <span class="counter-number red-600">{{ vacant }}/{{ total_units }}</span>
+                                                    </div>
+                                                    <div class="ct-chart" data-counter-type="productVist"></div>
+                                                </div>
+                                            </div>
+                                            <!-- End The First Counter Block-->
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <!-- The Second Counter Block-->
+                                            <div class="col-xl-12 col-md-12">
+                                                <div class="counter">
+                                                    <div class="counter-label">Occupied Units</div>
+                                                    <div class="counter-number-group text-truncate">
+                                                        <span class="counter-number-related green-600"></span>
+                                                        <span class="counter-number green-600">{{ occ }}/{{ total_units }}</span>
+                                                    </div>
+                                                    <div class="ct-chart" data-counter-type="productVistors"></div>
+                                                </div>
+                                            </div>
+                                            <!-- End The Second Counter Block-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 px-0">
+                                    <!-- MorrisDonut -->
+                                    <div id="browersVistsDonut"></div>
+                                    <!-- End MorrisDonut -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Browser Flow Card -->
+                </div>
                 <div class="col-12">
                     <!-- Product Overview Card -->
                     <div id="productOverviewWidget" class="card card-shadow card-md">
@@ -62,10 +115,10 @@
                                     <!-- The First Counter Block-->
                                     <div class="col-xl-3 col-md-6">
                                         <div class="counter">
-                                            <div class="counter-label">Vist</div>
+                                            <div class="counter-label">Vacant Units</div>
                                             <div class="counter-number-group text-truncate">
-                                                <span class="counter-number-related red-600">+</span>
-                                                <span class="counter-number">681</span>
+                                                <span class="counter-number-related red-600"></span>
+                                                <span class="counter-number red-600">{{ vacant }}/{{ total_units }}</span>
                                             </div>
                                             <div class="ct-chart" data-counter-type="productVist"></div>
                                         </div>
@@ -75,10 +128,10 @@
                                     <!-- The Second Counter Block-->
                                     <div class="col-xl-3 col-md-6">
                                         <div class="counter">
-                                            <div class="counter-label">Unique Vistors</div>
+                                            <div class="counter-label">Occupied Units</div>
                                             <div class="counter-number-group text-truncate">
-                                                <span class="counter-number-related green-600">-</span>
-                                                <span class="counter-number">522</span>
+                                                <span class="counter-number-related green-600"></span>
+                                                <span class="counter-number green-600">{{ occ }}/{{ total_units }}</span>
                                             </div>
                                             <div class="ct-chart" data-counter-type="productVistors"></div>
                                         </div>
@@ -116,108 +169,6 @@
                         <!-- End The Content Of First Card -->
                     </div>
                     <!-- End Product Overview Card -->
-                </div>
-
-                <div class="col-xl-7 col-12">
-                    <!-- Browser Flow Card -->
-                    <div id="browsersFlowWidget" class="card card-shadow card-md">
-                        <div class="card-header card-header-transparent pb-15">
-                            <p class="font-size-14 blue-grey-700 mb-0">BROWSER FLOW</p>
-                        </div>
-                        <div class="card-block px-30">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <!-- Browsers Vists Table -->
-                                    <table class="table table-analytics mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Browser</th>
-                                            <th>Vists</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                                <img src="{% static 'authapp/assets/examples/images/browser/chrome-logo.png' %}"
-                                                     title="Chrome"
-                                                     alt="Chrome">
-                                            </td>
-                                            <td>
-                                                Chrome
-                                            </td>
-                                            <td>
-                                                11,976
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="../../assets/examples/images/browser/firefox-logo.png"
-                                                     title="Firefox"
-                                                     alt="Firefox">
-                                            </td>
-                                            <td>
-                                                Firefox
-                                            </td>
-                                            <td>
-                                                1,706
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="../../assets/examples/images/browser/safari-logo.png"
-                                                     title="Safari"
-                                                     alt="Safari">
-                                            </td>
-                                            <td>
-                                                Safari
-                                            </td>
-                                            <td>
-                                                1,677
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="../../assets/examples/images/browser/internet-logo.png"
-                                                     title="Internet"
-                                                     alt="Internet">
-                                            </td>
-                                            <td>
-                                                Internet
-                                            </td>
-                                            <td>
-                                                1,268
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="../../assets/examples/images/browser/opera-logo.png"
-                                                     title="Opera"
-                                                     alt="Opera">
-                                            </td>
-                                            <td>
-                                                Opera
-                                            </td>
-                                            <td>
-                                                915
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <!-- End Browsers Vists Table -->
-                                </div>
-                                <div class="col-md-6 px-0">
-                                    <!-- MorrisDonut -->
-                                    <div id="browersVistsDonut"></div>
-                                    <!-- End MorrisDonut -->
-                                    <!-- Stacked BarChart -->
-                                    <div id="weekStackedBarChart"></div>
-                                    <!--End Stacked BarChart -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Browser Flow Card -->
                 </div>
 
                 <div class="col-xl-5 col-12">
@@ -371,7 +322,43 @@
     <script src="{% static 'authapp/global/vendor/chartist/chartist.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/raphael/raphael.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/morris/morris.min.js' %}"></script>
-<script src="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js' %}"></script>
 
-    <script src="{% static 'authapp/assets/examples/js/dashboard/analytics.js' %}"></script>
+    {#    <script src="{% static 'authapp/assets/examples/js/dashboard/analytics.js' %}"></script>#}
+    <script>
+
+        // Example Morris Donut
+        // --------------------
+        (function () {
+
+            Morris.Donut({
+                resize: true,
+                element: 'browersVistsDonut',
+                data: [{
+                    label: 'Occupied',
+                    value: {{occ}}
+                    //label: 'From last week'
+                }, {
+                    label: 'Vacant',
+                    value:{{vacant}}
+                    //label: 'From last month'
+                }],
+                colors: ['#f96868', '#62a9eb', '#f3a754']
+                //valueColors: ['#37474f', '#f96868', '#76838f']
+            }).on('click', function (i, row) {
+                console.log(i, row);
+            });
+        })();
+    </script>
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+
 {% endblock %}

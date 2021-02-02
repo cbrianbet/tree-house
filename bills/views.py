@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from uuid import uuid4
 
 from .models import *
 from properties.models import *
@@ -39,7 +40,8 @@ def all_invoices(request):
     if request.user.acc_type.id == 5:
         prop = PropertyStaff.objects.filter(user=request.user).values_list('property', flat=True)
         invoice = Invoice.objects.filter(unit__property__in=prop,
-            unit__property__company=CompanyProfile.objects.get(user=request.user).company).order_by('invoice_no')
+                                         unit__property__company=CompanyProfile.objects.get(
+                                             user=request.user).company).order_by('invoice_no')
     a = []
     for inv in invoice:
         total = 0
@@ -110,14 +112,16 @@ def invoice_info(request, i_id):
             if amount[i] != '':
                 try:
                     pay_item = InvoiceItemsTransaction.objects.create(
-                        created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
+                        created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
+                        transaction_code=trans[i],
                         amount_paid=float(amount[i]), payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
                     )
 
                     pay_item.save()
                 except:
                     pay_item = RentItemTransaction.objects.create(
-                        created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
+                        created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]),
+                        transaction_code=trans[i],
                         amount_paid=float(amount[i]), payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
                     )
 
@@ -134,7 +138,6 @@ def invoice_info(request, i_id):
                 invoice.status = close
                 invoice.save()
                 return redirect('all-invoices')
-
 
     context = {
         'user': request.user,
@@ -162,7 +165,6 @@ def record_payment_request(request, i_id):
         remar = request.POST.getlist('remarks')
         datepaid = request.POST.getlist('datepaid')
 
-
         if request.FILES:
             receipt = request.FILES.getlist('evidence')
         else:
@@ -171,8 +173,10 @@ def record_payment_request(request, i_id):
         for i in range(len(uuid)):
             if amount[i] != '':
                 pay_item = InvoiceItemsRequest.objects.create(
-                    created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]), transaction_code=trans[i],
-                    amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i], receipt=receipt[i]
+                    created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
+                    transaction_code=trans[i],
+                    amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i],
+                    receipt=receipt[i]
                 )
 
                 pay_item.save()
@@ -192,7 +196,7 @@ def invoice(request, i_id):
     invoice = Invoice.objects.get(uuid=i_id)
     inv_items = InvoiceItems.objects.filter(invoice=invoice)
     prop = Properties.objects.get(id=invoice.unit.property.id)
-    bills =[]
+    bills = []
     for b in inv_items:
         try:
             paid = 0
@@ -204,7 +208,7 @@ def invoice(request, i_id):
         except:
             paid = 0
         bills.append({
-            'invoice_item':b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid})
+            'invoice_item': b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid})
     if prop.rent_collection == 'Occ_date':
         pass
         # TODO code to pull next date
@@ -249,7 +253,6 @@ def rent_invoice(request, i_id):
         bills.append({
             'invoice_item': b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid})
 
-
     if request.user.acc_type.id == 4:
         ten = Tenant.objects.get(profile__user=request.user).unit.property.company
 
@@ -274,7 +277,7 @@ def rent_invoice(request, i_id):
 def personal_bills(request):
     tenant = Tenant.objects.get(profile__user=request.user)
     invoice = Invoice.objects.filter(invoice_for=tenant.profile.user)
-    a=[]
+    a = []
     for inv in invoice:
         total = 0
         paid = 0
@@ -292,7 +295,7 @@ def personal_bills(request):
         })
 
     r_invoice = RentInvoice.objects.filter(invoice_for=tenant.profile.user)
-    r=[]
+    r = []
     for inv in r_invoice:
         total = 0
         paid = 0
@@ -370,3 +373,59 @@ def increment_rent_invoice_number():
     new_invoice_int = invoice_int + 1
     new_invoice_no = 'INV-REN-' + str('%05d' % new_invoice_int)
     return new_invoice_no
+
+
+@login_required
+def approve_request(request):
+    if request.user == 2 or 3:
+        comp = CompanyProfile.objects.get(user=request.user).company
+        prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
+        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop)
+        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop)
+
+        if request.method == 'POST':
+            r_id = request.POST.get('')
+
+            try:
+                r = InvoiceItemsRequest.objects.get(uuid=r_id)
+                trans = InvoiceItemsTransaction.objects.create(
+                    payment_mode=r.payment_mode, invoice_item=r.invoice_item, transaction_code=r.transaction_code,
+                    amount_paid=r.amount_paid, date_paid=r.date_paid, created_by=request.user)
+                trans.save()
+            except InvoiceItemsRequest.DoesNotExist:
+                try:
+                    rr = RentInvItemsRequest.objects.get(uuid=r_id)
+                    trans = RentItemTransaction.objects.create(
+                        payment_mode=rr.payment_mode, invoice_item=rr.invoice_item, transaction_code=rr.transaction_code,
+                        amount_paid=rr.amount_paid, date_paid=rr.date_paid, created_by=request.user)
+                    trans.save()
+                except RentInvItemsRequest.DoesNotExist:
+                    raise TypeError
+
+    context = {
+        'user': request.user,
+        'req': req,
+        'rreq': rent_req,
+    }
+    return render(request, '',context)
+
+
+@login_required
+def individual_trans(request, uuid):
+    if request.user == 2 or 3:
+        comp = CompanyProfile.objects.get(user=request.user).company
+        prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
+        rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+        invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+        print(rentrec)
+    if request.user == 4:
+        rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+        invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+
+
+    context = {
+        'user': request.user,
+        'req': rentrec,
+        'rreq': invrec,
+    }
+    return render(request, 'bills/trans.html',context)
