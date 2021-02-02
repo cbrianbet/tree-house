@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 .idea/
+/media/logo/
 */migrations
 /tree_house/static/
 /media/propPic/
@@ -136,4 +137,3 @@ dmypy.json
 /media/Lease/
 /tree_house/static/authapp
 /media/Receipts/
-/media/logo/
