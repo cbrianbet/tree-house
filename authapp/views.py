@@ -27,6 +27,8 @@ def login(request):
         if form.is_valid():
             clean = form.cleaned_data
             user = authenticate(username=clean['username'], password=clean['password'])
+            if not Users.objects.get(username=clean['username']).is_active:
+                return HttpResponse('Account is Disabled')
             if user is not None:
                 if user.is_active:
                     log_in(request, user)
@@ -112,6 +114,59 @@ def dashboard(request):
         # context = {'user': user}
         return render(request, 'authapp/analytics.html', context)
 
+
+@login_required
+def suspend_user(request, uid):
+    if not request.user.acc_type.id == 1:
+        raise PermissionDenied
+    user = Users.objects.get(id=uid)
+    if user.is_active:
+        user.is_active = False
+    else:
+        user.is_active = True
+    user.save()
+    return redirect('all-users')
+
+
+@login_required
+def delete_user(request, uid):
+    if not request.user.acc_type.id == 1:
+        raise PermissionDenied
+    user = Users.objects.get(id=uid)
+    user.delete()
+    return redirect('all-users')
+
+
+@login_required
+def suspend_company(request, uid):
+    if not request.user.acc_type.id == 1:
+        raise PermissionDenied
+    company = Companies.objects.get(id=uid)
+    cp =CompanyProfile.objects.filter(company=company)
+    for c in cp:
+        user = Users.objects.get(id=c.user.id)
+        if user.is_active:
+            user.is_active = False
+        else:
+            user.is_active = True
+        user.save()
+
+    return redirect('all-companies')
+
+
+@login_required
+def delete_company(request, uid):
+    if not request.user.acc_type.id == 1:
+        raise PermissionDenied
+    company = Companies.objects.get(id=uid)
+    cp =CompanyProfile.objects.filter(company=company)
+    for c in cp:
+        user = Users.objects.get(id=c.user.id)
+        user.delete()
+    company.delete()
+    cp.delete()
+
+    return redirect('all-companies')
 
 @login_required
 def profile(request):

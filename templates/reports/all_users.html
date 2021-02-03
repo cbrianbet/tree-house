@@ -87,18 +87,18 @@
                                 <td>{{ b.user.last_login }}</td>
                                 <td>
                                     {% if b.user.is_active %}
-                                    <a class="btn btn-primary btn-outline" href="">
-                                        <i class="icon wb-pencil" aria-hidden="true"></i>
-                                        <span class="hidden-sm-down">Suspend User</span>
-                                    </a>
-                                        {% else %}
+                                        <a class="btn btn-primary btn-outline" href="{% url 'suspend_user' uid=b.user.id %}">
+                                            <i class="icon wb-pencil" aria-hidden="true"></i>
+                                            <span class="hidden-sm-down">Suspend User</span>
+                                        </a>
+                                    {% else %}
 
-                                    <a class="btn btn-primary btn-outline" href="">
-                                        <i class="icon wb-pencil" aria-hidden="true"></i>
-                                        <span class="hidden-sm-down">Activate User</span>
-                                    </a>
+                                        <a class="btn btn-warning btn-outline" href="{% url 'suspend_user' uid=b.user.id %}">
+                                            <i class="icon wb-pencil" aria-hidden="true"></i>
+                                            <span class="hidden-sm-down">Activate User</span>
+                                        </a>
                                     {% endif %}
-                                    <a class="btn btn-primary btn-outline" href="">
+                                    <a class="btn btn-danger btn-outline" href="{% url 'delete_user' uid=b.user.id %}">
                                         <i class="icon wb-close" aria-hidden="true"></i>
                                         <span class="hidden-sm-down">Delete User</span>
                                     </a>

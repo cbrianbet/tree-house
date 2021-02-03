@@ -208,6 +208,13 @@
                         type: "error",
                         showConfirmButton: true,
                     });
+                }else if (data === "Account is Disabled") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Account has been Disabled!!',
+                        type: "info",
+                        showConfirmButton: true,
+                    });
                 } else {
                     swal({
                         title: 'Logged in',

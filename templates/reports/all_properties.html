@@ -87,7 +87,7 @@
                                 <td>{{ b.company.name }}</td>
                                 <td>
 
-                                    <a class="btn btn-primary btn-outline" href="">
+                                    <a class="btn btn-primary btn-outline" href="{% url 'delete-prop' pid=b.id %}">
                                         <i class="icon wb-close" aria-hidden="true"></i>
                                         <span class="hidden-sm-down">Delete Property</span>
                                     </a>

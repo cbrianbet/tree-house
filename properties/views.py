@@ -621,3 +621,25 @@ def attach_people(request):
         'people': pa
     }
     return render(request, 'properties/attach_extras.html', context)
+
+
+@login_required
+def delete_property(request, pid):
+    if request.user.acc_type.id  == 1:
+        prop = Properties.objects.get(id=pid)
+        unit = Unit.objects.filter(property=prop)
+        tenant = Tenant.objects.filter(unit__in=unit)
+        for t in tenant:
+            user = Users.objects.filter(id=t.profile.user.id)
+            user.delete()
+        tenant.delete()
+        unit.delete()
+        prop.delete()
+        return redirect('all-props')
+    elif request.user.acc_type.id == 2 or 3:
+        prop = Properties.objects.get(id=pid)
+        unit = Unit.objects.filter(property=prop)
+        unit.delete()
+        prop.delete()
+        return redirect('prop-list')
+
