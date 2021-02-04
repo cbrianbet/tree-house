@@ -29,6 +29,12 @@ class Command(BaseCommand):
                 to_pay = item.amount + item.delay_penalties
                 p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
                 w = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('waiver'))
+
+                if p['amount_paid__sum'] is None:
+                    p=0
+                if w['waiver__sum'] is None:
+                    w=0
+
                 paid =  p['amount_paid__sum'] + w['waiver__sum']
                 if paid >= to_pay:
                     invs = RentInvoice.objects.get(id=item.invoice.id)
