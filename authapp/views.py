@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login as log_in, logout, update_se
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -101,7 +101,18 @@ def dashboard(request):
     elif user.acc_type == 2 or 3:
         prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
         unit = Unit.objects.filter(property__in=prop)
-        print(unit)
+        # print(unit)
+        paid  = 0
+        inv = RentInvoice.objects.filter(unit__in=unit)
+        items = RentItems.objects.filter(invoice__in=inv)
+        print(inv)
+        to_pay = items.aggregate(Sum('amount'))['amount__sum'] + items.aggregate(Sum('amount'))['amount__sum']
+        for item in items:
+            p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
+            print(p)
+            paid = paid + p['amount_paid__sum']
+        pec1 = inv.filter(status=True)
+        pec2 = inv.filter(status=False)
 
         sub = SubscriptionsCompanies.objects.values('subs__name').annotate(c=Count('subs__name')).order_by('-c')
         active_u = Users.objects.all()
@@ -110,6 +121,11 @@ def dashboard(request):
             'total_units': unit.count(),
             'vacant': unit.filter(unit_status="Vacant").count(),
             'occ': unit.filter(unit_status="Occupied").count(),
+            'open': inv.filter(status=False).count(),
+            'due': inv.filter(status=False).count(),
+            'pec1': pec1.count(),
+            'pec2': pec2.count(),
+            'all_inv': inv.count(),
         }
         # context = {'user': user}
         return render(request, 'authapp/analytics.html', context)

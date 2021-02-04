@@ -22,7 +22,7 @@
             <div class="row" data-plugin="matchHeight" data-by-row="true">
 
 
-                <div class="col-xl-7 col-12">
+                <div class="col-xl-5 col-12">
                     <!-- Browser Flow Card -->
                     <div id="browsersFlowWidget" class="card card-shadow card-md">
                         <div class="card-header card-header-transparent pb-15">
@@ -65,7 +65,58 @@
                                 </div>
                                 <div class="col-md-6 px-0">
                                     <!-- MorrisDonut -->
-                                    <div id="browersVistsDonut"></div>
+                                    <div id="occDonut"></div>
+                                    <!-- End MorrisDonut -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Browser Flow Card -->
+                </div>
+                <div class="col-xl-7 col-12">
+                    <!-- Browser Flow Card -->
+                    <div id="browsersFlowWidget" class="card card-shadow card-md">
+                        <div class="card-header card-header-transparent pb-15">
+                            <p class="font-size-14 blue-grey-700 mb-0"></p>
+                        </div>
+                        <div class="card-block px-30">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="productOptionsData" class="text-center">
+                                        <div class="row no-space">
+                                            <!-- The First Counter Block-->
+                                            <div class="col-xl-12 col-md-12">
+                                                <div class="counter">
+                                                    <div class="counter-label">Unpaid Invoices</div>
+                                                    <div class="counter-number-group text-truncate">
+                                                        <span class="counter-number-related red-600"></span>
+                                                        <span class="counter-number red-600">{{ pec2 }}/{{ all_inv }}</span>
+                                                    </div>
+                                                    <div class="ct-chart" data-counter-type="productVist"></div>
+                                                </div>
+                                            </div>
+                                            <!-- End The First Counter Block-->
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <!-- The Second Counter Block-->
+                                            <div class="col-xl-12 col-md-12">
+                                                <div class="counter">
+                                                    <div class="counter-label">Paid Invoices</div>
+                                                    <div class="counter-number-group text-truncate">
+                                                        <span class="counter-number-related green-600"></span>
+                                                        <span class="counter-number green-600">{{ pec1 }}/{{ all_inv }}</span>
+                                                    </div>
+                                                    <div class="ct-chart" data-counter-type="productVistors"></div>
+                                                </div>
+                                            </div>
+                                            <!-- End The Second Counter Block-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 px-0">
+                                    <!-- MorrisDonut -->
+                                    <div id="paid_donut"></div>
                                     <!-- End MorrisDonut -->
                                 </div>
                             </div>
@@ -324,7 +375,7 @@
     <script src="{% static 'authapp/global/vendor/morris/morris.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js' %}"></script>
 
-    {#    <script src="{% static 'authapp/assets/examples/js/dashboard/analytics.js' %}"></script>#}
+        <script src="{% static 'authapp/assets/examples/js/dashboard/analytics.js' %}"></script>
     <script>
 
         // Example Morris Donut
@@ -333,7 +384,7 @@
 
             Morris.Donut({
                 resize: true,
-                element: 'browersVistsDonut',
+                element: 'occDonut',
                 data: [{
                     label: 'Occupied',
                     value: {{occ}}
@@ -343,7 +394,29 @@
                     value:{{vacant}}
                     //label: 'From last month'
                 }],
-                colors: ['#9d3030', '#1c9114', '#f3a754']
+                colors: ['#11c26d', '#ff4c52', '#f3a754']
+                //valueColors: ['#37474f', '#f96868', '#76838f']
+            }).on('click', function (i, row) {
+                console.log(i, row);
+            });
+        })();
+        // Example Morris Donut
+        // --------------------
+        (function () {
+
+            Morris.Donut({
+                resize: true,
+                element: 'paid_donut',
+                data: [{
+                    label: 'Paid',
+                    value: {{pec2}}
+                    //label: 'From last week'
+                }, {
+                    label: 'Unpaid',
+                    value:{{pec1}}
+                    //label: 'From last month'
+                }],
+                colors: ['#11c26d', '#ff4c52', '#f3a754']
                 //valueColors: ['#37474f', '#f96868', '#76838f']
             }).on('click', function (i, row) {
                 console.log(i, row);
