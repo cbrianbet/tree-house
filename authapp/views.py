@@ -2,6 +2,7 @@ import calendar
 import datetime
 import os
 
+import requests
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as log_in, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -116,8 +117,10 @@ def dashboard(request):
         pec2 = inv.filter(status=False)
         unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
 
-        sub = SubscriptionsCompanies.objects.values('subs__name').annotate(c=Count('subs__name')).order_by('-c')
-        active_u = Users.objects.all()
+        req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
+        oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit))
+
+
         context = {
             'user': user,
             'total_units': unit.count(),
@@ -129,6 +132,9 @@ def dashboard(request):
             'pec2': pec2.count(),
             'all_inv': inv.count(),
             'unpunits': unp.count(),
+            'req': req.count(),
+            'oreq': oreq.count(),
+
         }
 
         return render(request, 'authapp/analytics.html', context)
@@ -351,11 +357,28 @@ def signup(request):
                     date_started=datetime.date.today()
                 )
                 sub.save()
+                wal_id = hapokashcreate()
+                try:
+                    if wal_id['success']:
+                        profile.hapokash = wal_id['wallet']['id']
+                        profile.save()
+                    else:
+                        print('false')
+                except:
+                    print(wal_id)
+
         except:
             raise PermissionDenied
 
         return redirect('web-login')
     return render(request, 'authapp/register.html', {'sub': sub, 'terms': term, 'privacy': privacy})
+
+
+def hapokashcreate():
+    URL = "https://portal.hapokash.app/api/wallet/create"
+    PARAMS = {"currency": "KES"}
+    r = requests.post(url=URL, data=PARAMS)
+    return r.json()
 
 
 def add_months(sourcedate, months):

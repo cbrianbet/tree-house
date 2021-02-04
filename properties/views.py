@@ -7,13 +7,15 @@ import string
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 from authapp.models import AccTypes
+from authapp.views import hapokashcreate
 from bills.models import Invoice, InvoiceItems, RentInvoice, RentItems
 from bills.views import increment_invoice_number, increment_rent_invoice_number
 from tree_house import settings
@@ -285,6 +287,16 @@ def add_tenant(request, u_uid):
         p = Profile.objects.create(
             first_name=f_name, last_name=l_name, msisdn=mobile, id_number=id_no, user=u
         )
+        wal_id = hapokashcreate()
+        try:
+            if wal_id['success']:
+                p.hapokash = wal_id['wallet']['id']
+                p.save()
+            else:
+                print('false')
+        except:
+            print(wal_id)
+
         p.save()
         t = Tenant.objects.create(
             secondary_msisdn=secondary_mobile, date_occupied=date_of_occupancy, unit=unit, profile=p, discount=discount,
@@ -570,11 +582,21 @@ def staff(request):
             print('error')
         inform_staff(username, pwrd, email, f_name, CompanyProfile.objects.get(user=request.user).company.name)
 
+    perm = Permission.objects.filter(Q(name__contains='Can add questionnaire') |
+                                     Q(name__contains='Can change questionnaire') |
+                                     Q(name__contains='Can delete questionnaire') |
+                                     Q(name__contains='Can view questionnaire') |
+                                     Q(name__exact='Can add partner') |
+                                     Q(name__exact='Can change partner') |
+                                     Q(name__exact='Can delete partner') |
+                                     Q(name__exact='Can view partner'))
+    # | Q(name__contains=''))
+
     context = {
         'user': request.user,
         'staff': staff,
         'props': Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company),
-        'can_add': can_add
+        'can_add': can_add, 'perms': perm,
     }
     return render(request, 'properties/comany_staff.html', context)
 

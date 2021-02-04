@@ -42,6 +42,7 @@ class Profile(models.Model):
     id_number = models.CharField(max_length=12, null=True, blank=True)
     msisdn = models.CharField(max_length=15, null=True, blank=True)
     terms_accepted = models.BooleanField(null=True)
+    hapokash = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         db_table = "Profile"
