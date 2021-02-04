@@ -107,11 +107,11 @@ def dashboard(request):
         items = RentItems.objects.filter(invoice__in=inv)
         print(inv)
 
-        to_pay = items.aggregate(Sum('amount'))['amount__sum'] + items.aggregate(Sum('amount'))['amount__sum']
-        for item in items:
-            p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
-            print(p)
-            paid = paid + p['amount_paid__sum']
+        # to_pay = items.aggregate(Sum('amount'))['amount__sum'] + items.aggregate(Sum('amount'))['amount__sum']
+        # for item in items:
+        #     p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
+        #     print(p)
+        #     paid = paid + p['amount_paid__sum']
         pec1 = inv.filter(status=True)
         pec2 = inv.filter(status=False)
         unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
