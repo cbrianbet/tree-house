@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from pyasn1_modules.rfc2459 import id_at_initials
 
 from authapp.forms import LoginForm
 from authapp.models import *
@@ -106,6 +107,7 @@ def dashboard(request):
         inv = RentInvoice.objects.filter(unit__in=unit)
         items = RentItems.objects.filter(invoice__in=inv)
         print(inv)
+
         to_pay = items.aggregate(Sum('amount'))['amount__sum'] + items.aggregate(Sum('amount'))['amount__sum']
         for item in items:
             p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
@@ -113,6 +115,7 @@ def dashboard(request):
             paid = paid + p['amount_paid__sum']
         pec1 = inv.filter(status=True)
         pec2 = inv.filter(status=False)
+        unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
 
         sub = SubscriptionsCompanies.objects.values('subs__name').annotate(c=Count('subs__name')).order_by('-c')
         active_u = Users.objects.all()
@@ -126,8 +129,9 @@ def dashboard(request):
             'pec1': pec1.count(),
             'pec2': pec2.count(),
             'all_inv': inv.count(),
+            'unpunits': unp.count(),
         }
-        # context = {'user': user}
+
         return render(request, 'authapp/analytics.html', context)
 
 
