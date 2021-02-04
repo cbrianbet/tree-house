@@ -12,7 +12,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from pyasn1_modules.rfc2459 import id_at_initials
 
 from authapp.forms import LoginForm
 from authapp.models import *
