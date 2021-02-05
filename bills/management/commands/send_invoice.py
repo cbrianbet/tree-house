@@ -1,4 +1,5 @@
 import calendar
+import datetime
 from datetime import date
 
 from django.core.mail import send_mail
@@ -43,9 +44,6 @@ class Command(BaseCommand):
                     if today == (coll_day - 3):
                         apply_invoice(t.unit.value, calendar.month_name[month.month], Users.objects.get(id=1), t,
                                       '{}-{}-{}'.format(coll_day, calendar.month_name[month.month], month.year))
-                    elif coll_day == today:
-                        # TODO send reminder
-                        pass
 
                 elif coll_day == 0:
                     print('Not assigned')
@@ -54,7 +52,7 @@ class Command(BaseCommand):
                     month = date.today()
                     year = month.year
                     month = month.month
-                    if month - 1 == 0:
+                    if month == 1:
                         month = 12
                         year = year - 1
                     else:
@@ -63,14 +61,14 @@ class Command(BaseCommand):
                     last_day = calendar.monthrange(year, month)[1]
                     last_day = int(last_day)
 
-                    if coll_day > last_day:
+                    if coll_day == 3:
                         coll_day = last_day
+                    else:
+                        coll_day = coll_day + last_day - 3
 
                     if today == (coll_day - 3):
                         apply_invoice(t.unit.value, calendar.month_name[month], Users.objects.get(id=1), t,
                                       '{}-{}-{}'.format(coll_day, calendar.month_name[month], year))
-
-
 
 
         except Tenant.DoesNotExist:
@@ -84,7 +82,7 @@ def apply_invoice(rent, month, user, tenant, date):
         #     send_email(r.invoice_for, date)
         inv_no = increment_rent_invoice_number()
         i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user,
-                                       unit=tenant.unit)
+                                       unit=tenant.unit, date_due=datetime.datetime.now() + datetime.timedelta(days=3))
         i.save()
         inv_item1 = RentItems.objects.create(invoice=i, invoice_item='RENT FOR {}'.format(month),
                                              amount=round(rent, 2),

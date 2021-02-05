@@ -28,7 +28,7 @@ class RentInvoice(models.Model):
     invoice_for = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='user_re_invoiced')
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     email_inform = models.BooleanField(default=False)
-    date_due = models.DateField(default=date.today())
+    date_due = models.DateField()
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="i_re_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="i_re_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)

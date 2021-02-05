@@ -231,7 +231,8 @@ def invoice(request, i_id):
         'invoice': invoice,
         'company': company,
         'profile': profile,
-        'prop': prop.rent_collection
+        'prop': prop.rent_collection,
+        'due_date': invoice.created_at.date(),
     }
     return render(request, 'bills/invoice.html', context)
 
@@ -268,7 +269,8 @@ def rent_invoice(request, i_id):
         'invoice': invoice,
         'company': company,
         'profile': profile,
-        'prop': prop.rent_collection
+        'prop': prop.rent_collection,
+        'due_date': invoice.date_due,
     }
     return render(request, 'bills/invoice.html', context)
 
