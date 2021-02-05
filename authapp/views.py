@@ -393,3 +393,7 @@ def add_months(sourcedate, months):
 def logout_request(request):
     logout(request)
     return redirect('web-login')
+
+
+def about(request):
+    return render(request, 'authapp/about.html')
