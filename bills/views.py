@@ -107,6 +107,10 @@ def invoice_info(request, i_id):
         datepaid = request.POST.getlist('datepaid')
         term = request.POST.get('term')
         close = False
+        waiver = request.POST.getlist('waiver')
+
+        if waiver == '':
+            waiver = 0
 
         if term == 'on':
             close = not close
@@ -116,7 +120,7 @@ def invoice_info(request, i_id):
                 try:
                     pay_item = InvoiceItemsTransaction.objects.create(
                         created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
-                        transaction_code=trans[i],
+                        transaction_code=trans[i], waiver=waiver,
                         amount_paid=float(amount[i]), payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
                     )
 
