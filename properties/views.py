@@ -645,6 +645,14 @@ def attach_people(request):
     return render(request, 'properties/attach_extras.html', context)
 
 
+def vacate_tenant(request, tid):
+    tenant = Tenant.objects.get(pk=tid)
+    context = {
+        'user': request.user,
+    }
+    return render(request,'',context)
+
+
 @login_required
 def delete_property(request, pid):
     if request.user.acc_type.id  == 1:

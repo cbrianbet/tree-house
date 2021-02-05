@@ -367,8 +367,8 @@ def signup(request):
                 except:
                     print(wal_id)
 
-        except:
-            raise PermissionDenied
+        except Exception  as e:
+            raise e
 
         return redirect('web-login')
     return render(request, 'authapp/register.html', {'sub': sub, 'terms': term, 'privacy': privacy})

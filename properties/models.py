@@ -185,3 +185,24 @@ class PeopleAttached(models.Model):
 
     class Meta:
         db_table = "People Attached"
+
+
+class VacateNotice(models.Model):
+    notice_to = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    vacate_date = models.DateField()
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="vn_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="vn_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "Vacate Notice"
+
+class TenantHistory(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    curr_unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        db_table = "Tenant History"
