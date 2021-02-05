@@ -666,7 +666,7 @@ def delete_property(request, pid):
         unit.delete()
         prop.delete()
         return redirect('all-props')
-    elif request.user.acc_type.id == 2 or 3:
+    elif request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         prop = Properties.objects.get(id=pid)
         unit = Unit.objects.filter(property=prop)
         unit.delete()

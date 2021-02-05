@@ -99,7 +99,7 @@ def dashboard(request):
         }
         return render(request, 'authapp/Super_analytics.html', context)
 
-    elif user.acc_type == 2 or 3:
+    elif user.acc_type.id == 2 or user.acc_type.id == 3:
         prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
         unit = Unit.objects.filter(property__in=prop)
         # print(unit)

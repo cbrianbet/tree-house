@@ -398,7 +398,7 @@ def increment_rent_invoice_number():
 
 @login_required
 def approve_request(request, pid):
-    if request.user == 2 or 3:
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         try:
             pay = InvoiceItemsRequest.objects.get(uuid=pid)
             trans = InvoiceItemsTransaction.objects.create(
@@ -425,7 +425,7 @@ def approve_request(request, pid):
 
 @login_required
 def reject_request(request, pid):
-    if request.user == 2 or 3:
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         try:
             pay = InvoiceItemsRequest.objects.get(uuid=pid)
 
@@ -444,7 +444,7 @@ def reject_request(request, pid):
 
 @login_required
 def list_request(request):
-    if request.user == 2 or 3:
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         comp = CompanyProfile.objects.get(user=request.user).company
         prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
         rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=True).exclude(status=False)
@@ -465,13 +465,13 @@ def list_request(request):
 
 @login_required
 def individual_trans(request, uuid):
-    if request.user == 2 or 3:
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         comp = CompanyProfile.objects.get(user=request.user).company
         prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
         rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
         invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
         print(rentrec)
-    if request.user == 4:
+    if request.user.acc_type.id == 4:
         rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
         invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
 
