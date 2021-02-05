@@ -119,9 +119,24 @@
                                             <label class="col-xl-12 col-md-3 form-control-label" for="acc_type">Properties
                                                 *</label>
                                             <select data-plugin="selectpicker" title="Properties" multiple name="prop"
-                                                    data-live-search="true" data-size="5" data-actions-box="true">
+                                                    data-live-search="true" data-size="5" data-actions-box="true" required>
                                                 {% for prop in props %}
                                                     <option value="{{ prop.id }}">{{ prop.property_name }}</option>
+
+                                                {% endfor %}
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class=" col-xl-12 col-md-9">
+                                            <label class="col-xl-12 col-md-3 form-control-label" for="acc_type">Permissions
+                                                *</label>
+                                            <select data-plugin="selectpicker" title="Permissions" multiple name="perms"
+                                                    data-live-search="true" data-size="7" data-actions-box="true" required>
+                                                {% for pp in perms %}
+                                                    <option value="{{ pp.id }}">{{ pp.name }}</option>
 
                                                 {% endfor %}
 
@@ -176,8 +191,12 @@
                                 <td>{{ b.user.email }}</td>
                                 <td>
                                     <a class="btn" href="">
-                                        <i class="icon wb-plus" aria-hidden="true"></i>
-                                        <span class="hidden-sm-down">More</span>
+                                        <i class="icon wb-pencil" aria-hidden="true"></i>
+                                        <span class="hidden-sm-down">Deactivate</span>
+                                    </a>
+                                    <a class="btn" href="">
+                                        <i class="icon wb-pencil" aria-hidden="true"></i>
+                                        <span class="hidden-sm-down">Edit</span>
                                     </a>
                                 </td>
                             </tr>

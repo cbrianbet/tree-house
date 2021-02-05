@@ -557,6 +557,7 @@ def staff(request):
         mobile = request.POST.get('mobile')
         number = request.POST.get('id_no')
         props = request.POST.getlist('prop')
+        perms = request.POST.getlist('perms')
 
         print(request.POST)
 
@@ -578,25 +579,34 @@ def staff(request):
                     ps = PropertyStaff.objects.create(property_id=p, created_by=request.user, user=user)
                     ps.save()
 
+                for par in perms:
+                    user.user_permissions.add(Permission.objects.get(id=par))
+                    user.user_permissions.all()
+
+
         except:
             print('error')
         inform_staff(username, pwrd, email, f_name, CompanyProfile.objects.get(user=request.user).company.name)
 
-    perm = Permission.objects.filter(Q(name__contains='Can add questionnaire') |
-                                     Q(name__contains='Can change questionnaire') |
-                                     Q(name__contains='Can delete questionnaire') |
-                                     Q(name__contains='Can view questionnaire') |
-                                     Q(name__exact='Can add partner') |
-                                     Q(name__exact='Can change partner') |
-                                     Q(name__exact='Can delete partner') |
-                                     Q(name__exact='Can view partner'))
-    # | Q(name__contains=''))
+    perm = Permission.objects.filter(
+        Q(name__contains='Can add properties') | Q(name__contains='Can change properties') | Q(
+            name__contains='Can delete properties') | Q(name__contains='Can view properties') | Q(
+            name__exact='Can add unit') | Q(name__exact='Can change unit') | Q(name__exact='Can delete unit') | Q(
+            name__exact='Can view unit') | Q(name__exact='Can add tenant') | Q(name__exact='Can change tenant') |
+        Q(name__exact='Can view tenant') | Q(name__exact='Can add invoice') | Q(name__exact='Can view tenant') | Q(
+            name__exact='Can change invoice') | Q(name__exact='Can view invoice') | Q(
+            name__exact='Can view tenant') | Q(name__exact='Can delete tenant') | Q(
+            name__exact='Can add invoice items transaction') | Q(name__exact='Can view invoice items transaction') |
+        Q(name__exact='Can add vacate notice') | Q(name__exact='Can change invoice items request') |
+        Q(name__exact='Can add invoice items request') | Q(name__exact='Can add invoice items request')
+    )
 
     context = {
         'user': request.user,
         'staff': staff,
         'props': Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company),
-        'can_add': can_add, 'perms': perm,
+        'can_add': can_add,
+        'perms': perm,
     }
     return render(request, 'properties/comany_staff.html', context)
 
@@ -650,12 +660,12 @@ def vacate_tenant(request, tid):
     context = {
         'user': request.user,
     }
-    return render(request,'',context)
+    return render(request, '', context)
 
 
 @login_required
 def delete_property(request, pid):
-    if request.user.acc_type.id  == 1:
+    if request.user.acc_type.id == 1:
         prop = Properties.objects.get(id=pid)
         unit = Unit.objects.filter(property=prop)
         tenant = Tenant.objects.filter(unit__in=unit)
@@ -672,4 +682,3 @@ def delete_property(request, pid):
         unit.delete()
         prop.delete()
         return redirect('prop-list')
-
