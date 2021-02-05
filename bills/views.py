@@ -1,4 +1,7 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
@@ -170,18 +173,34 @@ def record_payment_request(request, i_id):
         else:
             receipt = ''
 
-        for i in range(len(uuid)):
-            if amount[i] != '':
-                pay_item = InvoiceItemsRequest.objects.create(
-                    created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
-                    transaction_code=trans[i],
-                    amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i],
-                    receipt=receipt[i]
-                )
+        try:
+            for i in range(len(uuid)):
+                if amount[i] != '':
+                        pay_item = InvoiceItemsRequest.objects.create(
+                            created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
+                            transaction_code=trans[i], amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i],
+                            date_paid=datepaid[i], receipt=receipt[i]
+                        )
 
-                pay_item.save()
+                        pay_item.save()
 
-        return redirect('invoice', i_id=i_id)
+            return redirect('invoice', i_id=i_id)
+        except InvoiceItems.DoesNotExist:
+            for i in range(len(uuid)):
+                if amount[i] != '':
+
+                    pay_item = RentInvItemsRequest.objects.create(
+                        created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]),
+                        transaction_code=trans[i],
+                        amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i],
+                        receipt=receipt[i]
+                    )
+
+                    pay_item.save()
+
+            return redirect('rinvoice', i_id=i_id)
+
+
 
     context = {
         'user': request.user,
@@ -378,38 +397,70 @@ def increment_rent_invoice_number():
 
 
 @login_required
-def approve_request(request):
+def approve_request(request, pid):
+    if request.user == 2 or 3:
+        try:
+            pay = InvoiceItemsRequest.objects.get(uuid=pid)
+            trans = InvoiceItemsTransaction.objects.create(
+                payment_mode=pay.payment_mode, invoice_item=pay.invoice_item, transaction_code=pay.transaction_code,
+                amount_paid=pay.amount_paid, date_paid=pay.date_paid, created_by=request.user)
+
+            trans.save()
+            pay.status = True
+            pay.save()
+        except InvoiceItemsRequest.DoesNotExist:
+            pay = RentInvItemsRequest.objects.get(uuid=pid)
+            trans = RentItemTransaction.objects.create(
+                payment_mode=pay.payment_mode, invoice_item=pay.invoice_item, transaction_code=pay.transaction_code,
+                amount_paid=pay.amount_paid, date_paid=pay.date_paid, created_by=request.user)
+
+            trans.save()
+            pay.status = True
+            pay.save()
+        except Exception as e:
+            raise e
+
+        return redirect('req-payment-list')
+
+
+@login_required
+def reject_request(request, pid):
+    if request.user == 2 or 3:
+        try:
+            pay = InvoiceItemsRequest.objects.get(uuid=pid)
+
+            pay.status = False
+            pay.save()
+        except InvoiceItemsRequest.DoesNotExist:
+            pay = RentInvItemsRequest.objects.get(uuid=pid)
+
+            pay.status = False
+            pay.save()
+        except Exception as e:
+            raise e
+
+        return redirect('req-payment-list')
+
+
+@login_required
+def list_request(request):
     if request.user == 2 or 3:
         comp = CompanyProfile.objects.get(user=request.user).company
         prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
-        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop)
-        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop)
+        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=True).exclude(status=False)
+        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=True).exclude(status=False)
+        rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
+        req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
 
-        if request.method == 'POST':
-            r_id = request.POST.get('')
-
-            try:
-                r = InvoiceItemsRequest.objects.get(uuid=r_id)
-                trans = InvoiceItemsTransaction.objects.create(
-                    payment_mode=r.payment_mode, invoice_item=r.invoice_item, transaction_code=r.transaction_code,
-                    amount_paid=r.amount_paid, date_paid=r.date_paid, created_by=request.user)
-                trans.save()
-            except InvoiceItemsRequest.DoesNotExist:
-                try:
-                    rr = RentInvItemsRequest.objects.get(uuid=r_id)
-                    trans = RentItemTransaction.objects.create(
-                        payment_mode=rr.payment_mode, invoice_item=rr.invoice_item, transaction_code=rr.transaction_code,
-                        amount_paid=rr.amount_paid, date_paid=rr.date_paid, created_by=request.user)
-                    trans.save()
-                except RentInvItemsRequest.DoesNotExist:
-                    raise TypeError
+    else:
+        raise PermissionDenied
 
     context = {
         'user': request.user,
-        'req': req,
-        'rreq': rent_req,
+        'req': chain(req, rent_req),
+        'req_past': chain(rent_req_past, req_past)
     }
-    return render(request, '',context)
+    return render(request, 'bills/all_requests.html',context)
 
 
 @login_required

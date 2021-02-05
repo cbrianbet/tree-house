@@ -382,12 +382,28 @@
                                     <span class="site-menu-title">Properties</span>
                                 </a>
                             </li>
-                            <li class="site-menu-item">
-                                <a class="animsition-link" href="{% url 'all-invoices' %}">
-                                    <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
+                            <li class="site-menu-item has-sub">
+                                <a href="javascript:void(0)">
+                                    <i class="site-menu-icon wb-link" aria-hidden="true"></i>
                                     <span class="site-menu-title">Bills</span>
+                                    <div class="site-menu-label">
+                                    </div>
+                                    <span class="site-menu-arrow"></span>
                                 </a>
+                                <ul class="site-menu-sub">
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="{% url 'all-invoices' %}">
+                                            <span class="site-menu-title">Invoices</span>
+                                        </a>
+                                    </li>
+                                    <li class="site-menu-item">
+                                        <a class="animsition-link" href="{% url 'req-payment-list' %}">
+                                            <span class="site-menu-title">Payment Requests</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
+
                             {% if user.acc_type.id != 5 %}
                                 <li class="site-menu-item">
                                     <a class="animsition-link" href="{% url 'company_staff' %}">
@@ -412,11 +428,26 @@
                     {% endif %}
                     {% if user.acc_type.id == 4 %}
 
-                        <li class="site-menu-item">
-                            <a class="animsition-link" href="{% url 'tenant_bill-personal' %}">
-                                <i class="site-menu-icon wb-paperclip" aria-hidden="true"></i>
+                        <li class="site-menu-item has-sub">
+                            <a href="javascript:void(0)">
+                                <i class="site-menu-icon wb-link" aria-hidden="true"></i>
                                 <span class="site-menu-title">Bills</span>
+                                <div class="site-menu-label">
+                                </div>
+                                <span class="site-menu-arrow"></span>
                             </a>
+                            <ul class="site-menu-sub">
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'tenant_bill-personal' %}">
+                                        <span class="site-menu-title">Invoices</span>
+                                    </a>
+                                </li>
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'req-payment-list' %}">
+                                        <span class="site-menu-title">Payment Requests</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         {#                        <li class="site-menu-item">#}
                         {#                            <a class="animsition-link" href="{% url 'prop-list' %}">#}

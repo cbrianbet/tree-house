@@ -12,7 +12,9 @@ urlpatterns = [
     path('bills/rinvoice/<uuid:i_id>', views.rent_invoice, name='rinvoice'),
     path('bills/record/payment-request/<uuid:i_id>', views.record_payment_request, name='record-payment'),
     path('bills/payment/trans/<uuid:uuid>', views.individual_trans, name='individual-payments'),
-    path('bills/approve/payment', views.approve_request, name='approve-payment'),
+    path('bills/approve/payment/<uuid:pid>', views.approve_request, name='approve-payment'),
+    path('bills/reject/payment/<uuid:pid>', views.reject_request, name='reject-payment'),
+    path('bills/payment/requests', views.list_request, name='req-payment-list'),
     # path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),
 
 ]

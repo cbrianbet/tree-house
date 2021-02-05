@@ -1,0 +1,269 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block title %}
+
+    <title> Payment Requests | MNEST Africa</title>
+{% endblock %}
+
+{% block headscripts %}
+
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Payment Requests</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active">Payment Requests</li>
+            </ol>
+
+        </div>
+
+        <div class="page-content">
+
+            <!-- Panel Table Tools -->
+            <div class="panel">
+                <header class="panel-heading">
+                    <h3 class="panel-title">Invoices</h3>
+                </header>
+                <div class="panel-body">
+
+                    <!-- Example Tabs -->
+                    <div class="example-wrap">
+                        <div class="nav-tabs-horizontal" data-plugin="tabs">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" data-toggle="tab" href="#exampleTabsOne"
+                                       aria-controls="exampleTabsOne" role="tab">
+                                        Pending Requests</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" data-toggle="tab" href="#exampleTabsTwo"
+                                       aria-controls="exampleTabsTwo" role="tab">Past Requests</a>
+                                </li>
+
+                                <li class="dropdown nav-item" role="presentation">
+                                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#"
+                                       aria-expanded="false">Menu </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <a class="active dropdown-item" data-toggle="tab" href="#exampleTabsOne"
+                                           aria-controls="exampleTabsOne"
+                                           role="tab">Pending Requests</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#exampleTabsTwo"
+                                           aria-controls="exampleTabsTwo"
+                                           role="tab">Past Requests</a>
+
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="tab-content pt-20">
+                                <div class="tab-pane active" id="exampleTabsOne" role="tabpanel">
+
+                                    <table class="table table-hover dataTable table-striped w-full"
+                                           id="exampleTableTools2">
+                                        <thead>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Invoice Items</th>
+                                            <th>Unit</th>
+                                            <th>Property</th>
+                                            <th>Amount</th>
+                                            <th>Date Paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Invoice Items</th>
+                                            <th>Unit</th>
+                                            <th>Property</th>
+                                            <th>Amount</th>
+                                            <th>Date Paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                        {% for b in req %}
+                                            <tr>
+                                                <td>{{ b.invoice_item.invoice.invoice_no }}</td>
+                                                <td>{{ b.invoice_item.invoice_item }}</td>
+                                                <td>{{ b.invoice_item.invoice.unit.unit_name }}</td>
+                                                <td>{{ b.invoice_item.invoice.unit.property.property_name }}</td>
+                                                <td>{{ b.amount_paid }}</td>
+                                                <td>{{ b.date_paid }}</td>
+                                                <td>Pending</td>
+                                                <td>{{ b.created_by.username }}</td>
+                                                <td>{{ b.created_at }}</td>
+                                                <td>
+                                                    {% if b.receipt %}
+                                                        <a class="btn btn-primary" href="#myModal" data-toggle="modal"
+                                                           data-img-url="{{ b.receipt.url }}">
+                                                            <i class="icon wb-time" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Receipt</span>
+                                                        </a>
+                                                    {% endif %}
+                                                    <a class="btn btn-success"
+                                                       href="{% url 'approve-payment' pid=b.uuid %}">
+                                                        <i class="icon wb-folder" aria-hidden="true"></i>
+                                                        <span class="hidden-sm-down">Approve</span>
+                                                    </a>
+                                                    <a class="btn btn-warning"
+                                                       href="{% url 'reject-payment' pid=b.uuid %}">
+                                                        <i class="icon wb-folder" aria-hidden="true"></i>
+                                                        <span class="hidden-sm-down">Reject</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="exampleTabsTwo" role="tabpanel">
+
+                                    <table class="table table-hover dataTable table-striped w-full"
+                                           id="exampleTableTools">
+                                        <thead>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Invoice Items</th>
+                                            <th>Unit</th>
+                                            <th>Property</th>
+                                            <th>Amount</th>
+                                            <th>Date Paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Invoice Items</th>
+                                            <th>Unit</th>
+                                            <th>Property</th>
+                                            <th>Amount</th>
+                                            <th>Date Paid</th>
+                                            <th>Status</th>
+                                            <th>Created by</th>
+                                            <th>Created at</th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                        {% for b in req_past %}
+
+                                            <tr>
+                                                <td>{{ b.invoice_item.invoice.invoice_no }}</td>
+                                                <td>{{ b.invoice_item.invoice_item }}</td>
+                                                <td>{{ b.invoice_item.invoice.unit.unit_name }}</td>
+                                                <td>{{ b.invoice_item.invoice.unit.property.property_name }}</td>
+                                                <td>{{ b.amount_paid }}</td>
+                                                <td>{{ b.date_paid }}</td>
+                                                <td>{% if b.status %}
+                                                    Approved
+                                                {% else %}
+                                                    Denied
+                                                {% endif %}</td>
+                                                <td>{{ b.created_by.username }}</td>
+                                                <td>{{ b.created_at }}</td>
+                                                <td>
+                                                    {% if b.receipt %}
+                                                        <a class="btn btn-primary" href="#myModal" data-toggle="modal"
+                                                           data-img-url="{{ b.receipt.url }}">
+                                                            <i class="icon wb-time" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Receipt</span>
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Example Tabs -->
+                    <!-- Modal -->
+                    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body text-center">
+                                    <img class="" src="#"/>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel Table Tools -->
+
+        </div>
+    </div>
+    <!-- End Page -->
+
+{% endblock %}
+
+
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootbox/bootbox.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/responsive-tabs.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/tabs.js' %}"></script>
+
+    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
+    <script>
+        $('td a').click(function (e) {
+            $('#myModal img').attr('src', $(this).attr('data-img-url'));
+        });
+    </script>
+{% endblock %}
