@@ -32,10 +32,14 @@ class Command(BaseCommand):
 
                 if p['amount_paid__sum'] is None:
                     p=0
+                else:
+                    p = p['amount_paid__sum']
                 if w['waiver__sum'] is None:
                     w=0
+                else:
+                    w = w['waiver__sum']
 
-                paid =  p['amount_paid__sum'] + w['waiver__sum']
+                paid =  p + w
                 if paid >= to_pay:
                     invs = RentInvoice.objects.get(id=item.invoice.id)
                     invs.status = True
@@ -52,8 +56,13 @@ class Command(BaseCommand):
                 print(p)
                 if p['amount_paid__sum'] is None:
                     p=0
+                else:
+                    p = p['amount_paid__sum']
                 if w['waiver__sum'] is None:
                     w=0
+                else:
+                    w = w['waiver__sum']
+
                 paid =  p + w
                 if paid >= to_pay:
                     invs = Invoice.objects.get(id=item.invoice.id)
