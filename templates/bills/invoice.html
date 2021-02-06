@@ -93,6 +93,25 @@
                                         {{ bill.paid }}
                                     </td>
                                 </tr>
+                                {% if bill.penalty %}
+                                    <tr>
+                                        <td class="text-center">
+                                            2
+                                        </td>
+                                        <td class="text-left">
+                                            Penalty
+                                        </td>
+                                        <td>
+                                            Penalty
+                                        </td>
+                                        <td>
+                                            {{ bill.penalty }}
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                {% endif %}
 
                             {% endfor %}
                             </tbody>
@@ -110,20 +129,21 @@
                         </div>
                     </div>
                     <div class="text-right">
-                    {% if not invoice.status %}
-                        {% if user.acc_type.id != 4 %}
-                            <a href="{% url 'more-info' i_id=invoice.uuid %}"
-                               class="btn btn-animate btn-animate-side btn-primary">
-                                <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> Proceed to payment</span>
-                            </a>
+                        {% if not invoice.status %}
+                            {% if user.acc_type.id != 4 %}
+                                <a href="{% url 'more-info' i_id=invoice.uuid %}"
+                                   class="btn btn-animate btn-animate-side btn-primary">
+                                    <span><i class="icon wb-shopping-cart"
+                                             aria-hidden="true"></i> Proceed to payment</span>
+                                </a>
+                            {% endif %}
+                            {% if user.acc_type.id == 4 %}
+                                <a href="{% url 'record-payment' i_id=invoice.uuid %}"
+                                   class="btn btn-animate btn-animate-side btn-primary">
+                                    <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> Record payment</span>
+                                </a>
+                            {% endif %}
                         {% endif %}
-                        {% if user.acc_type.id == 4 %}
-                            <a href="{% url 'record-payment' i_id=invoice.uuid %}"
-                               class="btn btn-animate btn-animate-side btn-primary">
-                                <span><i class="icon wb-shopping-cart" aria-hidden="true"></i> Record payment</span>
-                            </a>
-                        {% endif %}
-                    {% endif %}
 
                         <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"
                                 onclick="javascript:window.print();">

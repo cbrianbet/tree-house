@@ -78,8 +78,6 @@ class Command(BaseCommand):
 
 def apply_invoice(rent, month, user, tenant, date):
     try:
-        # for r in RentInvoice.objects.filter(email_inform=False):
-        #     send_email(r.invoice_for, date)
         inv_no = increment_rent_invoice_number()
         i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user,
                                        unit=tenant.unit, date_due=datetime.datetime.now() + datetime.timedelta(days=3))

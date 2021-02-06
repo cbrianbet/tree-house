@@ -181,8 +181,12 @@
                                                 <td>{{ b.created_at }}</td>
                                                 <td>
                                                     <a class="btn" href="{% url 'invoice' i_id=b.uuid %}">
-                                                        <i class="icon wb-plus" aria-hidden="true"></i>
-                                                        <span class="hidden-sm-down">More</span>
+                                                        <i class="icon wb-time" aria-hidden="true"></i>
+                                                        <span class="hidden-sm-down">Invoice</span>
+                                                    </a>
+                                                    <a class="btn btn-outline" href="{% url 'individual-payments' uuid=b.uuid %}">
+                                                        <i class="icon wb-folder" aria-hidden="true"></i>
+                                                        <span class="hidden-sm-down">Transaction</span>
                                                     </a>
                                                 </td>
                                             </tr>

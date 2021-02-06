@@ -275,7 +275,7 @@ def rent_invoice(request, i_id):
             print(p)
 
         bills.append({
-            'invoice_item': b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid})
+            'invoice_item': b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid, 'penalty': b.delay_penalties})
 
     if request.user.acc_type.id == 4:
         ten = Tenant.objects.get(profile__user=request.user).unit.property.company
@@ -326,7 +326,7 @@ def personal_bills(request):
         paid = 0
         r_inv_items = RentItems.objects.filter(invoice=inv)
         for i in r_inv_items:
-            total = total + i.amount
+            total = total + i.amount + i.delay_penalties
             trans = RentItemTransaction.objects.filter(invoice_item=i)
             for ab in trans:
                 paid = ab.amount_paid + paid
@@ -455,7 +455,7 @@ def list_request(request):
         req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=True).exclude(status=False)
         rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
         req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
-    if request.user.acc_type.id == 4:
+    elif request.user.acc_type.id == 4:
         rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=True).exclude(status=False)
         req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=True).exclude(status=False)
         rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=None).exclude(status='')
