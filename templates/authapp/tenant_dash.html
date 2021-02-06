@@ -176,7 +176,9 @@
                                                 <div class="counter-number font-size-40 mt-10 red-600">
                                                     {{ r_bals }}
                                                 </div>
-                                                <a href="." class="btn btn-default block">Make Payment</a>
+                                                {% if r_bal != 0 %}
+                                                    <a href="." class="btn btn-default block">Make Payment</a>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -217,9 +219,10 @@
                                                 <div class="counter-label mt-10">Documents
                                                 </div>
                                                 <a href="">
-                                                <div class="counter-number font-size-40 mt-10">
-                                                    {{ inv }}
-                                                </div></a>
+                                                    <div class="counter-number font-size-40 mt-10">
+                                                        {{ inv }}
+                                                    </div>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>

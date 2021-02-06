@@ -70,7 +70,7 @@ def dashboard(request):
 
         r_bals = 0
         for due in r_inv_item:
-            r_bals = due.amount + r_bals
+            r_bals = due.amount + r_bals + due.delay_penalties
 
         for due in r_inv_tran:
             r_bals = r_bals - due.amount_paid
