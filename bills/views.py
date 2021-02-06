@@ -2,10 +2,12 @@ from itertools import chain
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 
+from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from properties.models import *
 
@@ -187,6 +189,9 @@ def record_payment_request(request, i_id):
                         )
 
                         pay_item.save()
+            # cmp = CompanyProfile.objects.filter(company=pay_item.invoice_item.invoice.unit.property.company)
+            # tenant = Tenant.objects.get()
+            # inform_agent_payment()
 
             return redirect('invoice', i_id=i_id)
         except InvoiceItems.DoesNotExist:
@@ -205,13 +210,24 @@ def record_payment_request(request, i_id):
             return redirect('rinvoice', i_id=i_id)
 
 
-
     context = {
         'user': request.user,
         'bills': inv_items,
         'invoice': invoice,
     }
     return render(request, 'bills/add_payment_request.html', context)
+
+
+def inform_agent_payment(u, n, prop, e, p, un):
+    subject = "New Payment Request".format(prop)
+    message = '''
+    Dear {}, 
+    This email is to let you know that a payment request has been received from property {} unit {}. 
+    Login to your portal at	mnestafrica.com for more details. Your username is {} incase you had forgotten'''.format(n, p , un, u)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+    except:
+        print('failed')
 
 
 @login_required
@@ -423,8 +439,21 @@ def approve_request(request, pid):
             pay.save()
         except Exception as e:
             raise e
-
+        u = Users.objects.get(id=pay.invoice_item.invoice.invoice_for.id)
+        inform_apprved(u.username, Profile.objects.get(user=u).first_name, pay.invoice_item.invoice.invoice_no, u.email)
         return redirect('req-payment-list')
+
+
+def inform_apprved(u, n, prop, e):
+    subject = "Payment for invoice {} Approved".format(prop)
+    message = '''
+    Dear {}, 
+    This email is to let you know that Your payment request has been received and Approved. 
+    Login to your portal at	mnestafrica.com to view the transaction. Your username is  {} incase you had forgotten'''.format(n, u)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+    except:
+        print('failed')
 
 
 @login_required
@@ -442,8 +471,22 @@ def reject_request(request, pid):
             pay.save()
         except Exception as e:
             raise e
+        u = Users.objects.get(id=pay.invoice_item.invoice.invoice_for.id)
+        inform_apprved(u.username, Profile.objects.get(user=u).first_name, pay.invoice_item.invoice.invoice_no, u.email)
 
         return redirect('req-payment-list')
+
+
+def inform_rej(u, n, prop, e):
+    subject = "Payment for Request invoice {} Rejected".format(prop)
+    message = '''
+    Dear {}, 
+    This email is to let you know that Your payment request has been received and Rejected. Get in touch with your agent/Landlord for more details. 
+    Login to your portal at	mnestafrica.com to post another. Your username is  {} incase you had forgotten'''.format(n, u)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+    except:
+        print('failed')
 
 
 @login_required
