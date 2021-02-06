@@ -703,6 +703,14 @@ def vacate_tenant(request, tid):
     return render(request, '', context)
 
 
+def vacate_tenant_request(request, tid):
+    tenant = Tenant.objects.get(pk=tid)
+    context = {
+        'user': request.user,
+    }
+    return render(request, '', context)
+
+
 @login_required
 def delete_property(request, pid):
     if request.user.acc_type.id == 5:

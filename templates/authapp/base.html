@@ -376,34 +376,71 @@
                     {% endif %}
                     {% if not user.acc_type.id == 4 %}
                         {% if not user.acc_type.id == 1 %}
-                            <li class="site-menu-item">
-                                <a class="animsition-link" href="{% url 'prop-list' %}">
-                                    <i class="site-menu-icon wb-library" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Properties</span>
-                                </a>
-                            </li>
-                            <li class="site-menu-item has-sub">
-                                <a href="javascript:void(0)">
-                                    <i class="site-menu-icon wb-link" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Bills</span>
-                                    <div class="site-menu-label">
-                                    </div>
-                                    <span class="site-menu-arrow"></span>
-                                </a>
-                                <ul class="site-menu-sub">
+                            {% if user.acc_type.id == 5 %}
+                                {% if perms.properties.view_properties %}
                                     <li class="site-menu-item">
-                                        <a class="animsition-link" href="{% url 'all-invoices' %}">
-                                            <span class="site-menu-title">Invoices</span>
+                                        <a class="animsition-link" href="{% url 'prop-list' %}">
+                                            <i class="site-menu-icon wb-library" aria-hidden="true"></i>
+                                            <span class="site-menu-title">Properties</span>
                                         </a>
                                     </li>
-                                    <li class="site-menu-item">
-                                        <a class="animsition-link" href="{% url 'req-payment-list' %}">
-                                            <span class="site-menu-title">Payment Requests</span>
+                                {% endif %}
+                                {% if perms.bills.add_invoiceitemsrequest or perms.bills.view_invoice %}
+                                    <li class="site-menu-item has-sub">
+                                        <a href="javascript:void(0)">
+                                            <i class="site-menu-icon wb-link" aria-hidden="true"></i>
+                                            <span class="site-menu-title">Bills</span>
+                                            <div class="site-menu-label">
+                                            </div>
+                                            <span class="site-menu-arrow"></span>
                                         </a>
+                                        <ul class="site-menu-sub">
+                                            {% if perms.bills.view_invoice %}
+                                                <li class="site-menu-item">
+                                                    <a class="animsition-link" href="{% url 'all-invoices' %}">
+                                                        <span class="site-menu-title">Invoices</span>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if perms.bills.add_invoiceitemsrequest %}
+                                                <li class="site-menu-item">
+                                                    <a class="animsition-link" href="{% url 'req-payment-list' %}">
+                                                        <span class="site-menu-title">Payment Requests</span>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
                                     </li>
-                                </ul>
-                            </li>
-
+                                {% endif %}
+                            {% else %}
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'prop-list' %}">
+                                        <i class="site-menu-icon wb-library" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Properties</span>
+                                    </a>
+                                </li>
+                                <li class="site-menu-item has-sub">
+                                    <a href="javascript:void(0)">
+                                        <i class="site-menu-icon wb-link" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Bills</span>
+                                        <div class="site-menu-label">
+                                        </div>
+                                        <span class="site-menu-arrow"></span>
+                                    </a>
+                                    <ul class="site-menu-sub">
+                                        <li class="site-menu-item">
+                                            <a class="animsition-link" href="{% url 'all-invoices' %}">
+                                                <span class="site-menu-title">Invoices</span>
+                                            </a>
+                                        </li>
+                                        <li class="site-menu-item">
+                                            <a class="animsition-link" href="{% url 'req-payment-list' %}">
+                                                <span class="site-menu-title">Payment Requests</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
                             {% if user.acc_type.id != 5 %}
                                 <li class="site-menu-item">
                                     <a class="animsition-link" href="{% url 'company_staff' %}">
@@ -412,18 +449,33 @@
                                     </a>
                                 </li>
                             {% endif %}
-                            <li class="site-menu-item">
-                                <a class="animsition-link" href="{% url 'change_password' %}">
-                                    <i class="site-menu-icon wb-link" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Change Password</span>
-                                </a>
-                            </li>
-                            <li class="site-menu-item">
-                                <a class="animsition-link" href="{% url 'profile' %}">
-                                    <i class="site-menu-icon wb-user" aria-hidden="true"></i>
-                                    <span class="site-menu-title">Profile</span>
-                                </a>
-                            </li>
+                            {% if user.acc_type.id == 5 %}
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'change_password' %}">
+                                        <i class="site-menu-icon wb-link" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Change Password</span>
+                                    </a>
+                                </li>
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'profile' %}">
+                                        <i class="site-menu-icon wb-user" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Profile</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'change_password' %}">
+                                        <i class="site-menu-icon wb-link" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Change Password</span>
+                                    </a>
+                                </li>
+                                <li class="site-menu-item">
+                                    <a class="animsition-link" href="{% url 'profile' %}">
+                                        <i class="site-menu-icon wb-user" aria-hidden="true"></i>
+                                        <span class="site-menu-title">Profile</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                     {% if user.acc_type.id == 4 %}
