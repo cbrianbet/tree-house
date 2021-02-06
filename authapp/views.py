@@ -17,7 +17,8 @@ from django.views.decorators.csrf import csrf_exempt
 from authapp.forms import LoginForm
 from authapp.models import *
 from bills.models import *
-from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies, Properties
+from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies, Properties, BankAcc, \
+    PaymentPaybill, PaymentTill
 from tree_house import settings
 
 
@@ -51,6 +52,10 @@ def dashboard(request):
     if user.acc_type.id == 4:
         prof = Profile.objects.get(user=user)
         tenant = Tenant.objects.get(profile=prof)
+        bank_ac = BankAcc.objects.filter(prop__prop=tenant.unit.property)
+        paybill_ac = PaymentPaybill.objects.filter(prop__prop=tenant.unit.property)
+        till_ac = PaymentTill.objects.filter(prop__prop=tenant.unit.property)
+
         invoice = Invoice.objects.filter(invoice_for=user, status=False)
         inv_item = InvoiceItems.objects.filter(invoice__in=invoice)
         inv_tran = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_item)
@@ -83,6 +88,11 @@ def dashboard(request):
             'bals': bals,
             'r_bals': r_bals,
             'inv': invoice.count() + r_invoice.count(),
+            'bank': bank_ac,
+            'paybills': paybill_ac,
+            'tills': till_ac,
+            'invoice': invoice,
+            'rent_invoices': r_invoice,
         }
         return render(request, 'authapp/tenant_dash.html', context)
 

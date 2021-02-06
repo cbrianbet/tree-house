@@ -14,6 +14,20 @@
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/dashboard/team.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/fonts/font-awesome/font-awesome.css' %}">
 
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <style>
+        /* Important part */
+        .modal-dialog {
+            overflow-y: initial !important
+        }
+
+        .modal-body {
+            height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
 {% endblock %}
 
 {% block page %}
@@ -154,7 +168,8 @@
                                                 <div class="counter-number font-size-40 mt-10 red-600">
                                                     {{ bals }}
                                                 </div>
-                                                <a href="." class="btn btn-default block">Make Payment</a>
+                                                <a data-target="#examplePositionCenter" data-toggle="modal"
+                                                       class="btn btn-default block">Make Payment</a>
                                             </div>
                                         </div>
                                     </div>
@@ -177,7 +192,8 @@
                                                     {{ r_bals }}
                                                 </div>
                                                 {% if r_bal != 0 %}
-                                                    <a href="." class="btn btn-default block">Make Payment</a>
+                                                    <a data-target="#examplePositionCenter2" data-toggle="modal"
+                                                       class="btn btn-default block">Make Payment</a>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -236,6 +252,275 @@
                 <!-- Second Row -->
                 <!-- End Second Row -->
             </div>
+
+            <!-- Modal -->
+            <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"
+                 aria-labelledby="examplePositionCenter"
+                 role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-simple modal-center">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">Make Payment</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5>1. Via HapoKash-Wallet</h5>
+                            <h6>Wallet balance KSH. 100</h6>
+                            <form id="hkpay">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="amount">Amount*</label>
+                                    <input type="text" class="form-control" id="amount" name="amount"
+                                           required="required">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label" for="inv">Invoice*</label>
+                                    <select data-plugin="selectpicker" title="Invoice " id="inv" name="invoice" required>
+                                        {% for a in invoice %}
+                                            <option value="{{ a.uuid }}">{{ a.invoice_no }} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                            </form>
+
+                            <h5>2. Via Mpesa-HapoKash</h5>
+                            <p class="text-dark">
+                                If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
+                            </p>
+                            <form id="hkpay">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="amount">Amount*</label>
+                                    <input type="text" class="form-control" id="amount" name="amount"
+                                           required="required">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label" for="inv">Invoice*</label>
+                                    <select data-plugin="selectpicker" title="Invoice" id="inv" name="invoice" required>
+                                        {% for a in invoice %}
+                                            <option value="{{ a.uuid }}">{{ a.invoice_no }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                            </form>
+
+                            <h5>3. Via Bank</h5>
+                            <p class="text-dark">
+                                Make a deposit to one of the following bank accounts and record payment from Bills on
+                                the appropriate <a href="{% url 'tenant_bill-personal' %}">invoice</a>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <th>Bank</th>
+                                    <th>Account Number</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for foo in bank %}
+
+                                        <tr>
+                                            <td>{{ foo.bank.bank }}</td>
+                                            <td>{{ foo.acc }}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5>4. Via Mpesa-Paybill</h5>
+                            <p class="text-dark">
+                                Make a payment to one of the following paybills with the account number instrutions and
+                                record payment from Bills on the appropriate <a href="{% url 'tenant_bill-personal' %}">invoice</a>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <th>Paybill</th>
+                                    <th>Account Number Instructions</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for foo in paybills %}
+
+                                        <tr>
+                                            <td>{{ foo.paybill }}</td>
+                                            <td>{{ foo.acc }}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5>5. Via Mpesa-Buy Goods</h5>
+                            <p class="text-dark">
+                                Make a deposit to one of the following till numbers and record payment from Bills on
+                                the appropriate <a href="{% url 'tenant_bill-personal' %}">invoice</a>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <th>Till Number</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for foo in tills %}
+
+                                        <tr>
+                                            <td>{{ foo.till }}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
+            <!-- Modal -->
+            <div class="modal fade example-modal-lg" id="examplePositionCenter2" aria-hidden="true"
+                 aria-labelledby="examplePositionCenter"
+                 role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-simple modal-center">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">Make Payment</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h5>1. Via HapoKash-Wallet</h5>
+                            <h6>Wallet balance KSH. 100</h6>
+                            <form id="hkpay">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="amount">Amount*</label>
+                                    <input type="text" class="form-control" id="amount" name="amount"
+                                           required="required">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label" for="inv">Invoice*</label>
+                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="inv" name="invoice" required>
+                                        {% for a in rent_invoices %}
+                                            <option value="{{ a.uuid }}">{{ a.invoice_no }} | {{ a.date_due }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                            </form>
+
+                            <h5>2. Via Mpesa-HapoKash</h5>
+                            <p class="text-dark">
+                                If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
+                            </p>
+                            <form id="hkpay">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="amount">Amount*</label>
+                                    <input type="text" class="form-control" id="amount" name="amount"
+                                           required="required">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label" for="inv">Invoice*</label>
+                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="inv" name="invoice" required>
+                                        {% for a in rent_invoices %}
+                                            <option value="{{ a.uuid }}">{{ a.invoice_no }} | {{ a.date_due }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                            </form>
+
+                            <h5>3. Via Bank</h5>
+                            <p class="text-dark">
+                                Make a deposit to one of the following bank accounts and record payment from Bills on
+                                the appropriate <a href="{% url 'tenant_bill-personal' %}">invoice</a>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <th>Bank</th>
+                                    <th>Account Number</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for foo in bank %}
+
+                                        <tr>
+                                            <td>{{ foo.bank.bank }}</td>
+                                            <td>{{ foo.acc }}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5>4. Via Mpesa-Paybill</h5>
+                            <p class="text-dark">
+                                Make a payment to one of the following paybills with the account number instrutions and
+                                record payment from Bills on the appropriate <a href="{% url 'tenant_bill-personal' %}">invoice</a>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <th>Paybill</th>
+                                    <th>Account Number Instructions</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for foo in paybills %}
+
+                                        <tr>
+                                            <td>{{ foo.paybill }}</td>
+                                            <td>{{ foo.acc }}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5>5. Via Mpesa-Buy Goods</h5>
+                            <p class="text-dark">
+                                Make a deposit to one of the following till numbers and record payment from Bills on
+                                the appropriate <a href="{% url 'tenant_bill-personal' %}">invoice</a>
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <th>Till Number</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for foo in tills %}
+
+                                        <tr>
+                                            <td>{{ foo.till }}</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
         </div>
     </div>
     <!-- End Page -->
@@ -254,5 +539,10 @@
     <script src="{% static 'authapp/global/js/Plugin/bootstrap-datepicker.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/asscrollable.js' %}"></script>
     <script src="{% static 'authapp/assets/examples/js/dashboard/team.js' %}"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script>
+        $('select').selectpicker();
+    </script>
 
 {% endblock %}
