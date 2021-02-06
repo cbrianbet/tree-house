@@ -163,6 +163,24 @@ def suspend_user(request, uid):
     return redirect('all-users')
 
 
+@csrf_exempt
+def rent_hapo_pay(request):
+    prof = Profile.objects.get(user=request.user)
+    tenant = Tenant.objects.get(profile=prof)
+    bank_ac = BankAcc.objects.filter(prop__prop=tenant.unit.property)
+    paybill_ac = PaymentPaybill.objects.filter(prop__prop=tenant.unit.property)
+    till_ac = PaymentTill.objects.filter(prop__prop=tenant.unit.property)
+    cp = CompanyProfile.objects.get()
+
+    invoice = Invoice.objects.filter(invoice_for=request, status=False)
+    inv_item = InvoiceItems.objects.filter(invoice__in=invoice)
+    inv_tran = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_item)
+
+    user = Users.objects.get(id=uid)
+    user.delete()
+    return redirect('all-users')
+
+
 @login_required
 def delete_user(request, uid):
     if not request.user.acc_type.id == 1:

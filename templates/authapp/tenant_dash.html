@@ -269,6 +269,7 @@
                             <h5>1. Via HapoKash-Wallet</h5>
                             <h6>Wallet balance KSH. 100</h6>
                             <form id="hkpay">
+                            {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
                                     <input type="text" class="form-control" id="amount" name="amount"
@@ -284,14 +285,15 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                                <button type="submit" class="btn btn-success">Pay</button>
                             </form>
 
                             <h5>2. Via Mpesa-HapoKash</h5>
                             <p class="text-dark">
                                 If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
                             </p>
-                            <form id="hkpay">
+                            <form id="hkpayrent">
+                            {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
                                     <input type="text" class="form-control" id="amount" name="amount"
@@ -307,7 +309,7 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                                <button type="submit" class="btn btn-success">Pay</button>
                             </form>
 
                             <h5>3. Via Bank</h5>
@@ -402,7 +404,8 @@
                         <div class="modal-body">
                             <h5>1. Via HapoKash-Wallet</h5>
                             <h6>Wallet balance KSH. 100</h6>
-                            <form id="hkpay">
+                            <form id="hkpaytrans">
+                            {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
                                     <input type="text" class="form-control" id="amount" name="amount"
@@ -425,7 +428,8 @@
                             <p class="text-dark">
                                 If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
                             </p>
-                            <form id="hkpay">
+                            <form id="hkpayinv">
+                            {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
                                     <input type="text" class="form-control" id="amount" name="amount"
