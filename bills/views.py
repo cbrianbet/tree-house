@@ -455,6 +455,11 @@ def list_request(request):
         req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=True).exclude(status=False)
         rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
         req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
+    if request.user.acc_type.id == 4:
+        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=True).exclude(status=False)
+        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=True).exclude(status=False)
+        rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=None).exclude(status='')
+        req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=None).exclude(status='')
 
     else:
         raise PermissionDenied

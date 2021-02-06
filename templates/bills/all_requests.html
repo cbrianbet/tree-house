@@ -129,16 +129,18 @@
                                                             <span class="hidden-sm-down">Receipt</span>
                                                         </a>
                                                     {% endif %}
-                                                    <a class="btn btn-success"
-                                                       href="{% url 'approve-payment' pid=b.uuid %}">
-                                                        <i class="icon wb-folder" aria-hidden="true"></i>
-                                                        <span class="hidden-sm-down">Approve</span>
-                                                    </a>
-                                                    <a class="btn btn-warning"
-                                                       href="{% url 'reject-payment' pid=b.uuid %}">
-                                                        <i class="icon wb-folder" aria-hidden="true"></i>
-                                                        <span class="hidden-sm-down">Reject</span>
-                                                    </a>
+                                                    {% if user.acc_type.id != 4 %}
+                                                        <a class="btn btn-success"
+                                                           href="{% url 'approve-payment' pid=b.uuid %}">
+                                                            <i class="icon wb-folder" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Approve</span>
+                                                        </a>
+                                                        <a class="btn btn-warning"
+                                                           href="{% url 'reject-payment' pid=b.uuid %}">
+                                                            <i class="icon wb-folder" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Reject</span>
+                                                        </a>
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -220,7 +222,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body text-center">
-                                    <img class="" src="#"/>
+                                    <img class="" style="height:500px; width: 500px" src="#"/>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
