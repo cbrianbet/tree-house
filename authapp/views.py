@@ -148,6 +148,45 @@ def dashboard(request):
         }
 
         return render(request, 'authapp/analytics.html', context)
+    elif user.acc_type.id == 5:
+        prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
+        unit = Unit.objects.filter(property__in=prop)
+        # print(unit)
+        paid  = 0
+        inv = RentInvoice.objects.filter(unit__in=unit)
+        items = RentItems.objects.filter(invoice__in=inv)
+        print(inv)
+
+        # to_pay = items.aggregate(Sum('amount'))['amount__sum'] + items.aggregate(Sum('amount'))['amount__sum']
+        # for item in items:
+        #     p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
+        #     print(p)
+        #     paid = paid + p['amount_paid__sum']
+        pec1 = inv.filter(status=True)
+        pec2 = inv.filter(status=False)
+        unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
+
+        req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
+        oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit))
+
+
+        context = {
+            'user': user,
+            'total_units': unit.count(),
+            'vacant': unit.filter(unit_status="Vacant").count(),
+            'occ': unit.filter(unit_status="Occupied").count(),
+            'open': inv.filter(status=False).count(),
+            'due': inv.filter(status=False).count(),
+            'pec1': pec1.count(),
+            'pec2': pec2.count(),
+            'all_inv': inv.count(),
+            'unpunits': unp.count(),
+            'req': req.count(),
+            'oreq': oreq.count(),
+
+        }
+
+        return render(request, 'authapp/analytics.html', context)
 
 
 @login_required
@@ -175,9 +214,6 @@ def rent_hapo_pay(request):
     invoice = Invoice.objects.filter(invoice_for=request, status=False)
     inv_item = InvoiceItems.objects.filter(invoice__in=invoice)
     inv_tran = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_item)
-
-    user = Users.objects.get(id=uid)
-    user.delete()
     return redirect('all-users')
 
 

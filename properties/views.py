@@ -26,6 +26,8 @@ from .models import *
 @login_required
 def properties_list(request):
     if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.view_properties'):
+            raise PermissionDenied
         prop = PropertyStaff.objects.filter(user=request.user).values_list('property__uuid', flat=True)
         p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company, uuid__in=prop)
         queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
@@ -52,6 +54,9 @@ def properties_list(request):
 
 @login_required
 def properties_add(request):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.add_properties'):
+            raise PermissionDenied
     user = request.user
     if request.method == "POST":
         name = request.POST.get('p_name')
@@ -95,6 +100,9 @@ def properties_add(request):
 
 @login_required
 def properties_payment(request, u_id):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.change_properties'):
+            raise PermissionDenied
     user = request.user
     prop = Properties.objects.get(uuid=u_id)
     if request.method == "POST":
@@ -131,6 +139,9 @@ def properties_payment(request, u_id):
 
 @login_required
 def properties_edit(request, p_id):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.change_properties'):
+            raise PermissionDenied
     user = request.user
     prop = Properties.objects.get(uuid=p_id)
     if request.method == "POST":
@@ -191,6 +202,10 @@ def properties_edit(request, p_id):
 
 @login_required
 def view_prop(request, p_id):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.view_properties'):
+            raise PermissionDenied
+
     prop = Properties.objects.get(uuid=p_id)
     context = {
         'p_id': p_id,
@@ -202,6 +217,9 @@ def view_prop(request, p_id):
 
 @login_required
 def list_units(request, u_uid):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.view_unit'):
+            raise PermissionDenied
     prop = Properties.objects.get(uuid=u_uid)
     unit = Unit.objects.filter(property=prop)
     can_add = False
@@ -220,6 +238,10 @@ def list_units(request, u_uid):
 
 @login_required
 def add_units(request, floor, u_uid):
+
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.add_unit'):
+            raise PermissionDenied
     prop = Properties.objects.get(uuid=u_uid)
     if Unit.objects.filter(property=prop).count() >= prop.no_of_units:
         return redirect('unit-list', u_uid=u_uid)
@@ -255,6 +277,10 @@ def add_units(request, floor, u_uid):
 
 @login_required
 def add_tenant(request, u_uid):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.add_tenant'):
+            raise PermissionDenied
+
     unit = Unit.objects.get(uuid=u_uid)
     if request.method == "POST":
         print(request.POST)
@@ -393,6 +419,9 @@ def apply_invoice(rent, dep, user, tenant):
 
 @login_required
 def view_tenant(request, u_uid):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.view_tenant'):
+            raise PermissionDenied
     prop = Tenant.objects.get(unit__uuid=u_uid)
     unit = Unit.objects.filter(id=prop.unit.id)
     context = {
@@ -406,6 +435,9 @@ def view_tenant(request, u_uid):
 
 @login_required
 def swap_tenant(request, u_uid):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.change_tenant'):
+            raise PermissionDenied
     if request.method == "POST":
         old = Tenant.objects.get(unit__uuid=u_uid)
         new = request.POST.get('unit')
@@ -446,6 +478,9 @@ def get_unit(request):
 @login_required
 def prop_file_upload(request):
     # declaring template
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.add_properties'):
+            raise PermissionDenied
 
     csv_file = request.FILES['logo']
     # let's check if it is a csv file
@@ -509,6 +544,9 @@ def unit_template(request):
 @login_required
 def unit_file_upload(request, uid):
     # declaring template
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.add_unit'):
+            raise PermissionDenied
 
     csv_file = request.FILES['logo']
     # let's check if it is a csv file
@@ -540,6 +578,8 @@ def unit_file_upload(request, uid):
 @login_required
 def staff(request):
     if request.user.acc_type.id == 4:
+        raise PermissionDenied
+    if request.user.acc_type.id == 5:
         raise PermissionDenied
     comp = CompanyProfile.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).values_list(
         'user', flat=True)
@@ -665,6 +705,9 @@ def vacate_tenant(request, tid):
 
 @login_required
 def delete_property(request, pid):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.delete_properties'):
+            raise PermissionDenied
     if request.user.acc_type.id == 1:
         prop = Properties.objects.get(id=pid)
         unit = Unit.objects.filter(property=prop)
