@@ -651,6 +651,90 @@ def staff(request):
     return render(request, 'properties/comany_staff.html', context)
 
 
+@login_required
+def edit_staff(request, uid):
+    if request.user.acc_type.id == 4:
+        raise PermissionDenied
+    if request.user.acc_type.id == 5:
+        raise PermissionDenied
+    profile_staff = Profile.objects.get(id=uid)
+    prop = PropertyStaff.objects.filter(user=profile_staff.user)
+    comp = CompanyProfile.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).values_list(
+        'user', flat=True)
+
+    staff = Profile.objects.filter(user__in=comp, user__acc_type_id=5)
+    print(profile_staff)
+
+    can_add = False
+    if staff.count() < CompanyProfile.objects.get(user=request.user).company.no_of_emp:
+        can_add = True
+    if request.method == "POST":
+        email = request.POST.get('email')
+        f_name = request.POST.get('f_name')
+        l_name = request.POST.get('l_name')
+        mobile = request.POST.get('mobile')
+        number = request.POST.get('id_no')
+        props = request.POST.getlist('prop')
+        perms = request.POST.getlist('perms')
+
+        print(request.POST)
+
+        try:
+            user = Users.objects.get(id=profile_staff.user_id)
+            user.email = email
+            user.save()
+
+            if user.pk:
+                profile_staff.first_name=f_name
+                profile_staff.last_name=l_name
+                profile_staff.msisdn=mobile
+                profile_staff.id_number=number
+                profile_staff.save()
+
+                PropertyStaff.objects.filter(user=profile_staff.user).delete()
+                for p in props:
+                    ps = PropertyStaff.objects.create(property_id=p, created_by=request.user, user=user)
+                    ps.save()
+
+                Permission.objects.filter(user=profile_staff.user).delete()
+                for par in perms:
+                    user.user_permissions.add(Permission.objects.get(id=par))
+                    user.user_permissions.all()
+                    print(par)
+
+
+        except:
+            print('error')
+
+    perm = Permission.objects.filter(
+        Q(name__contains='Can add properties') | Q(name__contains='Can change properties') | Q(
+            name__contains='Can delete properties') | Q(name__contains='Can view properties') | Q(
+            name__exact='Can add unit') | Q(name__exact='Can change unit') | Q(name__exact='Can delete unit') | Q(
+            name__exact='Can view unit') | Q(name__exact='Can add tenant') | Q(name__exact='Can change tenant') |
+        Q(name__exact='Can view tenant') | Q(name__exact='Can add invoice') | Q(name__exact='Can view tenant') | Q(
+            name__exact='Can change invoice') | Q(name__exact='Can view invoice') | Q(
+            name__exact='Can view tenant') | Q(name__exact='Can delete tenant') | Q(
+            name__exact='Can add invoice items transaction') | Q(name__exact='Can view invoice items transaction') |
+        Q(name__exact='Can add vacate notice') | Q(name__exact='Can change invoice items request') |
+        Q(name__exact='Can add invoice items request') | Q(name__exact='Can add invoice items request')
+    ).exclude(user=profile_staff.user)
+    all_p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).exclude(id__in=prop.values_list('property_id', flat=True))
+    print(Permission.objects.filter(user=profile_staff.user))
+
+    context = {
+        'user': request.user,
+        'staff': staff,
+        'props': all_p,
+        'can_add': can_add,
+        'perms': perm,
+        'profile_staff': profile_staff,
+        'sel_p': prop,
+        'sel_perm': Permission.objects.filter(user=profile_staff.user),
+
+    }
+    return render(request, 'properties/edit_staff.html', context)
+
+
 def get_random_username_staff():
     username = ''.join(random.sample(string.ascii_uppercase, 2)) + '-' + ''.join(random.sample(string.digits, 3))
     if not Users.objects.filter(username=username).exists():

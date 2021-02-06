@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    <title>Company Staff | MNEST Africa</title>
+    <title>Edit Staff | MNEST Africa</title>
 {% endblock %}
 {% block headscripts %}
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/formvalidation/formValidation.css' %}">
@@ -38,10 +38,10 @@
     <!-- Page -->
     <div class="page">
         <div class="page-header">
-            <h1 class="page-title">Staff</h1>
+            <h1 class="page-title">Edit Staff</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-                <li class="breadcrumb-item active">Staff</li>
+                <li class="breadcrumb-item active">Edit Staff</li>
             </ol>
             <div class="page-header-actions">
             </div>
@@ -53,13 +53,13 @@
                 <div class="panel">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="panel-desc"> Add Staff </span>
+                            <span class="panel-desc"> Edit Staff </span>
                         </h3>
                     </div>
                     <div class="panel-body">
 
                         <form id="exampleFullForm" enctype="multipart/form-data"
-                              action="{% url 'company_staff' %}" method="post">
+                              action="{% url 'edit-staff' uid=profile_staff.id %}" method="post">
                             {% csrf_token %}
                             <div class="row row-lg">
                                 <div class="col-xl-6 form-horizontal">
@@ -69,7 +69,7 @@
                                         </label>
                                         <div class=" col-xl-12 col-md-9">
                                             <input type="text" class="form-control" name="f_name" placeholder="As in ID"
-                                                   required="required">
+                                                   required="required" value="{{ profile_staff.first_name }}">
                                         </div>
                                     </div>
 
@@ -79,7 +79,7 @@
                                         </label>
                                         <div class=" col-xl-12 col-md-9">
                                             <input type="text" class="form-control" name="l_name" placeholder="As in ID"
-                                                   required="required">
+                                                   required="required" value="{{ profile_staff.last_name }}">
                                         </div>
                                     </div>
 
@@ -88,7 +88,8 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class=" col-xl-12 col-md-9">
-                                            <input type="text" class="form-control" name="id_no" required="required">
+                                            <input type="text" class="form-control" name="id_no" required="required"
+                                                   value="{{ profile_staff.id_number }}">
                                         </div>
                                     </div>
 
@@ -100,7 +101,8 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class=" col-xl-12 col-md-9">
-                                            <input type="tel" class="form-control" name="mobile" required>
+                                            <input type="tel" class="form-control" name="mobile" required
+                                                   value="{{ profile_staff.msisdn }}">
                                         </div>
                                     </div>
 
@@ -110,7 +112,8 @@
                                         </label>
                                         <div class=" col-xl-12 col-md-9">
 
-                                            <input type="email" class="form-control" name="email" required>
+                                            <input type="email" class="form-control" name="email" required
+                                                   value="{{ profile_staff.user.email }}">
                                         </div>
                                     </div>
 
@@ -119,7 +122,13 @@
                                             <label class="col-xl-12 col-md-3 form-control-label" for="acc_type">Properties
                                                 *</label>
                                             <select data-plugin="selectpicker" title="Properties" multiple name="prop"
-                                                    data-live-search="true" data-size="5" data-actions-box="true" required>
+                                                    data-live-search="true" data-size="5" data-actions-box="true"
+                                                    required data-selected-text-format="count > 3">
+                                                {% for prop in sel_p %}
+                                                    <option value="{{ prop.property.id }}"
+                                                            selected>{{ prop.property.property_name }}</option>
+
+                                                {% endfor %}
                                                 {% for prop in props %}
                                                     <option value="{{ prop.id }}">{{ prop.property_name }}</option>
 
@@ -128,13 +137,17 @@
                                             </select>
                                         </div>
                                     </div>
-
                                     <div class="form-group row">
                                         <div class=" col-xl-12 col-md-9">
                                             <label class="col-xl-12 col-md-3 form-control-label" for="acc_type">Permissions
                                                 *</label>
                                             <select data-plugin="selectpicker" title="Permissions" multiple name="perms"
-                                                    data-live-search="true" data-size="7" data-actions-box="true" required>
+                                                    data-live-search="true" data-size="7" data-actions-box="true"
+                                                    required data-selected-text-format="count > 3">
+                                                {% for pp in sel_perm %}
+                                                    <option value="{{ pp.id }}" selected>{{ pp.name }}</option>
+
+                                                {% endfor %}
                                                 {% for pp in perms %}
                                                     <option value="{{ pp.id }}">{{ pp.name }}</option>
 
@@ -190,7 +203,6 @@
                                 <td>{{ b.msisdn }}</td>
                                 <td>{{ b.user.email }}</td>
                                 <td>
-
                                     {% if b.user.is_active %}
                                         <a class="btn btn-outline-warning" href="{% url 'suspend_user' uid=b.user.id %}">
                                             <i class="icon wb-pencil" aria-hidden="true"></i>

@@ -191,6 +191,15 @@ def dashboard(request):
 
 @login_required
 def suspend_user(request, uid):
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
+        user = Users.objects.get(id=uid)
+        if user.is_active:
+            user.is_active = False
+        else:
+            user.is_active = True
+        user.save()
+        return redirect('company_staff')
+
     if not request.user.acc_type.id == 1:
         raise PermissionDenied
     user = Users.objects.get(id=uid)
