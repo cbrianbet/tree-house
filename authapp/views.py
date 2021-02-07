@@ -51,6 +51,26 @@ def dashboard(request):
     user = request.user
     if user.acc_type.id == 4:
         prof = Profile.objects.get(user=user)
+
+        if prof.hapokash is None:
+            wal_id = hapokashcreate()
+            try:
+                if wal_id['success']:
+                    prof.hapokash = wal_id['wallet']['id']
+                    prof.save()
+                else:
+                    print('false')
+            except:
+                print(wal_id)
+
+        URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+
+        r = requests.get(url=URL)
+        wallet = r.json()
+
+        if wallet['success']:
+            cur_balance = wallet['wallet']['current_balance']
+
         tenant = Tenant.objects.get(profile=prof)
         bank_ac = BankAcc.objects.filter(prop__prop=tenant.unit.property)
         paybill_ac = PaymentPaybill.objects.filter(prop__prop=tenant.unit.property)
@@ -93,6 +113,7 @@ def dashboard(request):
             'tills': till_ac,
             'invoice': invoice,
             'rent_invoices': r_invoice,
+            "cur_balance": cur_balance
         }
         return render(request, 'authapp/tenant_dash.html', context)
 
