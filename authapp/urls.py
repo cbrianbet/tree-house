@@ -5,6 +5,7 @@ from . import  views
 
 urlpatterns = [
     path('', views.about, name='about'),
+    path('wallet', views.wall_bal, name='hapo_wallet'),
     path('login/', views.login, name='web-login'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile, name='profile'),

@@ -3,6 +3,7 @@ from itertools import chain
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
@@ -179,19 +180,23 @@ def record_payment_request(request, i_id):
         else:
             receipt = ''
 
+        a = []
         try:
             for i in range(len(uuid)):
                 if amount[i] != '':
-                        pay_item = InvoiceItemsRequest.objects.create(
-                            created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
-                            transaction_code=trans[i], amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i],
-                            date_paid=datepaid[i], receipt=receipt[i]
-                        )
+                    pay_item = InvoiceItemsRequest.objects.create(
+                        created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
+                        transaction_code=trans[i], amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i],
+                        date_paid=datepaid[i], receipt=receipt[i]
+                    )
 
-                        pay_item.save()
-            # cmp = CompanyProfile.objects.filter(company=pay_item.invoice_item.invoice.unit.property.company)
-            # tenant = Tenant.objects.get()
-            # inform_agent_payment()
+                    pay_item.save()
+                    a.append(pay_item)
+            if not a == []:
+                cmp = CompanyProfile.objects.filter(company=a[0].invoice_item.invoice.unit.property.company).filter(Q(user__acc_type_id=2)| Q(user__acc_type_id=3))[0]
+                prof = Profile.objects.get(user=cmp.user)
+                tenant = Tenant.objects.get(profile__user=request.user).unit
+                inform_agent_payment(cmp.user.username, prof.first_name, cmp.user.email, tenant.property.property_name, tenant.unit_name)
 
             return redirect('invoice', i_id=i_id)
         except InvoiceItems.DoesNotExist:
@@ -206,6 +211,12 @@ def record_payment_request(request, i_id):
                     )
 
                     pay_item.save()
+                    a.append(pay_item)
+            if not a == []:
+                cmp = CompanyProfile.objects.filter(company=a[0].invoice_item.invoice.unit.property.company).filter(Q(user__acc_type_id=2)| Q(user__acc_type_id=3))[0]
+                prof = Profile.objects.get(user=cmp.user)
+                tenant = Tenant.objects.get(profile__user=request.user).unit
+                inform_agent_payment(cmp.user.username, prof.first_name, cmp.user.email, tenant.property.property_name, tenant.unit_name)
 
             return redirect('rinvoice', i_id=i_id)
 
@@ -218,8 +229,8 @@ def record_payment_request(request, i_id):
     return render(request, 'bills/add_payment_request.html', context)
 
 
-def inform_agent_payment(u, n, prop, e, p, un):
-    subject = "New Payment Request".format(prop)
+def inform_agent_payment(u, n, e, p, un):
+    subject = "New Payment Request"
     message = '''
     Dear {}, 
     This email is to let you know that a payment request has been received from property {} unit {}. 

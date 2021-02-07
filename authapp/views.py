@@ -113,7 +113,7 @@ def dashboard(request):
         prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
         unit = Unit.objects.filter(property__in=prop)
         # print(unit)
-        paid  = 0
+        paid = 0
         inv = RentInvoice.objects.filter(unit__in=unit)
         items = RentItems.objects.filter(invoice__in=inv)
         print(inv)
@@ -129,7 +129,6 @@ def dashboard(request):
 
         req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
         oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit))
-
 
         context = {
             'user': user,
@@ -152,7 +151,7 @@ def dashboard(request):
         prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
         unit = Unit.objects.filter(property__in=prop)
         # print(unit)
-        paid  = 0
+        paid = 0
         inv = RentInvoice.objects.filter(unit__in=unit)
         items = RentItems.objects.filter(invoice__in=inv)
         print(inv)
@@ -168,7 +167,6 @@ def dashboard(request):
 
         req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
         oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit))
-
 
         context = {
             'user': user,
@@ -240,7 +238,7 @@ def suspend_company(request, uid):
     if not request.user.acc_type.id == 1:
         raise PermissionDenied
     company = Companies.objects.get(id=uid)
-    cp =CompanyProfile.objects.filter(company=company)
+    cp = CompanyProfile.objects.filter(company=company)
     for c in cp:
         user = Users.objects.get(id=c.user.id)
         if user.is_active:
@@ -257,7 +255,7 @@ def delete_company(request, uid):
     if not request.user.acc_type.id == 1:
         raise PermissionDenied
     company = Companies.objects.get(id=uid)
-    cp =CompanyProfile.objects.filter(company=company)
+    cp = CompanyProfile.objects.filter(company=company)
     for c in cp:
         user = Users.objects.get(id=c.user.id)
         user.delete()
@@ -265,6 +263,7 @@ def delete_company(request, uid):
     cp.delete()
 
     return redirect('all-companies')
+
 
 @login_required
 def profile(request):
@@ -454,6 +453,18 @@ def hapokashcreate():
     return r.json()
 
 
+def hapokash_wallet_transfer(c_id, d_id, narative, amount):
+    URL = "https://portal.hapokash.app/api/wallet/transfer"
+    PARAMS = {
+        "debit_wallet_id": d_id,
+        "credit_wallet_id": c_id,
+        "amount": amount,
+        "narration": narative
+    }
+    r = requests.post(url=URL, data=PARAMS)
+    return r.json()
+
+
 def add_months(sourcedate, months):
     month = sourcedate.month - 1 + months
     year = sourcedate.year + month // 12
@@ -470,3 +481,56 @@ def logout_request(request):
 
 def about(request):
     return render(request, 'authapp/about.html')
+
+
+@login_required
+def wall_bal(request):
+    if request.user.acc_type.id == 5:
+        raise PermissionDenied
+
+    prof = Profile.objects.get(user=request.user)
+
+    if prof.hapokash is None:
+        wal_id = hapokashcreate()
+        try:
+            if wal_id['success']:
+                prof.hapokash = wal_id['wallet']['id']
+                prof.save()
+            else:
+                print('false')
+        except:
+            print(wal_id)
+
+    URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+
+    r = requests.get(url=URL)
+    wallet = r.json()
+
+    if wallet['success']:
+        cur_balance = wallet['wallet']['current_balance']
+        pre_balance = wallet['wallet']['previous_balance']
+
+    trans = wallet_trans(prof.hapokash)
+
+    for d in trans['data']:
+        d.update((k, datetime.datetime.strptime('{} {}'.format(v.split('T')[0], v.split('T')[1].split('.')[0]),
+                                                '%Y-%m-%d %H:%M:%S').strftime('%d/%B/%Y, %H:%M:%S')) for k, v in
+                 d.items() if k == "created_at")
+
+    context = {
+        'user': request.user,
+        'cur_balance': cur_balance,
+        'previous_balance': pre_balance,
+        'trans': trans,
+    }
+    return render(request, 'authapp/wallet.html', context)
+
+
+def wallet_trans(wall_id):
+    URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(wall_id)
+
+    r = requests.get(url=URL)
+    wallet = r.json()
+    print(wallet)
+    if wallet['success']:
+        return wallet['transactions']

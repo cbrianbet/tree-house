@@ -535,6 +535,14 @@
                             </a>
                         </li>
                     {% endif %}
+                 {% if user.acc_type.id != 5  %}
+                        <li class="site-menu-item">
+                            <a class="animsition-link" href="{% url 'hapo_wallet' %}">
+                                <i class="site-menu-icon wb-unlock" aria-hidden="true"></i>
+                                <span class="site-menu-title">Wallet</span>
+                            </a>
+                        </li>
+                {% endif %}
 
                     {#                    <li class="site-menu-item has-sub">#}
                     {#                        <a href="javascript:void(0)">#}
