@@ -595,9 +595,8 @@ def stkpushinv(request):
     prop = Tenant.objects.get(profile=user).unit.property
     company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
     inv = Invoice.objects.get(uuid=request.POST.get('invoice'))
-    print(company)
-
     landlord = Profile.objects.get(user=company)
+
     if user.msisdn.startswith('0'):
         mobile ='254' + user.msisdn[1:]
     else:
@@ -634,6 +633,28 @@ def stkpushtopup(request):
         "msisdn": mobile,
         "amount": request.POST.get('amount'),
         "account_no": user.hapokash
+    }
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
+    # if wallet['success']:
+    #     return wallet['transactions']
+
+
+def stkpushreg(request):
+    mobile = request.POST.get('mobile')
+
+    if mobile.startswith('0'):
+        mobile ='254' + mobile[1:]
+
+    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+
+    PARAMS = {
+        "shortcode": "5061001",
+        "msisdn": mobile,
+        "amount": request.POST.get('amount'),
+        "account_no": 17
     }
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
     r = requests.post(url=URL, data=PARAMS, headers=headers_dict)

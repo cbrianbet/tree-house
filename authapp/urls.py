@@ -6,6 +6,8 @@ from . import  views
 urlpatterns = [
     path('', views.about, name='about'),
     path('wallet', views.wall_bal, name='hapo_wallet'),
+    path('wallet/r_trans', views.hapokash_wallet_transfer, name='hapo_wallet_trans'),
+    path('wallet/trans_inv', views.hapokash_wallet_transfer_Inv, name='hapo_wallet_transinv'),
     path('login/', views.login, name='web-login'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile, name='profile'),

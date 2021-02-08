@@ -261,9 +261,9 @@
                             <h4 class="modal-title">Make Payment</h4>
                         </div>
                         <div class="modal-body">
-                            <h5>1. Via HapoKash-Wallet</h5>
+                            <h5>1. Via Wallet</h5>
                             <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                            <form id="hkpay">
+                            <form id="hkpay" method="post" action="{% url 'hapo_wallet_transinv' %}">
                             {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
@@ -399,7 +399,7 @@
                         <div class="modal-body">
                             <h5>1. Via HapoKash-Wallet</h5>
                             <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                            <form id="hkpaytrans" >
+                            <form id="hkpaytrans" action="{% url 'hapo_wallet_trans' %}" method="post">
                             {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>

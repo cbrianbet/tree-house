@@ -474,13 +474,39 @@ def hapokashcreate():
     return r.json()
 
 
-def hapokash_wallet_transfer(c_id, d_id, narative, amount):
+def hapokash_wallet_transfer(request, c_id, d_id, narative, amount):
+    user = Profile.objects.get(user=request.user)
+    invoice = RentInvoice.objects.get(uuid=request.POST.get('invoice'))
+
+    prop = Tenant.objects.get(profile=user).unit.property
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    landlord = Profile.objects.get(user=company)
+
     URL = "https://portal.hapokash.app/api/wallet/transfer"
     PARAMS = {
-        "debit_wallet_id": d_id,
-        "credit_wallet_id": c_id,
-        "amount": amount,
-        "narration": narative
+        "debit_wallet_id": user.hapokash,
+        "credit_wallet_id": landlord.hapokash,
+        "amount": request.POST.get('amount'),
+        "narration": "Payment For Rent From wallet"
+    }
+    r = requests.post(url=URL, data=PARAMS)
+    return r.json()
+
+
+def hapokash_wallet_transfer_Inv(request, c_id, d_id, narative, amount):
+    user = Profile.objects.get(user=request.user)
+    invoice = Invoice.objects.get(uuid=request.POST.get('invoice'))
+
+    prop = Tenant.objects.get(profile=user).unit.property
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    landlord = Profile.objects.get(user=company)
+
+    URL = "https://portal.hapokash.app/api/wallet/transfer"
+    PARAMS = {
+        "debit_wallet_id": user.hapokash,
+        "credit_wallet_id": landlord.hapokash,
+        "amount": request.POST.get('amount'),
+        "narration": "Payment For Invoice From wallet"
     }
     r = requests.post(url=URL, data=PARAMS)
     return r.json()
