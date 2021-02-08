@@ -5,6 +5,9 @@ import os
 import random
 import string
 
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.template import Context
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
@@ -275,6 +278,46 @@ def add_units(request, floor, u_uid):
     return render(request, 'properties/add_unit.html', context)
 
 
+
+@login_required
+def edit_units(request, floor, u_uid):
+
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.add_unit'):
+            raise PermissionDenied
+    prop = Properties.objects.get(uuid=u_uid)
+    if Unit.objects.filter(property=prop).count() >= prop.no_of_units:
+        return redirect('unit-list', u_uid=u_uid)
+
+    if request.method == "POST":
+        unit = request.POST.get('name')
+        value = request.POST.get('value')
+        unit_status = request.POST.get('status')
+        area = request.POST.get('area')
+        service_charge = request.POST.get('service_charge')
+        no_of_parking = request.POST.get('parking')
+        size = request.POST.get('size_unit')
+        specify = request.POST.get('other')
+        deposit = request.POST.get('deposit')
+
+        u_save = Unit.objects.create(
+            unit_name=unit, property=prop, security_deposit=deposit, size=size, other_specify=specify, value=value,
+            parking_assigned=no_of_parking, service_charge=service_charge, area=area, unit_status=unit_status,
+            floor=floor,
+            created_by=request.user
+        )
+        u_save.save()
+
+    context = {
+        'fl': floor,
+        'u_id': u_uid,
+        'prop': prop,
+        'user': request.user,
+    }
+
+    return render(request, 'properties/add_unit.html', context)
+
+
 @login_required
 def add_tenant(request, u_uid):
     if request.user.acc_type.id == 5:
@@ -334,6 +377,9 @@ def add_tenant(request, u_uid):
 
         unit.unit_status = "Occupied"
         unit.save()
+
+        th = TenantHistory.objects.create(tenant=t, curr_unit=unit, start_date=datetime.datetime.today().date())
+        th.save()
 
         if dep:
             rent = unit.value
@@ -429,6 +475,7 @@ def view_tenant(request, u_uid):
         'unit': unit,
         't': prop,
         'user': request.user,
+        'history': TenantHistory.objects.filter(tenant=prop),
     }
     return render(request, 'properties/tenant_view.html', context)
 
@@ -442,6 +489,10 @@ def swap_tenant(request, u_uid):
         old = Tenant.objects.get(unit__uuid=u_uid)
         new = request.POST.get('unit')
 
+        th = TenantHistory.objects.get(tenant=old, curr_unit=old.unit, end_date=None)
+        th.end_date = datetime.datetime.today().date()
+        th.save()
+
         old.unit = Unit.objects.get(uuid=new)
         old.save()
         u = Unit.objects.get(uuid=u_uid)
@@ -451,6 +502,9 @@ def swap_tenant(request, u_uid):
         n = Unit.objects.get(uuid=new)
         n.unit_status = "Occupied"
         n.save()
+
+        th = TenantHistory.objects.create(tenant=old, curr_unit=n, start_date=datetime.datetime.today().date())
+        th.save()
 
         return redirect('swap-tenant', u_uid=new)
 
@@ -817,3 +871,15 @@ def delete_property(request, pid):
         unit.delete()
         prop.delete()
         return redirect('prop-list')
+
+
+def html_to_pdf_directly(request):
+    template = get_template("properties/vacate.html")
+    context = Context({'pagesize': 'A4'})
+    html = template.render(context)
+    result = io.StringIO()
+    pdf = pisa.pisaDocument(io.StringIO(html), dest=result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    else:
+        return HttpResponse('Errors')
