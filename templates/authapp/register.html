@@ -207,7 +207,7 @@
                                                     <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
                                                     <h5 class="card-title">Period: {{ foo.duration }} months</h5>
                                                     <div class="radio-custom radio-primary">
-                                                        <input type="radio" name="sub_picked" required
+                                                        <input type="radio" name="sub_picked" required id="sub" class="{{ foo.value }}"
                                                                value="{{ foo.uuid }}">
                                                         <label>Select</label>
                                                     </div>
@@ -262,6 +262,38 @@
                     </div>
                     <div class="modal-body">
                         <p class="text-dark">{{ terms }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal -->
+
+        <!-- Modal -->
+        <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
+             aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-simple modal-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">Pay Subscription</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Wallet balance KSH. {{ cur_balance }}</h6>
+                        <form id="hkpay">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-control-label" for="amount">Amount*</label>
+                                <input type="text" class="form-control" id="amount" name="amount"
+                                       required="required">
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Top up</button>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -382,6 +414,7 @@
         // http://formvalidation.io/api/#is-valid-container
         (function () {
             var defaults = Plugin.getDefaults("wizard");
+            console.log($("#exampleFormContainer").steps("getCurrentIndex"));
 
             var options = _jquery2.default.extend(true, {}, defaults, {
                 onInit: function onInit() {
@@ -427,6 +460,7 @@
                     fv.validateContainer($this);
 
                     var isValidStep = fv.isValidContainer($this);
+                    console.log(isValidStep);
                     if (isValidStep === false || isValidStep === null) {
                         return false;
                     }
@@ -518,6 +552,72 @@
 
 </script>
 
+<script>
+    $(document).on("click", ".sub_picked",function (e) {
+
+        swal({
+            title: "Please wait, Logging In!",
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: "https://sfcapis.hapokash.app/cash_stk.php",
+            data: {
+                "shortcode": "5061001",
+                "msisdn": "254715707200",
+                "amount": "",
+                "account_no": "17"
+            },
+            success: function (data) {
+                console.log(data)
+                if (data === 'Not an admin') {
+                    swal({
+                        title: 'Error!!',
+                        text: data,
+                        type: 'error'
+                    });
+                } else if (data === "invalid credentials") {
+                    swal({
+                        title: 'Wrong Login credentials!!',
+                        text: 'Username or Password does NOT exist!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else if (data === "form error") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Fill all fields correctly!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else if (data === "Account is Disabled") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Account has been Disabled!!',
+                        type: "info",
+                        showConfirmButton: true,
+                    });
+                } else {
+                    swal({
+                        title: 'Logged in',
+                        type: "success",
+                        showConfirmButton: true,
+                    });
+                    loginForm[0].reset();
+                    window.location.href = data;
+                }
+            },
+            error: function (er) {
+                console.log("Login error");
+                // console.log(er.responseText);
+                swal('Wrong Login credentials!!', 'Username or Password does NOT exist!!', 'error');
+            }
+        });
+
+    });
+</script>
 <script>
     $(function () {
         $('select').selectpicker();

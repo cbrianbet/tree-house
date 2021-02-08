@@ -147,7 +147,7 @@
                         </div>
                         <div class="modal-body">
                             <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                            <form id="hkpay">
+                            <form id="hkpay" method="post" action="{% url 'stkpush-topup' %}">
                             {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>

@@ -142,6 +142,9 @@
                                         <td>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td colspan="2"><button type="submit" class="btn btn-warning">Vacate</button></td>
+                                    </tr>
 
                                     </tbody>
                                 </table>
@@ -284,7 +287,7 @@
                             <p class="text-dark">
                                 If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
                             </p>
-                            <form id="hkpayrent">
+                            <form id="hkpayinv" action="{% url 'stkpush-inv' %}" method="post">
                             {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
@@ -396,7 +399,7 @@
                         <div class="modal-body">
                             <h5>1. Via HapoKash-Wallet</h5>
                             <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                            <form id="hkpaytrans">
+                            <form id="hkpaytrans" >
                             {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
@@ -413,14 +416,14 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                                <button type="submit" class="btn btn-success">Pay</button>
                             </form>
 
                             <h5>2. Via Mpesa-HapoKash</h5>
                             <p class="text-dark">
                                 If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
                             </p>
-                            <form id="hkpayinv">
+                            <form id="hkpayrent" action="{% url 'stkpush-payrent' %}" method="post">
                             {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
@@ -437,7 +440,7 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-success" data-dismiss="modal">Pay</button>
+                                <button type="submit" class="btn btn-success">Pay</button>
                             </form>
 
                             <h5>3. Via Bank</h5>

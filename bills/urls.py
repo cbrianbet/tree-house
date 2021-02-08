@@ -15,6 +15,9 @@ urlpatterns = [
     path('bills/approve/payment/<uuid:pid>', views.approve_request, name='approve-payment'),
     path('bills/reject/payment/<uuid:pid>', views.reject_request, name='reject-payment'),
     path('bills/payment/requests', views.list_request, name='req-payment-list'),
+    path('bills/payment/stkpush', views.stkpush, name='stkpush-payrent'),
+    path('bills/payment/stkpushinv', views.stkpushinv, name='stkpush-inv'),
+    path('bills/payment/stkpush/wallet', views.stkpushtopup, name='stkpush-topup'),
     # path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),
 
 ]

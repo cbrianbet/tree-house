@@ -1,5 +1,6 @@
 from itertools import chain
 
+import requests
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
@@ -193,16 +194,17 @@ def record_payment_request(request, i_id):
                     pay_item.save()
                     a.append(pay_item)
             if not a == []:
-                cmp = CompanyProfile.objects.filter(company=a[0].invoice_item.invoice.unit.property.company).filter(Q(user__acc_type_id=2)| Q(user__acc_type_id=3))[0]
+                cmp = CompanyProfile.objects.filter(company=a[0].invoice_item.invoice.unit.property.company).filter(
+                    Q(user__acc_type_id=2) | Q(user__acc_type_id=3))[0]
                 prof = Profile.objects.get(user=cmp.user)
                 tenant = Tenant.objects.get(profile__user=request.user).unit
-                inform_agent_payment(cmp.user.username, prof.first_name, cmp.user.email, tenant.property.property_name, tenant.unit_name)
+                inform_agent_payment(cmp.user.username, prof.first_name, cmp.user.email, tenant.property.property_name,
+                                     tenant.unit_name)
 
             return redirect('invoice', i_id=i_id)
         except InvoiceItems.DoesNotExist:
             for i in range(len(uuid)):
                 if amount[i] != '':
-
                     pay_item = RentInvItemsRequest.objects.create(
                         created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]),
                         transaction_code=trans[i],
@@ -213,13 +215,14 @@ def record_payment_request(request, i_id):
                     pay_item.save()
                     a.append(pay_item)
             if not a == []:
-                cmp = CompanyProfile.objects.filter(company=a[0].invoice_item.invoice.unit.property.company).filter(Q(user__acc_type_id=2)| Q(user__acc_type_id=3))[0]
+                cmp = CompanyProfile.objects.filter(company=a[0].invoice_item.invoice.unit.property.company).filter(
+                    Q(user__acc_type_id=2) | Q(user__acc_type_id=3))[0]
                 prof = Profile.objects.get(user=cmp.user)
                 tenant = Tenant.objects.get(profile__user=request.user).unit
-                inform_agent_payment(cmp.user.username, prof.first_name, cmp.user.email, tenant.property.property_name, tenant.unit_name)
+                inform_agent_payment(cmp.user.username, prof.first_name, cmp.user.email, tenant.property.property_name,
+                                     tenant.unit_name)
 
             return redirect('rinvoice', i_id=i_id)
-
 
     context = {
         'user': request.user,
@@ -234,7 +237,8 @@ def inform_agent_payment(u, n, e, p, un):
     message = '''
     Dear {}, 
     This email is to let you know that a payment request has been received from property {} unit {}. 
-    Login to your portal at	mnestafrica.com for more details. Your username is {} incase you had forgotten'''.format(n, p , un, u)
+    Login to your portal at	mnestafrica.com for more details. Your username is {} incase you had forgotten'''.format(
+        n, p, un, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
     except:
@@ -302,7 +306,8 @@ def rent_invoice(request, i_id):
             print(p)
 
         bills.append({
-            'invoice_item': b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid, 'penalty': b.delay_penalties})
+            'invoice_item': b.invoice_item, 'description': b.description, 'amount': b.amount, 'paid': paid,
+            'penalty': b.delay_penalties})
 
     if request.user.acc_type.id == 4:
         ten = Tenant.objects.get(profile__user=request.user).unit.property.company
@@ -460,7 +465,8 @@ def inform_apprved(u, n, prop, e):
     message = '''
     Dear {}, 
     This email is to let you know that Your payment request has been received and Approved. 
-    Login to your portal at	mnestafrica.com to view the transaction. Your username is  {} incase you had forgotten'''.format(n, u)
+    Login to your portal at	mnestafrica.com to view the transaction. Your username is  {} incase you had forgotten'''.format(
+        n, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
     except:
@@ -493,7 +499,8 @@ def inform_rej(u, n, prop, e):
     message = '''
     Dear {}, 
     This email is to let you know that Your payment request has been received and Rejected. Get in touch with your agent/Landlord for more details. 
-    Login to your portal at	mnestafrica.com to post another. Your username is  {} incase you had forgotten'''.format(n, u)
+    Login to your portal at	mnestafrica.com to post another. Your username is  {} incase you had forgotten'''.format(
+        n, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
     except:
@@ -505,15 +512,23 @@ def list_request(request):
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         comp = CompanyProfile.objects.get(user=request.user).company
         prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
-        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=True).exclude(status=False)
-        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=True).exclude(status=False)
-        rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
-        req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(status=None).exclude(status='')
+        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(
+            status=True).exclude(status=False)
+        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(
+            status=True).exclude(status=False)
+        rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(
+            status=None).exclude(status='')
+        req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__unit__property__in=prop).exclude(
+            status=None).exclude(status='')
     elif request.user.acc_type.id == 4:
-        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=True).exclude(status=False)
-        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=True).exclude(status=False)
-        rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=None).exclude(status='')
-        req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(status=None).exclude(status='')
+        rent_req = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(
+            status=True).exclude(status=False)
+        req = InvoiceItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(
+            status=True).exclude(status=False)
+        rent_req_past = RentInvItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(
+            status=None).exclude(status='')
+        req_past = InvoiceItemsRequest.objects.filter(invoice_item__invoice__invoice_for=request.user).exclude(
+            status=None).exclude(status='')
 
     else:
         raise PermissionDenied
@@ -523,7 +538,7 @@ def list_request(request):
         'req': chain(req, rent_req),
         'req_past': chain(rent_req_past, req_past)
     }
-    return render(request, 'bills/all_requests.html',context)
+    return render(request, 'bills/all_requests.html', context)
 
 
 @login_required
@@ -538,10 +553,91 @@ def individual_trans(request, uuid):
         rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
         invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
 
-
     context = {
         'user': request.user,
         'req': rentrec,
         'rreq': invrec,
     }
-    return render(request, 'bills/trans.html',context)
+    return render(request, 'bills/trans.html', context)
+
+
+def stkpush(request):
+    user = Profile.objects.get(user=request.user)
+    prop = Tenant.objects.get(profile=user).unit.property
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    inv = RentInvoice.objects.get(uuid=request.POST.get('invoice'))
+    print(company)
+
+    landlord = Profile.objects.get(user=company)
+    if user.msisdn.startswith('0'):
+        mobile ='254' + user.msisdn[1:]
+    else:
+        mobile = user.msisdn
+
+
+    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    PARAMS = {
+        "shortcode": "5061001",
+        "msisdn": mobile,
+        "amount": request.POST.get('amount'),
+        "account_no": landlord.hapokash
+    }
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
+    # if wallet['success']:
+    #     return wallet['transactions']
+
+
+def stkpushinv(request):
+    user = Profile.objects.get(user=request.user)
+    prop = Tenant.objects.get(profile=user).unit.property
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    inv = Invoice.objects.get(uuid=request.POST.get('invoice'))
+    print(company)
+
+    landlord = Profile.objects.get(user=company)
+    if user.msisdn.startswith('0'):
+        mobile ='254' + user.msisdn[1:]
+    else:
+        mobile = user.msisdn
+
+
+    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    PARAMS = {
+        "shortcode": "5061001",
+        "msisdn": mobile,
+        "amount": request.POST.get('amount'),
+        "account_no": landlord.hapokash
+    }
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
+    # if wallet['success']:
+    #     return wallet['transactions']
+
+
+def stkpushtopup(request):
+    user = Profile.objects.get(user=request.user)
+
+    if user.msisdn.startswith('0'):
+        mobile ='254' + user.msisdn[1:]
+    else:
+        mobile = user.msisdn
+
+
+    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    PARAMS = {
+        "shortcode": "5061001",
+        "msisdn": mobile,
+        "amount": request.POST.get('amount'),
+        "account_no": user.hapokash
+    }
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
+    # if wallet['success']:
+    #     return wallet['transactions']
