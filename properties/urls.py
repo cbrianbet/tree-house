@@ -24,6 +24,7 @@ urlpatterns = [
     path('staff/edit/<int:uid>', views.edit_staff, name='edit-staff'),
     path('profile/company', views.staff, name='company_profile'),
     path('attach_people/', views.attach_people, name='attach_people'),
+    path('vacate/request', views.vacate_tenant_request, name='vacate_request'),
 
 
 ]

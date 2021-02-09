@@ -5,9 +5,6 @@ import os
 import random
 import string
 
-from xhtml2pdf import pisa
-from django.template.loader import get_template
-from django.template import Context
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
@@ -24,6 +21,7 @@ from bills.views import increment_invoice_number, increment_rent_invoice_number
 from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
+from .pdfs import render_to_pdf
 
 
 @login_required
@@ -841,12 +839,12 @@ def vacate_tenant(request, tid):
     return render(request, '', context)
 
 
-def vacate_tenant_request(request, tid):
-    tenant = Tenant.objects.get(pk=tid)
+def vacate_tenant_request(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
     context = {
         'user': request.user,
     }
-    return render(request, '', context)
+    return render(request, 'properties/vacate_request.html', context)
 
 
 @login_required
@@ -873,13 +871,13 @@ def delete_property(request, pid):
         return redirect('prop-list')
 
 
-def html_to_pdf_directly(request):
-    template = get_template("properties/vacate.html")
-    context = Context({'pagesize': 'A4'})
-    html = template.render(context)
-    result = io.StringIO()
-    pdf = pisa.pisaDocument(io.StringIO(html), dest=result)
-    if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    else:
-        return HttpResponse('Errors')
+def generate_vacate_notice(request):
+    data = {
+        'today': datetime.date.today(),
+        'amount': 39.99,
+        'customer_name': 'Cooper Mann',
+        'order_id': 1233434,
+    }
+    pdf = render_to_pdf('properties/vacate.html', data)
+    return HttpResponse(pdf, content_type='application/pdf')
+
