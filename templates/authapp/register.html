@@ -207,7 +207,8 @@
                                                     <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
                                                     <h5 class="card-title">Period: {{ foo.duration }} months</h5>
                                                     <div class="radio-custom radio-primary">
-                                                        <input type="radio" name="sub_picked" required id="sub" class="{{ foo.value }}"
+                                                        <input type="radio" name="sub_picked" required id="sub"
+                                                               class="{{ foo.value }}"
                                                                value="{{ foo.uuid }}">
                                                         <label>Select</label>
                                                     </div>
@@ -414,27 +415,14 @@
         // http://formvalidation.io/api/#is-valid-container
         (function () {
             var defaults = Plugin.getDefaults("wizard");
-            console.log($("#exampleFormContainer").steps("getCurrentIndex"));
+            var index = $("#exampleWizardFormContainer").wizard('currentIndex');
+            console.log(index);
 
             var options = _jquery2.default.extend(true, {}, defaults, {
                 onInit: function onInit() {
                     (0, _jquery2.default)('#exampleFormContainer').formValidation({
                         framework: 'bootstrap',
                         fields: {
-                            username: {
-                                validators: {
-                                    notEmpty: {
-                                        message: 'The username is required'
-                                    }
-                                }
-                            },
-                            password: {
-                                validators: {
-                                    notEmpty: {
-                                        message: 'The password is required'
-                                    }
-                                }
-                            },
                         },
                         err: {
                             clazz: 'invalid-feedback'
@@ -553,7 +541,7 @@
 </script>
 
 <script>
-    $(document).on("click", ".sub_picked",function (e) {
+    $(document).on("click", ".sub_picked", function (e) {
 
         swal({
             title: "Please wait, Logging In!",

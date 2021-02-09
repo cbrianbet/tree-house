@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
+from django.core.files import File
 from django.core.mail import send_mail
 from django.db.models import Count, Q
 from django.http import HttpResponse, Http404
@@ -239,7 +240,6 @@ def list_units(request, u_uid):
 
 @login_required
 def add_units(request, floor, u_uid):
-
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.add_unit'):
             raise PermissionDenied
@@ -276,10 +276,8 @@ def add_units(request, floor, u_uid):
     return render(request, 'properties/add_unit.html', context)
 
 
-
 @login_required
 def edit_units(request, floor, u_uid):
-
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.add_unit'):
             raise PermissionDenied
@@ -737,10 +735,10 @@ def edit_staff(request, uid):
             user.save()
 
             if user.pk:
-                profile_staff.first_name=f_name
-                profile_staff.last_name=l_name
-                profile_staff.msisdn=mobile
-                profile_staff.id_number=number
+                profile_staff.first_name = f_name
+                profile_staff.last_name = l_name
+                profile_staff.msisdn = mobile
+                profile_staff.id_number = number
                 profile_staff.save()
 
                 PropertyStaff.objects.filter(user=profile_staff.user).delete()
@@ -770,7 +768,8 @@ def edit_staff(request, uid):
         Q(name__exact='Can add vacate notice') | Q(name__exact='Can change invoice items request') |
         Q(name__exact='Can add invoice items request') | Q(name__exact='Can add invoice items request')
     ).exclude(user=profile_staff.user)
-    all_p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).exclude(id__in=prop.values_list('property_id', flat=True))
+    all_p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).exclude(
+        id__in=prop.values_list('property_id', flat=True))
     print(Permission.objects.filter(user=profile_staff.user))
 
     context = {
@@ -841,6 +840,20 @@ def vacate_tenant(request, tid):
 
 def vacate_tenant_request(request):
     tenant = Tenant.objects.get(profile__user=request.user)
+    if VacateNotice.objects.filter(notice_from=tenant).exists():
+        return redirect('generate-vacate-request')
+    if request.method == "POST":
+        print(request.POST)
+
+        reason = request.POST.get('reason')
+        moving_contact = request.POST.get('moving_contact')
+        days_notice = request.POST.get('days_notice')
+        date = request.POST.get('date')
+
+        req = VacateNotice.objects.create(reason=reason, new_contacts=moving_contact, days_notice=days_notice,
+                                          vacate_date=date, notice_from=tenant, created_by=request.user, unit=tenant.unit)
+        req.save()
+        return redirect('generate-vacate-request')
     context = {
         'user': request.user,
     }
@@ -872,12 +885,18 @@ def delete_property(request, pid):
 
 
 def generate_vacate_notice(request):
+    user = request.user
+    tenant = Tenant.objects.get(profile__user=user)
+    notice = VacateNotice.objects.get(notice_from=tenant)
+    company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
+    # inv = Invoice.objects.get(uuid=request.POST.get('invoice'))
+    landlord = Profile.objects.get(user=company)
+
     data = {
-        'today': datetime.date.today(),
-        'amount': 39.99,
-        'customer_name': 'Cooper Mann',
+        'tenant': tenant,
+        'landlord': landlord,
+        'notice': notice,
         'order_id': 1233434,
     }
     pdf = render_to_pdf('properties/vacate.html', data)
     return HttpResponse(pdf, content_type='application/pdf')
-

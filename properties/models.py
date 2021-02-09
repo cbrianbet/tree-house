@@ -188,12 +188,17 @@ class PeopleAttached(models.Model):
 
 
 class VacateNotice(models.Model):
-    notice_to = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    notice_from = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     vacate_date = models.DateField()
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    reason = models.CharField(null=True, max_length=90)
+    new_contacts = models.CharField(max_length=15, blank=True)
+    days_notice = models.PositiveIntegerField(default=20)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="vn_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="vn_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    notice_pdf = models.FileField(upload_to='Vacate_notice/%Y/%m/', null=True)
 
     class Meta:
         db_table = "Vacate Notice"

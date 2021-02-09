@@ -1,10 +1,96 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js css-menubar" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="bootstrap admin template">
+    <meta name="author" content="">
+
+    <title>Login | MNEST Africa</title>
+
+    <link rel="apple-touch-icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
+    <link rel="shortcut icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'authapp/global/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/css/bootstrap-extend.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/css/site.min.css' %}">
+
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/animsition/animsition.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/asscrollable/asScrollable.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/switchery/switchery.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/intro-js/introjs.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/login-v3.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
+
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'authapp/global/fonts/web-icons/web-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/fonts/brand-icons/brand-icons.min.css' %}">
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+
+    <!--[if lt IE 9]>
+    <script src="{% static 'authapp/global/vendor/html5shiv/html5shiv.min.js' %}"></script>
+    <![endif]-->
+
+    <!--[if lt IE 10]>
+    <script src="{% static 'authapp/global/vendor/media-match/media.match.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/respond/respond.min.js' %}"></script>
+    <![endif]-->
+
+    <!-- Scripts -->
+    <script src="{% static 'authapp/global/vendor/breakpoints/breakpoints.js' %}"></script>
+    <script>
+        Breakpoints();
+    </script>
 </head>
-<body>
+<body class="animsition page-login-v3 layout-full">
+<!--[if lt IE 8]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+
+
+<!-- Page -->
+<div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
+    <div class="page-content vertical-align-middle animation-slide-top animation-duration-1">
+        <div class="panel">
+            <h3 style="text-align: center">Re: Notice of Intent to Vacate</h3>
+
+                <img class="brand-img center" src="{% static 'authapp/assets/images/mnest-png.png' %}"
+                     width="338.6" height="180" alt="...">
+            <br>
+            <p style="font-size: 18px">{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</p>
+            <p>{{ notice.created_at }}</p>
+            <br>
+            <p>{{ landlord.first_name }} {{ tenant.last_name }}</p>
+            <p>{{ notice.unit.property.property_name }}</p>
+            <br>
+            <p>Dear {{ landlord.first_name }},</p>
+            <p>This letter constitutes my written {{ notice.days_notice }} day notice that I will be moving out of my
+                apartment on {{ notice.vacate_date }}, the end of my current lease.
+            </p>
+            <br>
+            <p>I am leaving because of {{ notice.reason }}</p>
+            <br>
+            <p>
+                Please advise me on when my security deposit of KES {{ notice.unit.security_deposit }} will be returned
+                to me, as well as if you will be taking any money out for damages that fall outside of normal wear and
+                tear.
+            </p>
+            <p>I can be reached at {{ tenant.profile.msisdn }} and after {{ notice.new_contacts }}.</p>
+            <br>
+            <p>Sincerely,</p>
+            <p>{{ tenant.profile.first_name}} {{ tenant.profile.last_name }}</p>
+            <p>Unit: {{ notice.unit.unit_name }}</p>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

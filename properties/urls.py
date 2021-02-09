@@ -25,6 +25,7 @@ urlpatterns = [
     path('profile/company', views.staff, name='company_profile'),
     path('attach_people/', views.attach_people, name='attach_people'),
     path('vacate/request', views.vacate_tenant_request, name='vacate_request'),
+    path('vacate/letter', views.generate_vacate_notice, name='generate-vacate-request'),
 
 
 ]
