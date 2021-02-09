@@ -574,20 +574,16 @@ def stkpush(request):
     else:
         mobile = user.msisdn
 
-
     URL = "https://sfcapis.hapokash.app/cash_stk.php"
-    PARAMS = {
-        "shortcode": "5061001",
-        "msisdn": mobile,
-        "amount": request.POST.get('amount'),
-        "account_no": landlord.hapokash
-    }
+
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
-    wallet = r.json()
+    r = requests.post(url=URL, json={"shortcode": "5061001","msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
+    wallet = r.text
     print(wallet)
+    
     # if wallet['success']:
     #     return wallet['transactions']
+    return redirect('dashboard')
 
 
 def stkpushinv(request):
@@ -602,16 +598,10 @@ def stkpushinv(request):
     else:
         mobile = user.msisdn
 
-
     URL = "https://sfcapis.hapokash.app/cash_stk.php"
-    PARAMS = {
-        "shortcode": "5061001",
-        "msisdn": mobile,
-        "amount": request.POST.get('amount'),
-        "account_no": landlord.hapokash
-    }
+
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
     wallet = r.json()
     print(wallet)
     # if wallet['success']:
@@ -626,20 +616,12 @@ def stkpushtopup(request):
     else:
         mobile = user.msisdn
 
-
     URL = "https://sfcapis.hapokash.app/cash_stk.php"
-    PARAMS = {
-        "shortcode": "5061001",
-        "msisdn": mobile,
-        "amount": request.POST.get('amount'),
-        "account_no": user.hapokash
-    }
+
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": user.hapokash}, headers=headers_dict)
     wallet = r.json()
     print(wallet)
-    # if wallet['success']:
-    #     return wallet['transactions']
 
 
 def stkpushreg(request):
@@ -650,14 +632,8 @@ def stkpushreg(request):
 
     URL = "https://sfcapis.hapokash.app/cash_stk.php"
 
-    PARAMS = {
-        "shortcode": "5061001",
-        "msisdn": mobile,
-        "amount": request.POST.get('amount'),
-        "account_no": 17
-    }
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, data=PARAMS, headers=headers_dict)
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": 17}, headers=headers_dict)
     wallet = r.json()
     print(wallet)
     # if wallet['success']:
