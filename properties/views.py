@@ -889,7 +889,7 @@ def generate_vacate_notice(request):
     tenant = Tenant.objects.get(profile__user=user)
     notice = VacateNotice.objects.get(notice_from=tenant)
     company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
-    # inv = Invoice.objects.get(uuid=request.POST.get('invoice'))
+
     landlord = Profile.objects.get(user=company)
 
     data = {
@@ -900,3 +900,19 @@ def generate_vacate_notice(request):
     }
     pdf = render_to_pdf('properties/vacate.html', data)
     return HttpResponse(pdf, content_type='application/pdf')
+
+
+def vacate_list(request):
+    if request.user.acc_type.id == 4:
+        return PermissionDenied
+
+    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
+
+    vacate = VacateNotice.objects.filter(unit__property__in=p, status=False)
+
+    context = {
+        'user': request.user,
+        'list': vacate,
+    }
+    return render(request, 'properties/vacate_list.html', context)
+

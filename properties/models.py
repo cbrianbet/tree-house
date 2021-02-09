@@ -198,7 +198,7 @@ class VacateNotice(models.Model):
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="vn_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    notice_pdf = models.FileField(upload_to='Vacate_notice/%Y/%m/', null=True)
+    status = models.BooleanField(default=False)
 
     class Meta:
         db_table = "Vacate Notice"
