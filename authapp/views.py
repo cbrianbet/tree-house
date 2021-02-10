@@ -35,8 +35,8 @@ def login(request):
             if chus.acc_type_id == 2 or chus.acc_type_id == 3:
                 cp = CompanyProfile.objects.get(user=chus).company
                 subs = SubscriptionsCompanies.objects.filter(company=cp, date_end__gt=datetime.date.today())
-                if not subs.exists():
-                    return HttpResponse("subs finished")
+                # if not subs.exists():
+                #     return HttpResponse("subs finished")
             if user is not None:
                 if user.is_active:
                     log_in(request, user)
