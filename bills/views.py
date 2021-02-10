@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
@@ -611,17 +612,19 @@ def stkpushinv(request):
 def stkpushtopup(request):
     user = Profile.objects.get(user=request.user)
 
-    if user.msisdn.startswith('0'):
-        mobile ='254' + user.msisdn[1:]
+    if request.POST.get('mobile').startswith('0'):
+        mobile ='254' + request.POST.get('mobile')[1:]
     else:
-        mobile = user.msisdn
+        mobile = request.POST.get('mobile')
 
     URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    print(mobile)
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
     r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": user.hapokash}, headers=headers_dict)
     wallet = r.json()
     print(wallet)
+    return HttpResponse('success')
 
 
 def stkpushreg(request):

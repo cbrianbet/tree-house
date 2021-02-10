@@ -3,6 +3,7 @@
 
 {% block headscripts %}
     <link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
 
 {% endblock %}
 
@@ -48,12 +49,14 @@
                             </div>
                             <div class="card card-block p-30">
                                 <div class="counter counter-lg text-left pl-20">
-                                    <button class="btn block btn-animate btn-animate-side btn-danger" data-target="#examplePositionCenter2" data-toggle="modal">
+                                    <button class="btn block btn-animate btn-animate-side btn-danger"
+                                            data-target="#examplePositionCenter2" data-toggle="modal">
                                         <span><i class="icon wb-arrow-down"
                                                  aria-hidden="true"></i> Withdraw from Wallet</span>
                                     </button>
                                     <br>
-                                    <button class="btn btn-animate btn-animate-side btn-success block" data-target="#examplePositionCenter" data-toggle="modal">
+                                    <button class="btn btn-animate btn-animate-side btn-success block"
+                                            data-target="#examplePositionCenter" data-toggle="modal">
                                         <span><i class="icon wb-arrow-up" aria-hidden="true"></i> Top up Wallet</span>
                                     </button>
                                 </div>
@@ -115,89 +118,124 @@
                         </table>
                     </div>
 
-{#                    <div class="text-right clearfix">#}
-{#                        <div class="float-right">#}
-{#                            <p>Sub - Total amount:#}
-{#                                <span id="sum2"></span>#}
-{#                            </p>#}
-{#                            <p class="page-invoice-amount">Grand Total:#}
-{#                                <span id="sum1"></span>#}
-{#                            </p>#}
-{#                        </div>#}
-{#                    </div>#}
+                    {#                    <div class="text-right clearfix">#}
+                    {#                        <div class="float-right">#}
+                    {#                            <p>Sub - Total amount:#}
+                    {#                                <span id="sum2"></span>#}
+                    {#                            </p>#}
+                    {#                            <p class="page-invoice-amount">Grand Total:#}
+                    {#                                <span id="sum1"></span>#}
+                    {#                            </p>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
                     <div class="text-right">
 
-{#                        <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"#}
-{#                                onclick="javascript:window.print();">#}
-{#                            <span><i class="icon wb-print" aria-hidden="true"></i> Print</span>#}
-{#                        </button>#}
+                        {#                        <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"#}
+                        {#                                onclick="javascript:window.print();">#}
+                        {#                            <span><i class="icon wb-print" aria-hidden="true"></i> Print</span>#}
+                        {#                        </button>#}
                     </div>
                 </div>
 
-            <!-- Modal -->
-            <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"
-                 aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
-                <div class="modal-dialog modal-simple modal-center">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <h4 class="modal-title">Top up Wallet</h4>
-                        </div>
-                        <div class="modal-body">
-                            <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                            <form id="hkpay" method="post" action="{% url 'stkpush-topup' %}">
-                            {% csrf_token %}
-                                <div class="form-group">
-                                    <label class="form-control-label" for="amount">Amount*</label>
-                                    <input type="text" class="form-control" id="amount" name="amount"
-                                           required="required">
-                                </div>
+                <!-- Modal -->
+                <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"
+                     aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-simple modal-center">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Top up Wallet</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h6>Wallet balance KSH. {{ cur_balance }}</h6>
+                                <form id="hkpay" method="post" action="{% url 'stkpush-topup' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="amount">Amount*</label>
+                                        <input type="text" class="form-control" id="amount" name="amount"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="mobile">Mobile number*</label>
+                                        <input type="text" class="form-control" id="mobile" name="mobile"
+                                               required="required" placeholder="0700000000">
+                                    </div>
 
-                                <button type="submit" class="btn btn-success">Top up</button>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Top up</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- End Modal -->
-            <!-- Modal -->
-            <div class="modal fade example-modal-lg" id="examplePositionCenter2" aria-hidden="true"
-                 aria-labelledby="examplePositionCenter"
-                 role="dialog" tabindex="-1">
-                <div class="modal-dialog modal-simple modal-center">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <h4 class="modal-title">Withdraw from wallet</h4>
-                        </div>
-                        <div class="modal-body">
-                            <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                            <form id="hkpay">
-                            {% csrf_token %}
-                                <div class="form-group">
-                                    <label class="form-control-label" for="amount">Amount*</label>
-                                    <input type="text" class="form-control" id="amount" name="amount"
-                                           required="required">
-                                </div>
+                <!-- End Modal -->
 
-                                <button type="submit" class="btn btn-success">Withdraw</button>
-                            </form>
+                <!-- Modal -->
+                <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
+                     aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-simple modal-center">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Mpesa Transaction code</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h6>A notification was sent to your phone to pay, enter transaction code </h6>
 
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <form id="transF" action="{% url 'confirm-trans' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="trans">Transaction code*</label>
+                                        <input type="text" class="form-control" id="trans" name="trans"
+                                               required="required">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Submit</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Quit
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- End Modal -->
+                <!-- End Modal -->
+                <!-- Modal -->
+                <div class="modal fade example-modal-lg" id="examplePositionCenter2" aria-hidden="true"
+                     aria-labelledby="examplePositionCenter"
+                     role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-simple modal-center">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Withdraw from wallet</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h6>Wallet balance KSH. {{ cur_balance }}</h6>
+                                <form id="hkpay">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="amount">Amount*</label>
+                                        <input type="text" class="form-control" id="amount" name="amount"
+                                               required="required">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Withdraw</button>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
             </div>
             <!-- End Panel -->
         </div>
@@ -206,6 +244,104 @@
 
 {% endblock %}
 {% block footscripts %}
+<script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+
+    <script>
+        var loginForm = $("#hkpay");
+        loginForm.submit(function (e) {
+            e.preventDefault();
+            var sub = $('#sub').val()
+            $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait, Topping up!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "error") {
+                        swal({
+                            title: 'Error!!',
+                            text: 'Fill all fields correctly!!',
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+                    } else {
+                        swal({
+                            title: 'Mpesa Transaction!!',
+                            text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
+                            type: "info",
+                            showConfirmButton: true,
+                        });
+                        $('#examplePositionCenter').modal('hide');
+                        $('#examplePositionCenter3').modal('show');
+                    }
+                },
+                error: function (er) {
+                    console.log("error");
+                    // console.log(er.responseText);
+                    swal('Top up error!!', 'Something went wrong!!', 'error');
+                }
+            });
+
+        });
+
+        var transForm = $("#transF");
+        transForm.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "Not Found") {
+                        swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+
+                    } else {
+                        console.log(data)
+                        swal({
+                            title: 'Transaction Successful!!',
+                            text: 'Top up Complete, Proceed to Wallet',
+                            type: "success",
+                            showConfirmButton: true,
+                        });
+                        $('#examplePositionCenter').modal('hide');
+                    }
+                },
+                error: function (er) {
+                    swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+                }
+            });
+
+        });
+    </script>
     <script>
         var sum1 = 0;
         var sum2 = 0;

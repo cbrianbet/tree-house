@@ -631,7 +631,7 @@ def confirm_payment(request):
         for a in search:
             print(a)
             if a['trx_id'] == trans:
-                return HttpResponse(a)
+                return HttpResponse(reverse('web-login'))
         if wallet['transactions']['next_page_url'] is not None:
             for i in range(wallet['transactions']['last_page']):
                 search = []
@@ -642,7 +642,7 @@ def confirm_payment(request):
                     search.append(wallet['transactions']['data'])
                     for a in search:
                         if a['trx_id'] == trans:
-                            return HttpResponse(a)
+                            return HttpResponse(reverse('web-login'))
     return "Not Found"
 
 
