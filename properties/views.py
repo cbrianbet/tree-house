@@ -902,6 +902,23 @@ def generate_vacate_notice(request):
     return HttpResponse(pdf, content_type='application/pdf')
 
 
+def inspection_report(request, id):
+    user = request.user
+    vac = VacateNotice.objects.get(id=id)
+    if request.method == "POST":
+        fault = request.POST.get('fault')
+        charge = request.POST.get('charges')
+
+        insp = InspectionReport.objects.create(faults=fault, charges=charge, created_by=user, notice=vac)
+        insp.save()
+
+    context = {
+        'user': user,
+        'id': id
+    }
+    return render(request, 'properties/inspection_report.html', context)
+
+
 def vacate_list(request):
     if request.user.acc_type.id == 4:
         return PermissionDenied

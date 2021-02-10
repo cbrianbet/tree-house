@@ -204,6 +204,20 @@ class VacateNotice(models.Model):
     class Meta:
         db_table = "Vacate Notice"
 
+
+class InspectionReport(models.Model):
+    faults = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    charges = models.DateField()
+    notice = models.ForeignKey(VacateNotice, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="ir_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="ir_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "Inspection Report"
+
+
 class TenantHistory(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     curr_unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
