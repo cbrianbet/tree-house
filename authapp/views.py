@@ -131,27 +131,42 @@ def dashboard(request):
         return render(request, 'authapp/Super_analytics.html', context)
 
     elif user.acc_type.id == 2 or user.acc_type.id == 3:
+
+        if request.POST.get('month') == None:
+            month = datetime.date.today().month
+            year = datetime.date.today().year
+        else:
+            year = request.POST.get('month').split('-')[0]
+            month = request.POST.get('month').split('-')[1]
+
         prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
         unit = Unit.objects.filter(property__in=prop)
-        # print(unit)
-        paid = 0
-        inv = RentInvoice.objects.filter(unit__in=unit)
+
+        inv = RentInvoice.objects.filter(unit__in=unit, date_due__year=year, date_due__month=month)
         items = RentItems.objects.filter(invoice__in=inv)
         print(inv)
+        print(request.POST.get('month'))
+        print(month)
+        invoice = RentInvoice.objects.filter(unit__in=unit, date_due__year=year, date_due__month=month)
+        paid = RentItemTransaction.objects.filter(invoice_item__invoice__status=True, invoice_item__invoice__in=invoice).aggregate(Sum('amount_paid'))
+        unpaid1 = RentItemTransaction.objects.filter(invoice_item__invoice__status=False, invoice_item__invoice__in=invoice).aggregate(Sum('amount_paid'))
+        unpaid = RentItems.objects.filter(invoice__status=False, invoice__in=invoice).aggregate(Sum('amount'))
 
-        # invoice = RentInvoice.objects.filter(unit__in=unit, date_due__year=, date_due__month=).aggregate(Sum('amount_paid'))
-
-        # to_pay = items.aggregate(Sum('amount'))['amount__sum'] + items.aggregate(Sum('amount'))['amount__sum']
-        # for item in items:
-        #     p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
-        #     print(p)
-        #     paid = paid + p['amount_paid__sum']
+        print(unpaid)
+        #
         pec1 = inv.filter(status=True)
         pec2 = inv.filter(status=False)
         unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
 
         req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
         oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit))
+
+        if paid['amount_paid__sum'] == None:
+            paid['amount_paid__sum'] = 0
+        if unpaid1['amount_paid__sum'] == None:
+            unpaid1['amount_paid__sum'] = 0
+        if unpaid['amount__sum'] == None:
+            unpaid['amount__sum'] = 0
 
         context = {
             'user': user,
@@ -166,7 +181,9 @@ def dashboard(request):
             'unpunits': unp.count(),
             'req': req.count(),
             'oreq': oreq.count(),
-
+            'date_now': '{}-{}'.format(year, str('%02d' % int(month))),
+            'paid': paid['amount_paid__sum'] + unpaid1['amount_paid__sum'],
+            'due_to_pay': unpaid['amount__sum'] - unpaid1['amount_paid__sum'],
         }
 
         return render(request, 'authapp/analytics.html', context)
@@ -489,7 +506,7 @@ def hapokash_wallet_transfer(request, c_id, d_id, narative, amount):
     invoice = RentInvoice.objects.get(uuid=request.POST.get('invoice'))
 
     prop = Tenant.objects.get(profile=user).unit.property
-    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2, 3]).user
     landlord = Profile.objects.get(user=company)
 
     URL = "https://portal.hapokash.app/api/wallet/transfer"
@@ -508,7 +525,7 @@ def hapokash_wallet_transfer_Inv(request, c_id, d_id, narative, amount):
     invoice = Invoice.objects.get(uuid=request.POST.get('invoice'))
 
     prop = Tenant.objects.get(profile=user).unit.property
-    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2, 3]).user
     landlord = Profile.objects.get(user=company)
 
     URL = "https://portal.hapokash.app/api/wallet/transfer"
@@ -620,15 +637,15 @@ def confirm_payment(request):
 
 
 def stkpushreg(mo, am):
-
     if mo.startswith('0'):
-        mobile ='254' + mo[1:]
+        mobile = '254' + mo[1:]
     else:
         mobile = mo
 
     URL = "https://sfcapis.hapokash.app/cash_stk.php"
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": int(am), "account_no": 17}, headers=headers_dict)
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": int(am), "account_no": 17},
+                      headers=headers_dict)
     wallet = r.json()
     print(wallet)
