@@ -268,9 +268,6 @@
                             <div class="modal-dialog modal-simple modal-center">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
                                         <h4 class="modal-title">Mpesa Transaction code</h4>
                                     </div>
                                     <div class="modal-body">
@@ -394,7 +391,7 @@
     loginForm.submit(function (e) {
         e.preventDefault();
         var sub = $('#sub').val()
-        $('#transF').append('<input type="input" class="integr_elements" placeholder="name" id="name" value="'+sub+'" hidden>');
+        $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
         var thisForm = $(this);
         var endPoint = thisForm.attr("action") || window.location.href;
         var method = thisForm.attr("method");
@@ -414,13 +411,7 @@
             data: formData,
             success: function (data) {
                 console.log(data)
-                if (data === 'Not an admin') {
-                    swal({
-                        title: 'Error!!',
-                        text: data,
-                        type: 'error'
-                    });
-                } else if (data === "Username already exists") {
+                if (data === "Username already exists") {
                     swal({
                         title: 'Username Exists!!',
                         text: 'Username selected already exists, Pick another!!',
@@ -442,14 +433,6 @@
                         showConfirmButton: true,
                     });
                     $('#examplePositionCenter3').modal('show');
-                    {#swal({#}
-                    {#    title: 'Logged in',#}
-                    {#    type: "success",#}
-                    {#    showConfirmButton: true,});#}
-                    {##}
-                    {##}
-                    {#loginForm[0].reset();#}
-                    {#window.location.href = data;#}
                 }
             },
             error: function (er) {
@@ -483,48 +466,23 @@
             data: formData,
             success: function (data) {
                 console.log(data)
-                if (data === "Username already exists") {
-                    swal({
-                        title: 'Username Exists!!',
-                        text: 'Username selected already exists, Pick another!!',
-                        type: "error",
-                        showConfirmButton: true,
-                    });
-                } else if (data === "form error") {
-                    swal({
-                        title: 'Error!!',
-                        text: 'Fill all fields correctly!!',
-                        type: "error",
-                        showConfirmButton: true,
-                    });
-                } else if (data === "Account is Disabled") {
-                    swal({
-                        title: 'Error!!',
-                        text: 'Account has been Disabled!!',
-                        type: "info",
-                        showConfirmButton: true,
-                    });
+                if (data === "Not Found") {
+                    swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+
                 } else {
-                    swal({
-                        title: 'Mpesa Transaction!!',
-                        text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
-                        type: "info",
+                    console.log(data)
+                     swal({
+                        title: 'Transaction Successfull!!',
+                        text: 'Signup Complete, Proceed to login',
+                        type: "success",
                         showConfirmButton: true,
                     });
-                    {#swal({#}
-                    {#    title: 'Logged in',#}
-                    {#    type: "success",#}
-                    {#    showConfirmButton: true,});#}
-                    {##}
-                    {##}
-                    {#loginForm[0].reset();#}
-                    {#window.location.href = data;#}
+                    window.location.href = 'login';
+
                 }
             },
             error: function (er) {
-                console.log("Login error");
-                // console.log(er.responseText);
-                swal('Wrong Login credentials!!', 'Username or Password does NOT exist!!', 'error');
+                swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
             }
         });
 
@@ -564,72 +522,6 @@
     });
 </script>
 
-<script>
-    $(document).on("click", ".sub_picked", function (e) {
-
-        swal({
-            title: "Please wait, Logging In!",
-            showConfirmButton: false,
-            allowOutsideClick: false
-        });
-
-        $.ajax({
-            type: 'POST',
-            url: "https://sfcapis.hapokash.app/cash_stk.php",
-            data: {
-                "shortcode": "5061001",
-                "msisdn": "254715707200",
-                "amount": "",
-                "account_no": "17"
-            },
-            success: function (data) {
-                console.log(data)
-                if (data === 'Not an admin') {
-                    swal({
-                        title: 'Error!!',
-                        text: data,
-                        type: 'error'
-                    });
-                } else if (data === "invalid credentials") {
-                    swal({
-                        title: 'Wrong Login credentials!!',
-                        text: 'Username or Password does NOT exist!!',
-                        type: "error",
-                        showConfirmButton: true,
-                    });
-                } else if (data === "form error") {
-                    swal({
-                        title: 'Error!!',
-                        text: 'Fill all fields correctly!!',
-                        type: "error",
-                        showConfirmButton: true,
-                    });
-                } else if (data === "Account is Disabled") {
-                    swal({
-                        title: 'Error!!',
-                        text: 'Account has been Disabled!!',
-                        type: "info",
-                        showConfirmButton: true,
-                    });
-                } else {
-                    swal({
-                        title: 'Logged in',
-                        type: "success",
-                        showConfirmButton: true,
-                    });
-                    loginForm[0].reset();
-                    window.location.href = data;
-                }
-            },
-            error: function (er) {
-                console.log("Login error");
-                // console.log(er.responseText);
-                swal('Wrong Login credentials!!', 'Username or Password does NOT exist!!', 'error');
-            }
-        });
-
-    });
-</script>
 <script>
     $(function () {
         $('select').selectpicker();

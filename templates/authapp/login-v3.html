@@ -215,6 +215,13 @@
                         type: "info",
                         showConfirmButton: true,
                     });
+                } else if (data === "subs finished") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'No active Subscription!!',
+                        type: "info",
+                        showConfirmButton: true,
+                    });
                 } else {
                     swal({
                         title: 'Logged in',

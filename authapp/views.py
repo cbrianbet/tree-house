@@ -29,8 +29,14 @@ def login(request):
         if form.is_valid():
             clean = form.cleaned_data
             user = authenticate(username=clean['username'], password=clean['password'])
-            if not Users.objects.get(username=clean['username']).is_active:
+            chus =Users.objects.get(username=clean['username'])
+            if not chus.is_active:
                 return HttpResponse('Account is Disabled')
+            if chus.acc_type_id == 2 or chus.acc_type_id == 3:
+                cp = CompanyProfile.objects.get(user=chus).company
+                subs = SubscriptionsCompanies.objects.filter(company=cp, date_end__gt=datetime.date.today())
+                if not subs.exists():
+                    return HttpResponse("subs finished")
             if user is not None:
                 if user.is_active:
                     log_in(request, user)
@@ -159,7 +165,7 @@ def dashboard(request):
         unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
 
         req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
-        oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit))
+        oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit), created_at__month=month, created_at__year=year)
 
         if paid['amount_paid__sum'] == None:
             paid['amount_paid__sum'] = 0
@@ -612,14 +618,18 @@ def wallet_trans(wall_id):
 
 def confirm_payment(request):
     trans = request.POST.get('trans')
+    print(request.POST)
+    uuid = request.POST.get('')
     search = []
     URL = "https://portal.hapokash.app/api/wallet/transactions/17"
     r = requests.get(url=URL)
     wallet = r.json()
     print(wallet)
     if wallet['success']:
-        search.append(wallet['transactions']['data'])
+        search = wallet['transactions']['data']
+        # print(search)
         for a in search:
+            print(a)
             if a['trx_id'] == trans:
                 return HttpResponse(a)
         if wallet['transactions']['next_page_url'] is not None:
@@ -633,7 +643,7 @@ def confirm_payment(request):
                     for a in search:
                         if a['trx_id'] == trans:
                             return HttpResponse(a)
-    return False
+    return "Not Found"
 
 
 def stkpushreg(mo, am):
