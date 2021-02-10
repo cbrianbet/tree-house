@@ -68,7 +68,7 @@
     </script>
 
 </head>
-<body class="animsition page-register-v2 layout-full page-dark">
+<body class="animsition" style="margin-top: 0">
 <!--[if lt IE 8]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
     your browser</a> to improve your experience.</p>
@@ -76,90 +76,77 @@
 
 
 <!-- Page -->
-<div class="page" data-animsition-in="fade-in" data-animsition-out="fade-out">
+<div class="page" style="margin-left: 0; margin-top: 0;" data-animsition-in="fade-in" data-animsition-out="fade-out">
     <div class="page-content">
         <div class="page-brand-info">
-            <div class="brand">
-                <img class="brand-img" src="{% static 'authapp/assets/images/mnest-png.png' %}" alt="...">
+            <div class="brand text-center">
+                <img class="brand-img" src="{% static 'authapp/assets/images/mnest-png.png' %}" alt="..." width="338.6"
+                     height="180">
                 <h2 class="brand-text font-size-40 text-dark">MNEST Africa</h2>
+                <p class="font-size-20 text-dark">Sign up to start your awesome journey.</p>
             </div>
-            <p class="font-size-20 text-dark">Sign up to start your awesome journey.</p>
-        </div>
 
-        <div class="page-register-main animation-slide-left animation-duration-1">
-            <h3 class="font-size-24">Sign Up</h3>
-            <p></p>
-            <!-- Panel Wizard Form Container -->
-            <div class="panel" id="exampleWizardFormContainer">
-                <div class="panel-heading">
-                    <h3 class="panel-title"></h3>
-                </div>
-                <div class="panel-body">
-                    <!-- Steps -->
-                    <div class="pearls row">
-                        <div class="pearl current col-3">
-                            <div class="pearl-icon"><i class="icon wb-user" aria-hidden="true"></i></div>
-                            <span class="pearl-title">Account Info</span>
-                        </div>
-                        <div class="pearl col-3">
-                            <div class="pearl-icon"><i class="icon wb-payment" aria-hidden="true"></i></div>
-                            <span class="pearl-title">Company Info</span>
-                        </div>
-                        <div class="pearl col-3">
-                            <div class="pearl-icon"><i class="icon wb-cloud" aria-hidden="true"></i></div>
-                            <span class="pearl-title">Subscription Plan</span>
-                        </div>
-                        <div class="pearl col-3">
-                            <div class="pearl-icon"><i class="icon wb-check" aria-hidden="true"></i></div>
-                            <span class="pearl-title">Confirmation</span>
-                        </div>
+            <div class="page-content container-fluid">
+
+                <!-- Panel Full Example -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="panel-desc">Sign Up</span>
+                        </h3>
                     </div>
-                    <!-- End Steps -->
+                    <div class="panel-body">
 
-                    <!-- Wizard Content -->
-                    <form id="exampleFormContainer" action="{% url 'register' %}" method="post" autocomplete="off"
-                          enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="wizard-content">
-                            <div class="wizard-pane active" id="exampleAccountOne" role="tabpanel">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="f_name">First name</label>
-                                    <input type="text" class="form-control" id="f_name" name="f_name"
-                                           required="required">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="l_name">Middle & Last Name*</label>
-                                    <input type="text" class="form-control" id="l_name" name="l_name"
-                                           required="required">
 
+                        <form id="signup" action="{% url 'register' %}" method="post"
+                              autocomplete="off" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <h3 class="font-size-17 text-dark">1. User information</h3>
+                            <div class="row row-lg">
+                                <div class="col-xl-6 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="f_name">First name</label>
+                                        <input type="text" class="form-control" id="f_name" name="f_name"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="l_name">Middle & Last Name*</label>
+                                        <input type="text" class="form-control" id="l_name" name="l_name"
+                                               required="required">
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="u_name">Username*</label>
+                                        <input type="text" class="form-control" id="u_name" name="username"
+                                               required="required" onBlur="check()">
+                                    </div>
+                                    <div id="uname_response"></div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="u_name">Username*</label>
-                                    <input type="text" class="form-control" id="u_name" name="username"
-                                           required="required" onBlur="check()">
-                                </div>
-                                <div id="uname_response"></div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="inputEmail">Email*</label>
-                                    <input type="email" class="form-control" id="inputEmail" name="email"
-                                           required="required">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="inputPassword">Password*</label>
-                                    <input type="password" class="form-control" id="inputPassword" name="password"
-                                           required="required">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="acc_type">Account Type*</label>
-                                    <select data-plugin="selectpicker" title="Account Type" id="acc_type"
-                                            name="acc_type" required="required">
-                                        <option value="2">Landlord</option>
-                                        <option value="3">Agent</option>
-                                    </select>
+                                <div class="col-xl-6 form-horizontal">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="inputEmail">Email*</label>
+                                        <input type="email" class="form-control" id="inputEmail" name="email"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="inputPassword">Password*</label>
+                                        <input type="password" class="form-control" id="inputPassword" name="password"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="acc_type">Account Type*</label>
+                                        <select data-plugin="selectpicker" title="Account Type" id="acc_type"
+                                                name="acc_type" required="required">
+                                            <option value="2">Landlord</option>
+                                            <option value="3">Agent</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="wizard-pane" id="exampleBillingOne" role="tabpanel">
-                                <div id="agent">
+                            <h3 class="font-size-17 text-dark">2. Company information</h3>
+                            <div class="row row-lg" id="agent">
+
+                                <div class="col-xl-6 form-horizontal">
                                     <div class="form-group">
                                         <label class="form-control-label" for="company">Company Name*</label>
                                         <input type="text" class="form-control" id="company" name="company"
@@ -168,6 +155,8 @@
                                     <label class="form-control-label" for="logo">Logo</label>
                                     <input type="file" id="logo" name="logo" data-plugin="dropify"
                                            data-default-file="" accept="image/*"/>
+                                </div>
+                                <div class="col-xl-6 form-horizontal">
                                     <div class="form-group">
                                         <label class="form-control-label" for="location">Office
                                             location</label>
@@ -176,160 +165,172 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="form-control-label" for="props_no">Number of employees</label>
-                                        <input type="number" class="form-control" id="props_no" min="1" name="props_no"
+                                        <input type="number" class="form-control" id="props_no" min="1"
+                                               name="props_no" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="mobile2">Mobile Number*</label>
+                                        <input type="tel" class="form-control" id="mobile2" name="mobile2"
                                                required="required">
                                     </div>
                                 </div>
-                                <div id="landlord">
+
+                            </div>
+                            <div id="landlord" class="row row-lg">
+                                <div class="col-xl-6 form-horizontal">
                                     <div class="form-group">
                                         <label class="form-control-label" for="mobile">Mobile Number*</label>
                                         <input type="tel" class="form-control" id="mobile" name="mobile"
                                                required="required">
                                     </div>
+                                </div>
+                                <div class="col-xl-6 form-horizontal">
                                     <div class="form-group">
                                         <label class="form-control-label" for="id_no">ID Number*</label>
                                         <input type="text" class="form-control" id="id_no" name="id_no"
                                                required="required">
                                     </div>
                                 </div>
-                                {#                                <input type="file" id="input-file-now-custom-1" data-plugin="dropify"#}
-                                {#                                       data-default-file="../../../global/photos/placeholder.png"#}
-                                {#                                />#}
                             </div>
-                            <div class="wizard-pane" id="exampleGettingOne" role="tabpanel">
-                                <div class="text-center my-20">
-                                    <div class="form-group clearfix">
-                                        {% for foo in sub %}
-                                            <div class="card card-inverse bg-primary">
-                                                <div class="card-body">
-                                                    <h4 class="text-uppercase">{{ foo.name }}</h4>
-                                                    <span>{{ foo.description }}</span>
-                                                    <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
-                                                    <h5 class="card-title">Period: {{ foo.duration }} months</h5>
-                                                    <div class="radio-custom radio-primary">
-                                                        <input type="radio" name="sub_picked" required id="sub"
-                                                               class="{{ foo.value }}"
-                                                               value="{{ foo.uuid }}">
-                                                        <label>Select</label>
-                                                    </div>
+                            {#                                <input type="file" id="input-file-now-custom-1" data-plugin="dropify"#}
+                            {#                                       data-default-file="../../../global/photos/placeholder.png"#}
+                            {#                                />#}
+
+                            <h3 class="font-size-17 text-dark">3. Billing and Subscriptions</h3>
+                            <div class="text-center my-20">
+                                <div class="form-group clearfix">
+                                    {% for foo in sub %}
+                                        <div class="card card-inverse bg-primary">
+                                            <div class="card-body">
+                                                <h4 class="text-uppercase">{{ foo.name }}</h4>
+                                                <span>{{ foo.description }}</span>
+                                                <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
+                                                <h5 class="card-title">Period: {{ foo.duration }} months</h5>
+                                                <div class="radio-custom radio-primary">
+                                                    <input type="radio" name="sub_picked" required id="sub"
+                                                           data-sub-type="{{ foo.uuid }}" value="{{ foo.uuid }}">
+                                                    <label>Select</label>
                                                 </div>
                                             </div>
-                                        {% endfor %}
+                                        </div>
+                                    {% endfor %}
 
-                                    </div>
                                 </div>
                             </div>
-                            <div class="wizard-pane" id="exampleGettingOne1" role="tabpanel">
-                                <div class="text-center my-20">
-                                    <div class="form-group clearfix">
-                                        <div class="checkbox-custom checkbox-inline checkbox-primary float-left">
-                                            <input type="checkbox" id="inputCheckbox" name="term" required>
-                                            <label for="inputCheckbox"></label>
-                                        </div>
-                                        <p class="ml-40">By clicking Sign Up, you agree to our
-                                            <a data-target="#examplePositionCenter" data-toggle="modal">Terms</a> and
-                                            <a data-target="#examplePositionCenter2" data-toggle="modal">Privacy
-                                                Policy
-                                            </a>
-                                            .
-                                        </p>
+
+                            <h3 class="font-size-17 text-dark">4. Privacy and terms of use</h3>
+                            <div class="text-center my-20">
+                                <div class="form-group clearfix">
+                                    <div class="checkbox-custom checkbox-inline checkbox-primary float-left">
+                                        <input type="checkbox" id="inputCheckbox" name="term" required>
+                                        <label for="inputCheckbox"></label>
+                                    </div>
+                                    <p class="ml-40 text-left">By clicking Sign Up, you agree to our
+                                        <a data-target="#examplePositionCenter" data-toggle="modal"
+                                           class="text-primary">Terms</a>
+                                        and <a data-target="#examplePositionCenter2" data-toggle="modal"
+                                               class="text-primary">Privacy Policy</a>.
+                                    </p>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" type="submit">Sign up</button>
+                        </form>
+
+                        <p>Have account already? Please go to <a href="{% url 'web-login' %}">Sign In</a></p>
+
+                        <!-- Modal -->
+                        <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"
+                             aria-labelledby="examplePositionCenter"
+                             role="dialog" tabindex="-1">
+                            <div class="modal-dialog modal-simple modal-center">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Terms of Use</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-dark">{{ terms }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                    <!-- Wizard Content -->
-                </div>
-            </div>
-            <!-- End Panel Wizard Form Container -->
-            <p>Have account already? Please go to <a href="{% url 'web-login' %}">Sign In</a></p>
-            <footer class="page-copyright">
-                <p>WEBSITE BY MNEST Africa</p>
-                <p>© 2021. All RIGHT RESERVED.</p>
-            </footer>
-        </div>
+                        <!-- End Modal -->
 
-        <!-- Modal -->
-        <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"
-             aria-labelledby="examplePositionCenter"
-             role="dialog" tabindex="-1">
-            <div class="modal-dialog modal-simple modal-center">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        <h4 class="modal-title">Terms of Use</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p class="text-dark">{{ terms }}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Modal -->
+                        <!-- Modal -->
+                        <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
+                             aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+                            <div class="modal-dialog modal-simple modal-center">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Mpesa Transaction code</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h6>A notification was sent to your phone to pay, enter transaction code </h6>
 
-        <!-- Modal -->
-        <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
-             aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
-            <div class="modal-dialog modal-simple modal-center">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        <h4 class="modal-title">Pay Subscription</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                        <form id="hkpay">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label class="form-control-label" for="amount">Amount*</label>
-                                <input type="text" class="form-control" id="amount" name="amount"
-                                       required="required">
+                                        <form id="transF" action="{% url 'confirm-trans' %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="trans">Transaction code*</label>
+                                                <input type="text" class="form-control" id="trans" name="trans"
+                                                       required="required">
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Quit
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <!-- End Modal -->
 
-                            <button type="submit" class="btn btn-success">Top up</button>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <!-- Modal -->
+                        <div class="modal fade example-modal-lg" id="examplePositionCenter2" aria-hidden="true"
+                             aria-labelledby="examplePositionCenter"
+                             role="dialog" tabindex="-1">
+                            <div class="modal-dialog modal-simple modal-center">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Privacy Policy</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-dark">{{ privacy }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Modal -->
+
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- End Modal -->
 
-        <!-- Modal -->
-        <div class="modal fade example-modal-lg" id="examplePositionCenter2" aria-hidden="true"
-             aria-labelledby="examplePositionCenter"
-             role="dialog" tabindex="-1">
-            <div class="modal-dialog modal-simple modal-center">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        <h4 class="modal-title">Privacy Policy</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p class="text-dark">{{ privacy }}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
         </div>
-        <!-- End Modal -->
-
     </div>
+    <!-- End Page -->
 </div>
-<!-- End Page -->
+<footer class="page-copyright">
+    <p>WEBSITE BY MNEST Africa</p>
+    <p>© 2021. All RIGHT RESERVED.</p>
+</footer>
 
 
 <!-- Core  -->
@@ -387,120 +388,154 @@
 
 <script src="{% static 'authapp/global/js/Plugin/jquery-wizard.js' %}"></script>
 {#<script src="{% static 'authapp/assets/examples/js/forms/signupwizard.js' %}"></script>#}
+
 <script>
-    (function (global, factory) {
-        if (typeof define === "function" && define.amd) {
-            define('/forms/wizard', ['jquery', 'Site'], factory);
-        } else if (typeof exports !== "undefined") {
-            factory(require('jquery'), require('Site'));
-        } else {
-            var mod = {
-                exports: {}
-            };
-            factory(global.jQuery, global.Site);
-            global.formsWizard = mod.exports;
-        }
-    })(this, function (_jquery, _Site) {
-        'use strict';
+    var loginForm = $("#signup");
+    loginForm.submit(function (e) {
+        e.preventDefault();
+        var sub = $('#sub').val()
+        $('#transF').append('<input type="input" class="integr_elements" placeholder="name" id="name" value="'+sub+'" hidden>');
+        var thisForm = $(this);
+        var endPoint = thisForm.attr("action") || window.location.href;
+        var method = thisForm.attr("method");
+        var formData = thisForm.serialize();
 
-        var _jquery2 = babelHelpers.interopRequireDefault(_jquery);
-
-        (0, _jquery2.default)(document).ready(function ($$$1) {
-            (0, _Site.run)();
+        console.log(endPoint);
+        console.log(method);
+        swal({
+            title: "Please wait, Signing up!",
+            showConfirmButton: false,
+            allowOutsideClick: false
         });
 
-
-        // Example Wizard Form Container
-        // -----------------------------
-        // http://formvalidation.io/api/#is-valid-container
-        (function () {
-            var defaults = Plugin.getDefaults("wizard");
-            var index = $("#exampleWizardFormContainer").wizard('currentIndex');
-            console.log(index);
-
-            var options = _jquery2.default.extend(true, {}, defaults, {
-                onInit: function onInit() {
-                    (0, _jquery2.default)('#exampleFormContainer').formValidation({
-                        framework: 'bootstrap',
-                        fields: {
-                        },
-                        err: {
-                            clazz: 'invalid-feedback'
-                        },
-                        control: {
-                            // The CSS class for valid control
-                            valid: 'is-valid',
-
-                            // The CSS class for invalid control
-                            invalid: 'is-invalid'
-                        },
-                        row: {
-                            invalid: 'has-danger'
-                        }
+        $.ajax({
+            type: method,
+            url: endPoint,
+            data: formData,
+            success: function (data) {
+                console.log(data)
+                if (data === 'Not an admin') {
+                    swal({
+                        title: 'Error!!',
+                        text: data,
+                        type: 'error'
                     });
-                },
-                validator: function validator() {
-                    var fv = (0, _jquery2.default)('#exampleFormContainer').data('formValidation');
+                } else if (data === "Username already exists") {
+                    swal({
+                        title: 'Username Exists!!',
+                        text: 'Username selected already exists, Pick another!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else if (data === "form error") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Fill all fields correctly!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else {
+                    swal({
+                        title: 'Mpesa Transaction!!',
+                        text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
+                        type: "info",
+                        showConfirmButton: true,
+                    });
+                    $('#examplePositionCenter3').modal('show');
+                    {#swal({#}
+                    {#    title: 'Logged in',#}
+                    {#    type: "success",#}
+                    {#    showConfirmButton: true,});#}
+                    {##}
+                    {##}
+                    {#loginForm[0].reset();#}
+                    {#window.location.href = data;#}
+                }
+            },
+            error: function (er) {
+                console.log("Login error");
+                // console.log(er.responseText);
+                swal('Wrong Login credentials!!', 'Username or Password does NOT exist!!', 'error');
+            }
+        });
 
-                    var $this = (0, _jquery2.default)(this);
+    });
 
-                    // Validate the container
-                    fv.validateContainer($this);
+    var transForm = $("#transF");
+    transForm.submit(function (e) {
+        e.preventDefault();
+        var thisForm = $(this);
+        var endPoint = thisForm.attr("action") || window.location.href;
+        var method = thisForm.attr("method");
+        var formData = thisForm.serialize();
 
-                    var isValidStep = fv.isValidContainer($this);
-                    console.log(isValidStep);
-                    if (isValidStep === false || isValidStep === null) {
-                        return false;
-                    }
-                    if ($('#uname_response').html() == '' || $('#uname_response').html() == '<span id="resp" style="color: green;">Available.</span>') {
-                        console.log('true')
-                        return true;
-                    } else {
-                        console.log($('#uname_response'))
+        console.log(endPoint);
+        console.log(method);
+        swal({
+            title: "Please wait!",
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
 
-                        var username = $("#u_name").val().trim();
-                        $.ajax({
-
-                            url: "{% url 'check-username' %}",
-                            type: 'post',
-                            data: {username: username},
-                            success: function (data) {
-                                console.log(data)
-                                if (data === '<span id=\'resp\' style=\'color: red;\'>Username Not Available.</span>') {
-                                    swal({
-                                        title: 'Error!!',
-                                        text: 'Username not available',
-                                        type: 'error'
-                                    });
-                                    return false;
-                                } else {
-                                    return true;
-                                }
-                            },
-                            error: function (er) {
-                                console.log("Login error");
-                                swal('Something went wrong', 'Try again!!', 'error');
-                            }
-                        });
-                        return false;
-                    }
-
-                },
-                onFinish: function onFinish() {
-                    console.log($('#exampleFormContainer')[0])
-                    $('#exampleFormContainer')[0].submit();
-                },
-                buttonsAppendTo: '.panel-body'
-            });
-
-            (0, _jquery2.default)("#exampleWizardFormContainer").wizard(options);
-        })();
+        $.ajax({
+            type: method,
+            url: endPoint,
+            data: formData,
+            success: function (data) {
+                console.log(data)
+                if (data === "Username already exists") {
+                    swal({
+                        title: 'Username Exists!!',
+                        text: 'Username selected already exists, Pick another!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else if (data === "form error") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Fill all fields correctly!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else if (data === "Account is Disabled") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Account has been Disabled!!',
+                        type: "info",
+                        showConfirmButton: true,
+                    });
+                } else {
+                    swal({
+                        title: 'Mpesa Transaction!!',
+                        text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
+                        type: "info",
+                        showConfirmButton: true,
+                    });
+                    {#swal({#}
+                    {#    title: 'Logged in',#}
+                    {#    type: "success",#}
+                    {#    showConfirmButton: true,});#}
+                    {##}
+                    {##}
+                    {#loginForm[0].reset();#}
+                    {#window.location.href = data;#}
+                }
+            },
+            error: function (er) {
+                console.log("Login error");
+                // console.log(er.responseText);
+                swal('Wrong Login credentials!!', 'Username or Password does NOT exist!!', 'error');
+            }
+        });
 
     });
 </script>
 
 <script>
     $(document).ready(function () {
+        $('#landlord').hide();
+        document.getElementById("mobile").required = false;
+        document.getElementById("id_no").required = false;
 
         $("#u_name").keyup(function () {
 
@@ -527,17 +562,6 @@
         console.log($('#resp'))
 
     });
-
-    function check() {
-        if ($('#uname_response') == '' || $('#uname_response') == '<span id="resp" style="color: green;">Available.</span>') {
-            var field = $('#u_name');
-            console.log(field)
-            setTimeout(function () {
-                field.focus();
-            }, 0);
-        }
-    }
-
 </script>
 
 <script>
@@ -615,10 +639,23 @@
             if (value == "2") {
                 $('#agent').hide();
                 $('#landlord').show();
+                document.getElementById("company").required = false;
+                document.getElementById("location").required = false;
+                document.getElementById("props_no").required = false;
+                document.getElementById("mobile2").required = false;
+                document.getElementById("mobile").required = true;
+                document.getElementById("id_no").required = true;
+
 
             } else if (value == "3") {
                 $('#agent').show();
                 $('#landlord').hide();
+                document.getElementById("mobile").required = false;
+                document.getElementById("mobile").required = true;
+                document.getElementById("id_no").required = false;
+                document.getElementById("company").required = true;
+                document.getElementById("location").required = true;
+                document.getElementById("props_no").required = true;
             }
 
         });

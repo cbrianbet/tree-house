@@ -139,6 +139,8 @@ def dashboard(request):
         items = RentItems.objects.filter(invoice__in=inv)
         print(inv)
 
+        # invoice = RentInvoice.objects.filter(unit__in=unit, date_due__year=, date_due__month=).aggregate(Sum('amount_paid'))
+
         # to_pay = items.aggregate(Sum('amount'))['amount__sum'] + items.aggregate(Sum('amount'))['amount__sum']
         # for item in items:
         #     p = RentItemTransaction.objects.filter(invoice_item=item).aggregate(Sum('amount_paid'))
@@ -411,7 +413,6 @@ def signup(request):
         pwrd = request.POST.get('password')
         f_name = request.POST.get('f_name')
         l_name = request.POST.get('l_name')
-        mobile = request.POST.get('mobile')
         terms = request.POST.get('terms')
         company_name = request.POST.get('company')
         no_of_units = request.POST.get('props_no')
@@ -419,12 +420,18 @@ def signup(request):
         number = request.POST.get('id_no')
         location = request.POST.get('location')
         sub_picked = request.POST.get('sub_picked')
+        if request.POST.get('mobile') == '':
+            mobile = request.POST.get('mobile2')
+        else:
+            mobile = request.POST.get('mobile')
 
         if request.FILES:
             logo = request.FILES['logo']
         else:
             logo = ''
         try:
+            if Users.objects.filter(username=username).exists():
+                return HttpResponse("Username already exists")
             acc = AccTypes.objects.get(id=int(type))
             user = Users.objects.create_user(username=username, password=pwrd, email=email, acc_type=acc)
             user.save()
@@ -444,6 +451,9 @@ def signup(request):
 
                 cp = CompanyProfile.objects.create(user=user, company=company)
                 cp.save()
+
+                stkpushreg(mobile, Subscriptions.objects.get(uuid=sub_picked).value)
+
                 sub = SubscriptionsCompanies.objects.create(
                     subs=Subscriptions.objects.get(uuid=sub_picked), company=company,
                     date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=sub_picked).duration),
@@ -581,3 +591,42 @@ def wallet_trans(wall_id):
     print(wallet)
     if wallet['success']:
         return wallet['transactions']
+
+
+def confirm_payment(request):
+    trans = request.POST.get('trans')
+    search = []
+    URL = "https://portal.hapokash.app/api/wallet/transactions/17"
+    r = requests.get(url=URL)
+    wallet = r.json()
+    print(wallet)
+    if wallet['success']:
+        search.append(wallet['transactions']['data'])
+        for a in search:
+            if a['trx_id'] == trans:
+                return HttpResponse(a)
+        if wallet['transactions']['next_page_url'] is not None:
+            for i in range(wallet['transactions']['last_page']):
+                search = []
+                URL = wallet['transactions']['next_page_url']
+                r = requests.get(url=URL)
+                wallet = r.json()
+                if wallet['success']:
+                    search.append(wallet['transactions']['data'])
+                    for a in search:
+                        if a['trx_id'] == trans:
+                            return HttpResponse(a)
+    return False
+
+
+def stkpushreg(mo, am):
+
+    if mo.startswith('0'):
+        mobile ='254' + mo[1:]
+
+    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": int(am), "account_no": 17}, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
