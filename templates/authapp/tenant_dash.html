@@ -143,7 +143,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2"><a href="{% url 'vacate_request' %}" type="submit" class="btn btn-warning">Vacate From Unit</a></td>
+                                        <td colspan="2"><a href="{% url 'vacate_request' %}" type="submit"
+                                                           class="btn btn-warning">Vacate From Unit</a></td>
                                     </tr>
 
                                     </tbody>
@@ -168,7 +169,7 @@
                                                     Kshs. {{ bals }}
                                                 </div>
                                                 <a data-target="#examplePositionCenter" data-toggle="modal"
-                                                       class="btn btn-default block">Make Payment</a>
+                                                   class="btn btn-default block">Make Payment</a>
                                             </div>
                                         </div>
                                     </div>
@@ -229,11 +230,7 @@
                                             <div class="counter text-left blue-grey-700">
                                                 <div class="counter-label mt-10">Documents
                                                 </div>
-                                                <a href="">
-                                                    <div class="counter-number font-size-40 mt-10">
-                                                        {{ inv }}
-                                                    </div>
-                                                </a>
+                                                <a href="{% url 'documents' %}" class="btn btn-default block">Documents</a>
                                             </div>
                                         </div>
                                     </div>
@@ -264,16 +261,18 @@
                             <h5>1. Via Wallet</h5>
                             <h6>Wallet balance KSH. {{ cur_balance }}</h6>
                             <form id="hkpay" method="post" action="{% url 'hapo_wallet_transinv' %}">
-                            {% csrf_token %}
+                                {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
-                                    <input type="number" class="form-control" id="amount" name="amount" max="{{ cur_balance }}"
+                                    <input type="number" class="form-control" id="amount" name="amount"
+                                           max="{{ cur_balance }}"
                                            required="required">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-control-label" for="inv">Invoice*</label>
-                                    <select data-plugin="selectpicker" title="Invoice " id="inv" name="invoice" required>
+                                    <select data-plugin="selectpicker" title="Invoice " id="inv" name="invoice"
+                                            required>
                                         {% for a in invoice %}
                                             <option value="{{ a.uuid }}">{{ a.invoice_no }} </option>
                                         {% endfor %}
@@ -288,7 +287,7 @@
                                 If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
                             </p>
                             <form id="hkpayinv" action="{% url 'stkpush-inv' %}" method="post">
-                            {% csrf_token %}
+                                {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
                                     <input type="number" class="form-control" id="amount" name="amount"
@@ -400,16 +399,18 @@
                             <h5>1. Via HapoKash-Wallet</h5>
                             <h6>Wallet balance KSH. {{ cur_balance }}</h6>
                             <form id="hkpaytrans" action="{% url 'hapo_wallet_trans' %}" method="post">
-                            {% csrf_token %}
+                                {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
-                                    <input type="number" class="form-control" id="amount" name="amount" max="{{ cur_balance }}"
+                                    <input type="number" class="form-control" id="amount" name="amount"
+                                           max="{{ cur_balance }}"
                                            required="required">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-control-label" for="inv">Invoice*</label>
-                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="inv" name="invoice" required>
+                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="inv"
+                                            name="invoice" required>
                                         {% for a in rent_invoices %}
                                             <option value="{{ a.uuid }}">{{ a.invoice_no }} | {{ a.date_due }}</option>
                                         {% endfor %}
@@ -424,7 +425,7 @@
                                 If the number {{ tenant.profile.msisdn }} correct? If not Change it from Profile
                             </p>
                             <form id="hkpayrent" action="{% url 'stkpush-payrent' %}" method="post">
-                            {% csrf_token %}
+                                {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="amount">Amount*</label>
                                     <input type="number" class="form-control" id="amount" name="amount"
@@ -433,7 +434,8 @@
 
                                 <div class="form-group">
                                     <label class="form-control-label" for="inv">Invoice*</label>
-                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="inv" name="invoice" required>
+                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="inv"
+                                            name="invoice" required>
                                         {% for a in rent_invoices %}
                                             <option value="{{ a.uuid }}">{{ a.invoice_no }} | {{ a.date_due }}</option>
                                         {% endfor %}

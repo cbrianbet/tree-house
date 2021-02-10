@@ -623,6 +623,8 @@ def stkpushreg(mo, am):
 
     if mo.startswith('0'):
         mobile ='254' + mo[1:]
+    else:
+        mobile = mo
 
     URL = "https://sfcapis.hapokash.app/cash_stk.php"
 

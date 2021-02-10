@@ -884,6 +884,7 @@ def delete_property(request, pid):
         return redirect('prop-list')
 
 
+@login_required
 def generate_vacate_notice(request):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
@@ -896,12 +897,12 @@ def generate_vacate_notice(request):
         'tenant': tenant,
         'landlord': landlord,
         'notice': notice,
-        'order_id': 1233434,
     }
     pdf = render_to_pdf('properties/vacate.html', data)
     return HttpResponse(pdf, content_type='application/pdf')
 
 
+@login_required
 def inspection_report(request, id):
     user = request.user
     vac = VacateNotice.objects.get(id=id)
@@ -919,6 +920,7 @@ def inspection_report(request, id):
     return render(request, 'properties/inspection_report.html', context)
 
 
+@login_required
 def vacate_list(request):
     if request.user.acc_type.id == 4:
         return PermissionDenied
@@ -932,4 +934,72 @@ def vacate_list(request):
         'list': vacate,
     }
     return render(request, 'properties/vacate_list.html', context)
+
+
+@login_required
+def document(request):
+    user = request.user
+    try:
+        vac = VacateNotice.objects.get(notice_from=Tenant.objects.get(profile__user=user))
+    except :
+        vac = None
+
+    try:
+        non_com = VacateNotice.objects.get(notice_from=Tenant.objects.get(profile__user=user))
+    except :
+        non_com = None
+
+    context = {
+        'user': user,
+        'vac': vac,
+        'non_com': non_com,
+        't': Tenant.objects.get(profile__user=user)
+
+    }
+    return render(request, 'properties/documents.html', context)
+
+
+@login_required
+def document_lease(request):
+    user = request.user
+    Tenant.objects.get(profile__user=user)
+
+    context = {
+        'user': user,
+        't': Tenant.objects.get(profile__user=user)
+    }
+    return render(request, 'properties/lease_agg.html', context)
+
+
+@login_required
+def document_non_comp(request):
+    user = request.user
+    tenant = Tenant.objects.get(profile__user=user)
+
+    context = {
+        'user': user,
+        't': Tenant.objects.get(profile__user=user)
+
+    }
+    return render(request, 'properties/non_comp.html', context)
+
+
+@login_required
+def document_vacate(request):
+    user = request.user
+    tenant = Tenant.objects.get(profile__user=user)
+    company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
+
+    landlord = Profile.objects.get(user=company)
+
+    context = {
+        'user': user,
+        'tenant': Tenant.objects.get(profile__user=user),
+        'notice': VacateNotice.objects.get(notice_from=tenant),
+        'landlord': landlord,
+
+    }
+    return render(request, 'properties/vacate_doc.html', context)
+
+
 

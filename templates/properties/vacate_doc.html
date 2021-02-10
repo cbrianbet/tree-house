@@ -1,0 +1,115 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block headscripts %}
+    <link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
+
+{% endblock %}
+
+{% block title %}
+
+    <title>Vacate Notice | MNEST Africa</title>
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Vacate Notice</h1>
+        </div>
+
+        <div class="page-content">
+            <!-- Panel -->
+            <div class="panel">
+                <div class="panel-body container-fluid">
+                    <div class="row">
+                        <div class="col-lg-3">
+
+                        </div>
+                        <div class="col-lg-3 offset-lg-6 text-right">
+
+                        </div>
+                    </div>
+
+                    <div class="page-invoice-table table-responsive">
+                        <h3 style="text-align: center">Re: Notice of Intent to Vacate</h3>
+                        <br>
+                        <p style="font-size: 18px">{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</p>
+                        <p>{{ notice.created_at }}</p>
+                        <br>
+                        <p>{{ landlord.first_name }} {{ tenant.last_name }}</p>
+                        <p>Property: {{ notice.unit.property.property_name }}</p>
+                        <br>
+                        <p>Dear {{ landlord.first_name }},</p>
+                        <p>This letter constitutes my written {{ notice.days_notice }} day notice that I will be moving
+                            out of my
+                            apartment on {{ notice.vacate_date }}, the end of my current lease.
+                        </p>
+                        <br>
+                        <p>I am leaving because of {{ notice.reason }}</p>
+                        <br>
+                        <p>
+                            Please advise me on when my security deposit of KES {{ notice.unit.security_deposit }} will
+                            be returned
+                            to me, as well as if you will be taking any money out for damages that fall outside of
+                            normal wear and
+                            tear.
+                        </p>
+                        <p>I can be reached at {{ tenant.profile.msisdn }} and after {{ notice.new_contacts }}.</p>
+                        <br>
+                        <p>Sincerely,</p>
+                        <p>{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</p>
+                        <p>Unit: {{ notice.unit.unit_name }}</p>
+                    </div>
+
+                </div>
+
+                <div class="text-right">
+
+                    <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"
+                            onclick="javascript:window.print();">
+                        <span><i class="icon wb-print" aria-hidden="true"></i> Print</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel -->
+    </div>
+    </div>
+    <!-- End Page -->
+
+{% endblock %}
+{% block footscripts %}
+    <script>
+        var sum1 = 0;
+        var sum2 = 0;
+        $("#category tr").not(':first').each(function () {
+            sum2 += getnum($(this).find("td:eq(3)").text());
+
+            function getnum(t) {
+                if (isNumeric(t)) {
+                    return parseInt(t, 10);
+                }
+                return 0;
+
+                function isNumeric(n) {
+                    return !isNaN(parseFloat(n)) && isFinite(n);
+                }
+            }
+        });
+        $("#sum2").text(sum2);
+        $("#sum1").text('KSHS. ' + sum2);
+    </script>
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+
+{% endblock %}

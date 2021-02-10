@@ -1,0 +1,161 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block title %}
+
+    <title> Documents | MNEST Africa</title>
+{% endblock %}
+
+{% block headscripts %}
+
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Documents</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active">Documents</li>
+            </ol>
+
+        </div>
+
+        <div class="page-content">
+
+            <!-- Panel Table Tools -->
+            <div class="panel">
+                <header class="panel-heading">
+                    <h3 class="panel-title"></h3>
+                </header>
+                <div class="panel-body">
+
+                    <div class="tab-pane" role="tabpanel">
+
+                        <table class="table table-hover dataTable table-striped w-full"
+                               id="exampleTableTools">
+                            <thead>
+                            <tr>
+                                <th>Document</th>
+                                <th>Created at</th>
+                                <th>Created by</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th>Document</th>
+                                <th>Created at</th>
+                                <th>Created by</th>
+                                <th></th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            {% if vac %}
+                                <tr>
+                                    <td>Vacate Notice</td>
+                                    <td>{{ vac.created_at }}</td>
+                                    <td>{{ vac.created_by.username }}</td>
+                                    <td>
+                                        <a href="{% url 'document-vacate' %}"
+                                           class="btn btn-animate btn-animate-side btn-secondary">
+                                            <span><i class="icon wb-book" aria-hidden="true"></i> Document</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if t.lease %}
+                                <tr>
+                                    <td>ID Card</td>
+                                    <td>{{ t.created_at }}</td>
+                                    <td>{{ vac.created_by.username }}</td>
+                                    <td>
+                                        <a href="{{ t.lease.url }}"
+                                           class="btn btn-animate btn-animate-side btn-secondary">
+                                            <span><i class="icon wb-book" aria-hidden="true"></i> Document</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td>Lease Agreement</td>
+                                <td>{{ t.created_at }}</td>
+                                <td>{{ t.created_by.username }}</td>
+                                <td>
+                                    <a href="{% url 'document-lease' %}"
+                                       class="btn btn-animate btn-animate-side btn-secondary">
+                                        <span><i class="icon wb-book" aria-hidden="true"></i> Document</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% if non_com %}
+                                <tr>
+                                    <td>NON-COMPLIANCE NOTICE TO QUIT</td>
+                                    <td>{{ non_com.created_at }}</td>
+                                    <td>{{ non_com.created_by.username }}</td>
+                                    <td>
+                                        <a href="{% url 'document-non-comp' %}"
+                                           class="btn btn-animate btn-animate-side btn-secondary">
+                                            <span><i class="icon wb-book" aria-hidden="true"></i> Document</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel Table Tools -->
+
+        </div>
+    </div>
+    <!-- End Page -->
+
+{% endblock %}
+
+
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootbox/bootbox.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/responsive-tabs.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/tabs.js' %}"></script>
+
+    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
+
+{% endblock %}

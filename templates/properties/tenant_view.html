@@ -145,13 +145,14 @@
                     </div>
 
                     <div class="text-right">
-                        <a href="{% url 'swap-tenant' u_uid=t.unit.uuid %}" class="btn btn-animate btn-animate-side btn-primary">
-                            <span><i class="icon wb-graph-up" aria-hidden="true"></i> Vacate tenant</span>
-                        </a>
-                        <a href="{% url 'swap-tenant' u_uid=t.unit.uuid %}" class="btn btn-animate btn-animate-side btn-primary">
+                        <a href="" class="btn btn-outline btn-dark card-link">
+                            NON-COMPLIANCE NOTICE TO QUIT</a>
+                        <a href="{% url 'swap-tenant' u_uid=t.unit.uuid %}"
+                           class="btn btn-animate btn-animate-side btn-primary">
                             <span><i class="icon wb-graph-up" aria-hidden="true"></i> Move to another Unit</span>
                         </a>
-                        <a href="{% url 'bills-tenant' u_uid=t.uuid %}" class="btn btn-animate btn-animate-side btn-secondary">
+                        <a href="{% url 'bills-tenant' u_uid=t.uuid %}"
+                           class="btn btn-animate btn-animate-side btn-secondary">
                             <span><i class="icon wb-book" aria-hidden="true"></i> Bills</span>
                         </a>
                     </div>
@@ -176,6 +177,5 @@
             });
         })(document, window, jQuery);
     </script>
-    </body>
 
 {% endblock %}
