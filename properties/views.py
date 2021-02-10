@@ -962,11 +962,16 @@ def document(request):
 @login_required
 def document_lease(request):
     user = request.user
-    Tenant.objects.get(profile__user=user)
+    tenant = Tenant.objects.get(profile__user=user)
+    tenant = Tenant.objects.get(profile__user=user)
+    company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
+
+    landlord = Profile.objects.get(user=company)
 
     context = {
         'user': user,
-        't': Tenant.objects.get(profile__user=user)
+        'tenant': Tenant.objects.get(profile__user=user),
+        'landlord': landlord
     }
     return render(request, 'properties/lease_agg.html', context)
 

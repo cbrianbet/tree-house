@@ -206,8 +206,8 @@ class VacateNotice(models.Model):
 
 
 class InspectionReport(models.Model):
-    faults = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    charges = models.DateField()
+    faults = models.CharField(max_length=500)
+    charges = models.CharField(max_length=16)
     notice = models.ForeignKey(VacateNotice, on_delete=models.CASCADE)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="ir_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="ir_updated_by", null=True)
@@ -216,6 +216,18 @@ class InspectionReport(models.Model):
 
     class Meta:
         db_table = "Inspection Report"
+
+
+class NonCompliance(models.Model):
+    violation = models.CharField(max_length=500)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="comp_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="comp_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "Non Compliance"
 
 
 class TenantHistory(models.Model):
