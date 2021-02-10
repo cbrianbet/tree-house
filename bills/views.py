@@ -42,6 +42,8 @@ def tenant_bills(request, u_uid):
 
 @login_required
 def all_invoices(request):
+    if request.user.acc_type.id == 4:
+        return redirect('tenant_bill-personal')
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         invoice = Invoice.objects.filter(
             unit__property__company=CompanyProfile.objects.get(user=request.user).company).order_by('invoice_no')
