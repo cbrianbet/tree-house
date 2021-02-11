@@ -29,7 +29,7 @@ def login(request):
         if form.is_valid():
             clean = form.cleaned_data
             user = authenticate(username=clean['username'], password=clean['password'])
-            chus =Users.objects.get(username=clean['username'])
+            chus = Users.objects.get(username=clean['username'])
             if not chus.is_active:
                 return HttpResponse('Account is Disabled')
             if chus.acc_type_id == 2 or chus.acc_type_id == 3:
@@ -154,8 +154,10 @@ def dashboard(request):
         print(request.POST.get('month'))
         print(month)
         invoice = RentInvoice.objects.filter(unit__in=unit, date_due__year=year, date_due__month=month)
-        paid = RentItemTransaction.objects.filter(invoice_item__invoice__status=True, invoice_item__invoice__in=invoice).aggregate(Sum('amount_paid'))
-        unpaid1 = RentItemTransaction.objects.filter(invoice_item__invoice__status=False, invoice_item__invoice__in=invoice).aggregate(Sum('amount_paid'))
+        paid = RentItemTransaction.objects.filter(invoice_item__invoice__status=True,
+                                                  invoice_item__invoice__in=invoice).aggregate(Sum('amount_paid'))
+        unpaid1 = RentItemTransaction.objects.filter(invoice_item__invoice__status=False,
+                                                     invoice_item__invoice__in=invoice).aggregate(Sum('amount_paid'))
         unpaid = RentItems.objects.filter(invoice__status=False, invoice__in=invoice).aggregate(Sum('amount'))
 
         print(unpaid)
@@ -165,7 +167,8 @@ def dashboard(request):
         unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
 
         req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
-        oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit), created_at__month=month, created_at__year=year)
+        oreq = InvoiceItemsRequest.objects.filter(invoice_item__in=InvoiceItems.objects.filter(invoice__unit__in=unit),
+                                                  created_at__month=month, created_at__year=year)
 
         if paid['amount_paid__sum'] == None:
             paid['amount_paid__sum'] = 0
@@ -507,7 +510,7 @@ def hapokashcreate():
     return r.json()
 
 
-def hapokash_wallet_transfer(request, c_id, d_id, narative, amount):
+def hapokash_wallet_transfer(request):
     user = Profile.objects.get(user=request.user)
     invoice = RentInvoice.objects.get(uuid=request.POST.get('invoice'))
 
@@ -522,11 +525,18 @@ def hapokash_wallet_transfer(request, c_id, d_id, narative, amount):
         "amount": request.POST.get('amount'),
         "narration": "Payment For Rent From wallet"
     }
-    r = requests.post(url=URL, data=PARAMS)
-    return r.json()
+    ra = requests.post(url=URL, json=PARAMS).json()
+    print(ra)
+    if ra['success']:
+        pay = RentItemTransaction.objects.create(
+            invoice_item=RentItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'), payment_mode="Wallet Transfer",
+            remarks="Payment For Rent From wallet", date_paid=datetime.date.today(), created_by=request.user
+        )
+        pay.save()
+    return redirect('dashboard')
 
 
-def hapokash_wallet_transfer_Inv(request, c_id, d_id, narative, amount):
+def hapokash_wallet_transfer_Inv(request):
     user = Profile.objects.get(user=request.user)
     invoice = Invoice.objects.get(uuid=request.POST.get('invoice'))
 
@@ -541,8 +551,15 @@ def hapokash_wallet_transfer_Inv(request, c_id, d_id, narative, amount):
         "amount": request.POST.get('amount'),
         "narration": "Payment For Invoice From wallet"
     }
-    r = requests.post(url=URL, data=PARAMS)
-    return r.json()
+    r = requests.post(url=URL, json=PARAMS).json()
+
+    if r['success']:
+        pay = InvoiceItemsTransaction.objects.create(
+            invoice_item=InvoiceItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'), payment_mode="Wallet Transfer",
+            remarks="Payment For Invoice From wallet", date_paid=datetime.date.today(), created_by=request.user
+        )
+        pay.save()
+    return redirect('dashboard')
 
 
 def add_months(sourcedate, months):

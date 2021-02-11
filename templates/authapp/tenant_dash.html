@@ -17,6 +17,8 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
     <style>
         /* Important part */
         .modal-dialog {
@@ -230,7 +232,8 @@
                                             <div class="counter text-left blue-grey-700">
                                                 <div class="counter-label mt-10">Documents
                                                 </div>
-                                                <a href="{% url 'documents' %}" class="btn btn-default block">Documents</a>
+                                                <a href="{% url 'documents' %}"
+                                                   class="btn btn-default block">Documents</a>
                                             </div>
                                         </div>
                                     </div>
@@ -296,7 +299,7 @@
 
                                 <div class="form-group">
                                     <label class="form-control-label" for="inv">Invoice*</label>
-                                    <select data-plugin="selectpicker" title="Invoice" id="inv" name="invoice" required>
+                                    <select data-plugin="selectpicker" title="Invoice" id="inv_other" name="invoice" required>
                                         {% for a in invoice %}
                                             <option value="{{ a.uuid }}">{{ a.invoice_no }}</option>
                                         {% endfor %}
@@ -434,7 +437,7 @@
 
                                 <div class="form-group">
                                     <label class="form-control-label" for="inv">Invoice*</label>
-                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="inv"
+                                    <select data-plugin="selectpicker" title="Invoice | Due Date" id="invrent"
                                             name="invoice" required>
                                         {% for a in rent_invoices %}
                                             <option value="{{ a.uuid }}">{{ a.invoice_no }} | {{ a.date_due }}</option>
@@ -522,6 +525,35 @@
                 </div>
             </div>
             <!-- End Modal -->
+            <!-- Modal -->
+            <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
+                 aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-simple modal-center">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Mpesa Transaction code</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h6>A notification was sent to your phone to pay, enter transaction code </h6>
+
+                            <form id="transF" action="{% url 'confirm-trans' %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label class="form-control-label" for="trans">Transaction code*</label>
+                                    <input type="text" class="form-control" id="trans" name="trans"
+                                           required="required">
+                                </div>
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Quit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
         </div>
     </div>
     <!-- End Page -->
@@ -542,8 +574,156 @@
     <script src="{% static 'authapp/assets/examples/js/dashboard/team.js' %}"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
     <script>
         $('select').selectpicker();
     </script>
 
+    <script>
+        var loginForm = $("#hkpayrent");
+        loginForm.submit(function (e) {
+            e.preventDefault();
+            var sub = $('#invrent').val()
+            $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "error") {
+                        swal({
+                            title: 'Error!!',
+                            text: 'Fill all fields correctly!!',
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+                    } else {
+                        swal({
+                            title: 'Mpesa Transaction!!',
+                            text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
+                            type: "info",
+                            showConfirmButton: true,
+                        });
+                        $('#examplePositionCenter').modal('hide');
+                        $('#examplePositionCenter3').modal('show');
+                    }
+                },
+                error: function (er) {
+                    console.log("error");
+                    // console.log(er.responseText);
+                    swal('error!!', 'Something went wrong!!', 'error');
+                }
+            });
+
+        });
+
+        var loginForm1 = $("#hkpayinv");
+        loginForm1.submit(function (e) {
+            e.preventDefault();
+            var sub = $('#inv_other').val()
+            $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "error") {
+                        swal({
+                            title: 'Error!!',
+                            text: 'Fill all fields correctly!!',
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+                    } else {
+                        swal({
+                            title: 'Mpesa Transaction!!',
+                            text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
+                            type: "info",
+                            showConfirmButton: true,
+                        });
+                        $('#examplePositionCenter').modal('hide');
+                        $('#examplePositionCenter3').modal('show');
+                    }
+                },
+                error: function (er) {
+                    console.log("error");
+                    // console.log(er.responseText);
+                    swal('error!!', 'Something went wrong!!', 'error');
+                }
+            });
+
+        });
+
+        var transForm = $("#transF");
+        transForm.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "Not Found") {
+                        swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+
+                    } else {
+                        console.log(data)
+                        swal({
+                            title: 'Transaction Successful!!',
+                            text: 'Complete, Proceed to Bills',
+                            type: "success",
+                            showConfirmButton: true,
+                        });
+                        $('#examplePositionCenter').modal('hide');
+                    }
+                },
+                error: function (er) {
+                    swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+                }
+            });
+
+        });
+    </script>
 {% endblock %}

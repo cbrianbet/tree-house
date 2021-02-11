@@ -583,9 +583,7 @@ def stkpush(request):
     r = requests.post(url=URL, json={"shortcode": "5061001","msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
     wallet = r.text
     print(wallet)
-    
-    # if wallet['success']:
-    #     return wallet['transactions']
+
     return redirect('dashboard')
 
 
@@ -607,8 +605,7 @@ def stkpushinv(request):
     r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
     wallet = r.json()
     print(wallet)
-    # if wallet['success']:
-    #     return wallet['transactions']
+    return HttpResponse('success')
 
 
 def stkpushtopup(request):
