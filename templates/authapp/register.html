@@ -235,22 +235,26 @@
                             <h3 class="font-size-17 text-dark">3. Billing and Subscriptions</h3>
                             <div class="text-center my-20">
                                 <div class="form-group clearfix">
-                                    {% for foo in sub %}
-                                        <div class="card card-inverse bg-primary">
-                                            <div class="card-body">
-                                                <h4 class="text-uppercase">{{ foo.name }}</h4>
-                                                <span>{{ foo.description }}</span>
-                                                <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
-                                                <h5 class="card-title">Period: {{ foo.duration }} months</h5>
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" name="sub_picked" required id="sub"
-                                                           data-sub-type="{{ foo.uuid }}" value="{{ foo.uuid }}">
-                                                    <label>Select</label>
+                                    <div class="row">
+                                        {% for foo in sub %}
+                                            <div class="col-md-4">
+                                                <div class="card card-inverse bg-primary">
+                                                    <div class="card-body">
+                                                        <h4 class="text-uppercase">{{ foo.name }}</h4>
+                                                        <span>{{ foo.description }}</span>
+                                                        <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
+                                                        <h5 class="card-title">Period: {{ foo.duration }} months</h5>
+                                                        <div class="radio-custom radio-primary">
+                                                            <input type="radio" name="sub_picked" required id="sub"
+                                                                   data-sub-type="{{ foo.uuid }}"
+                                                                   value="{{ foo.uuid }}">
+                                                            <label>Select</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    {% endfor %}
-
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
 
@@ -507,7 +511,7 @@
 
                 } else {
                     console.log(data)
-                     swal({
+                    swal({
                         title: 'Transaction Successfull!!',
                         text: 'Signup Complete, Proceed to login',
                         type: "success",
