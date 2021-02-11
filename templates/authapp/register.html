@@ -75,6 +75,42 @@
 <![endif]-->
 
 
+<nav class="navbar navbar-default navbar-fixed-top navbar-mega" role="navigation">
+
+    <div class="navbar-container container-fluid">
+        <!-- Navbar Collapse -->
+        <div class="collapse navbar-collapse navbar-collapse-toolbar" id="site-navbar-collapse">
+            <!-- Navbar Toolbar -->
+            <ul class="nav navbar-toolbar">
+                <li>
+                    <div class="navbar-brand navbar-brand-center">
+                        <img class="navbar-brand-logo" src="{% static 'authapp/assets/images/mnest-png.png' %}"
+                             title="MNEST">
+                        <span class="navbar-brand-text "> MNEST Africa</span>
+                    </div>
+                </li>
+            </ul>
+            <!-- End Navbar Toolbar -->
+
+            <!-- Navbar Toolbar Right -->
+            <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="{% url 'web-login' %}" data-animation="scale-up">
+                        <span class="">Login</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="{% url 'about' %}" data-animation="scale-up">
+                        <span class="">About</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- End Navbar Toolbar Right -->
+        </div>
+        <!-- End Navbar Collapse -->
+
+    </div>
+</nav>
 <!-- Page -->
 <div class="page" style="margin-left: 0; margin-top: 0;" data-animsition-in="fade-in" data-animsition-out="fade-out">
     <div class="page-content">
