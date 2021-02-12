@@ -36,7 +36,6 @@
                                     <div class="counter">
                                         <div class="counter-label">Landlords</div>
                                         <div class="counter-number-group text-truncate">
-{#                                            <span class="counter-number-related red-600">+</span>#}
                                             <span class="counter-number">{{ land }}</span>
                                         </div>
                                         <div class="ct-chart" data-counter-type="productVist"></div>
@@ -49,7 +48,6 @@
                                     <div class="counter">
                                         <div class="counter-label">Agents</div>
                                         <div class="counter-number-group text-truncate">
-{#                                            <span class="counter-number-related green-600">-</span>#}
                                             <span class="counter-number">{{ ag }}</span>
                                         </div>
                                         <div class="ct-chart" data-counter-type="productVistors"></div>
@@ -62,7 +60,7 @@
                                     <div class="counter">
                                         <div class="counter-label">Tenants</div>
                                         <div class="counter-number-group text-truncate">
-{#                                            <span class="counter-number-related green-600">-</span>#}
+                                            {#                                            <span class="counter-number-related green-600">-</span>#}
                                             <span class="counter-number">{{ tena }}</span>
                                         </div>
                                         <div class="ct-chart" data-counter-type="productPageViews"></div>
@@ -75,7 +73,7 @@
                                     <div class="counter">
                                         <div class="counter-label">Staff</div>
                                         <div class="counter-number-group text-truncate">
-{#                                            <span class="counter-number-related red-600">+</span>#}
+                                            {#                                            <span class="counter-number-related red-600">+</span>#}
                                             <span class="counter-number">{{ staff }}</span>
                                         </div>
                                         <div class="ct-chart" data-counter-type="productBounceRate"></div>
@@ -87,117 +85,25 @@
 
                         <!-- The Content Of First Card -->
                         <div class="card-block p-20">
+                            <div class="col-xl-3 col-md-6">
+                                <div class="counter">
+                                    <div class="counter-label">Staff</div>
+                                    <div class="counter-number-group text-truncate">
+                                        {#                                            <span class="counter-number-related red-600">+</span>#}
+                                        <span class="counter-number">{{ staff }}</span>
+                                    </div>
+                                    <div class="ct-chart" data-counter-type="productBounceRate"></div>
+                                </div>
+                            </div>
                             <div class="tab-content">
-                                <div class="ct-chart tab-pane" id="scoreLineToWeek"></div>
-                                <div class="ct-chart tab-pane" id="scoreLineToMonth"></div>
+                                {#                                <div class="ct-chart tab-pane" id="scoreLineToWeek"></div>#}
+                                {#                                <div class="ct-chart tab-pane" id="scoreLineToMonth"></div>#}
                             </div>
                         </div>
                         <!-- End The Content Of First Card -->
                     </div>
                     <!-- End Product Overview Card -->
                 </div>
-                {##}
-                {#                <div class="col-xl-7 col-12">#}
-                {#                    <!-- Browser Flow Card -->#}
-                {#                    <div id="browsersFlowWidget" class="card card-shadow card-md">#}
-                {#                        <div class="card-header card-header-transparent pb-15">#}
-                {#                            <p class="font-size-14 blue-grey-700 mb-0">BROWSER FLOW</p>#}
-                {#                        </div>#}
-                {#                        <div class="card-block px-30">#}
-                {#                            <div class="row">#}
-                {#                                <div class="col-md-6">#}
-                {#                                    <!-- Browsers Vists Table -->#}
-                {#                                    <table class="table table-analytics mb-0">#}
-                {#                                        <thead>#}
-                {#                                        <tr>#}
-                {#                                            <th>#</th>#}
-                {#                                            <th>Browser</th>#}
-                {#                                            <th>Vists</th>#}
-                {#                                        </tr>#}
-                {#                                        </thead>#}
-                {#                                        <tbody>#}
-                {#                                        <tr>#}
-                {#                                            <td>#}
-                {#                                                <img src="{% static 'authapp/assets/examples/images/browser/chrome-logo.png' %}"#}
-                {#                                                     title="Chrome"#}
-                {#                                                     alt="Chrome">#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                Chrome#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                11,976#}
-                {#                                            </td>#}
-                {#                                        </tr>#}
-                {#                                        <tr>#}
-                {#                                            <td>#}
-                {#                                                <img src="../../assets/examples/images/browser/firefox-logo.png"#}
-                {#                                                     title="Firefox"#}
-                {#                                                     alt="Firefox">#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                Firefox#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                1,706#}
-                {#                                            </td>#}
-                {#                                        </tr>#}
-                {#                                        <tr>#}
-                {#                                            <td>#}
-                {#                                                <img src="../../assets/examples/images/browser/safari-logo.png"#}
-                {#                                                     title="Safari"#}
-                {#                                                     alt="Safari">#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                Safari#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                1,677#}
-                {#                                            </td>#}
-                {#                                        </tr>#}
-                {#                                        <tr>#}
-                {#                                            <td>#}
-                {#                                                <img src="../../assets/examples/images/browser/internet-logo.png"#}
-                {#                                                     title="Internet"#}
-                {#                                                     alt="Internet">#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                Internet#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                1,268#}
-                {#                                            </td>#}
-                {#                                        </tr>#}
-                {#                                        <tr>#}
-                {#                                            <td>#}
-                {#                                                <img src="../../assets/examples/images/browser/opera-logo.png"#}
-                {#                                                     title="Opera"#}
-                {#                                                     alt="Opera">#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                Opera#}
-                {#                                            </td>#}
-                {#                                            <td>#}
-                {#                                                915#}
-                {#                                            </td>#}
-                {#                                        </tr>#}
-                {#                                        </tbody>#}
-                {#                                    </table>#}
-                {#                                    <!-- End Browsers Vists Table -->#}
-                {#                                </div>#}
-                {#                                <div class="col-md-6 px-0">#}
-                {#                                    <!-- MorrisDonut -->#}
-                {#                                    <div id="browersVistsDonut"></div>#}
-                {#                                    <!-- End MorrisDonut -->#}
-                {#                                    <!-- Stacked BarChart -->#}
-                {#                                    <div id="weekStackedBarChart"></div>#}
-                {#                                    <!--End Stacked BarChart -->#}
-                {#                                </div>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {#                    <!-- End Browser Flow Card -->#}
-                {#                </div>#}
 
                 <div class="col-xl-5 col-12">
                     <!-- Countries Vists Card -->
@@ -231,6 +137,30 @@
                     </div>
                     <!-- End Countries Vists Card -->
                 </div>
+                <div class="col-xl-7 col-12">
+                    <!-- Countries Vists Card -->
+                    <div id="countriesVistsWidget" class="card card-shadow card-md">
+                        <div class="card-header card-header-transparent pb-15">
+                            <p class="font-size-14 blue-grey-700 mb-0">Subscriptions summary</p>
+                        </div>
+                        <div class="ct-chart" id="scoreLineToMonth"></div>
+                        <div class="card-block px-30 pt-0">
+                            <div class="table-responsive">
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="counter">
+                                        <div class="counter-label">subscribers</div>
+                                        <div class="counter-number-group text-truncate">
+                                            {#                                            <span class="counter-number-related red-600">+</span>#}
+                                            <span class="counter-number">{{ subcomp.count }}</span>
+                                        </div>
+                                        <div class="ct-chart" data-counter-type="productBounceRate"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Countries Vists Card -->
+                </div>
             </div>
         </div>
         <!-- End Page Content -->
@@ -243,7 +173,6 @@
     <script src="{% static 'authapp/global/vendor/morris/morris.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/chartist-plugin-tooltip/chartist-plugin-tooltip.js' %}"></script>
 
-    {#    <script src="{% static 'authapp/assets/examples/js/dashboard/analytics.js' %}"></script>#}
     <script>
         (function (global, factory) {
             if (typeof define === "function" && define.amd) {

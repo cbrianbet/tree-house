@@ -126,6 +126,7 @@ def dashboard(request):
     elif user.acc_type.id == 1:
         sub = SubscriptionsCompanies.objects.values('subs__name').annotate(c=Count('subs__name')).order_by('-c')
         active_u = Users.objects.all()
+        sub_c = SubscriptionsCompanies.objects.filter(date_end__gte=datetime.date.today()).distinct('company_id')
         context = {
             'user': user,
             'subs': sub,
@@ -133,6 +134,7 @@ def dashboard(request):
             'ag': active_u.filter(acc_type_id=3).count(),
             'staff': active_u.filter(acc_type_id=5).count(),
             'tena': active_u.filter(acc_type_id=4).count(),
+            'subcomp': sub_c,
         }
         return render(request, 'authapp/Super_analytics.html', context)
 
