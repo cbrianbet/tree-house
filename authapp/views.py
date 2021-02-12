@@ -582,6 +582,11 @@ def about(request):
     return render(request, 'authapp/about.html')
 
 
+def subsPick(request):
+    subs =Subscriptions.objects.all()
+    return render(request, 'authapp/subscriptions.html', {'subs': subs, 'user': request.user})
+
+
 @login_required
 def wall_bal(request):
     if request.user.acc_type.id == 5:
