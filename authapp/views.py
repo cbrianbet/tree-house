@@ -533,7 +533,8 @@ def hapokash_wallet_transfer(request):
     print(ra)
     if ra['success']:
         pay = RentItemTransaction.objects.create(
-            invoice_item=RentItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'), payment_mode="Wallet Transfer",
+            invoice_item=RentItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'),
+            payment_mode="Wallet Transfer",
             remarks="Payment For Rent From wallet", date_paid=datetime.date.today(), created_by=request.user
         )
         pay.save()
@@ -559,7 +560,8 @@ def hapokash_wallet_transfer_Inv(request):
 
     if r['success']:
         pay = InvoiceItemsTransaction.objects.create(
-            invoice_item=InvoiceItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'), payment_mode="Wallet Transfer",
+            invoice_item=InvoiceItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'),
+            payment_mode="Wallet Transfer",
             remarks="Payment For Invoice From wallet", date_paid=datetime.date.today(), created_by=request.user
         )
         pay.save()
@@ -585,7 +587,7 @@ def about(request):
 
 
 def subsPick(request):
-    subs =Subscriptions.objects.all()
+    subs = Subscriptions.objects.all()
     return render(request, 'authapp/subscriptions.html', {'subs': subs, 'user': request.user})
 
 
@@ -615,19 +617,27 @@ def wall_bal(request):
     if wallet['success']:
         cur_balance = wallet['wallet']['current_balance']
         pre_balance = wallet['wallet']['previous_balance']
+    else:
+        cur_balance = 0
+        pre_balance = 0
 
     trans = wallet_trans(prof.hapokash)
     print(trans)
     if trans['last_page'] != 1:
-        for i in range(trans['last_page']-1):
+        for i in range(trans['last_page'] - 1):
             print(trans['next_page_url'])
-            
+            URL = trans['next_page_url']
+
+            r = requests.get(url=URL)
+            wallet = r.json()
+            print(wallet)
+            if wallet['success']:
+                trans['data'] = trans['data'] + wallet['transactions']['data']
+
     for d in trans['data']:
-        d.update((k, datetime.datetime.strptime('{} {}'.format(v.split('T')[0], v.split('T')[1].split('.')[0]),
-                                                '%Y-%m-%d %H:%M:%S').strftime('%d/%B/%Y, %H:%M:%S')) for k, v in
-                 d.items() if k == "created_at")
-
-
+        d.update((k, datetime.datetime.strptime(
+            '{} {}'.format(v.split('T')[0], v.split('T')[1].split('.')[0]), '%Y-%m-%d %H:%M:%S'
+        ).strftime('%d/%B/%Y, %H:%M:%S')) for k, v in d.items() if k == "created_at")
 
     context = {
         'user': request.user,
