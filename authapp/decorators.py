@@ -10,7 +10,6 @@ def unsubscribed_user(view_func):
     def wrapper_func(request, *args, **kwargs):
         if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
             company = CompanyProfile.objects.get(user=request.user).company
-
             try:
                 check = SubscriptionsCompanies.objects.get(company=company)
                 if check.date_end < datetime.today().date():

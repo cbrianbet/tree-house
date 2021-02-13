@@ -103,8 +103,33 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <h4 class="center">Sorry. You dont have an active subscription</h4>
-
+                <h4 class="text-center">Sorry. You dont have an active subscription</h4>
+                <form>
+                    <div class="text-center my-20">
+                        <div class="form-group clearfix">
+                            <div class="row">
+                                {% for foo in subs %}
+                                    <div class="col-md-4">
+                                        <div class="card card-inverse bg-primary">
+                                            <div class="card-body">
+                                                <h4 class="text-uppercase">{{ foo.name }}</h4>
+                                                <span>{{ foo.description }}</span>
+                                                <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
+                                                <h5 class="card-title">Period: {{ foo.duration }} months</h5>
+                                                <div class="radio-custom radio-primary">
+                                                    <input type="radio" name="sub_picked" required id="sub"
+                                                           data-sub-type="{{ foo.uuid }}" value="{{ foo.uuid }}">
+                                                    <label>Select</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success " data-dismiss="modal">Submit</button>
+                </form>
             </div>
         </div>
 

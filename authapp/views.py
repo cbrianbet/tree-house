@@ -617,11 +617,17 @@ def wall_bal(request):
         pre_balance = wallet['wallet']['previous_balance']
 
     trans = wallet_trans(prof.hapokash)
-
+    print(trans)
+    if trans['last_page'] != 1:
+        for i in range(trans['last_page']-1):
+            print(trans['next_page_url'])
+            
     for d in trans['data']:
         d.update((k, datetime.datetime.strptime('{} {}'.format(v.split('T')[0], v.split('T')[1].split('.')[0]),
                                                 '%Y-%m-%d %H:%M:%S').strftime('%d/%B/%Y, %H:%M:%S')) for k, v in
                  d.items() if k == "created_at")
+
+
 
     context = {
         'user': request.user,
