@@ -209,9 +209,12 @@ def view_prop(request, p_id):
             raise PermissionDenied
 
     prop = Properties.objects.get(uuid=p_id)
+    tenants = TenantHistory.objects.filter(end_date=None, curr_unit__property=prop).count()
+
     context = {
         'p_id': p_id,
         't': prop,
+        't_no': tenants,
         'user': request.user,
     }
     return render(request, 'properties/prop_view.html', context)
