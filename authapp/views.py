@@ -14,6 +14,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
+from authapp.decorators import unsubscribed_user
 from authapp.forms import LoginForm
 from authapp.models import *
 from bills.models import *
@@ -317,6 +318,7 @@ def delete_company(request, uid):
 
 
 @login_required
+@unsubscribed_user
 def profile(request):
     user = request.user
     if user.acc_type.id == 4:
