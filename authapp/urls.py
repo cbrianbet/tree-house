@@ -11,6 +11,7 @@ urlpatterns = [
     path('wallet/confirm/trans', views.confirm_payment, name='confirm-trans'),
     path('login/', views.login, name='web-login'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('accept/terms', views.acc_terms, name='acc-terms'),
     path('profile/', views.profile, name='profile'),
     path('checkusername/', views.check_username, name='check-username'),
     path('change_password/', views.change_password, name='change_password'),

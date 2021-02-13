@@ -147,7 +147,7 @@ class Tenant(models.Model):
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="t_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    accept_terms = models.BooleanField(default=True)
+    accept_terms = models.BooleanField(default=False)
 
     class Meta:
         db_table = "Tenant"

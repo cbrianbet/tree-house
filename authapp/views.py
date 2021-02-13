@@ -59,6 +59,8 @@ def dashboard(request):
     if user.acc_type.id == 4:
         prof = Profile.objects.get(user=user)
 
+        term = open(os.path.join(settings.MEDIA_ROOT, 'terms.txt'), "r").read()
+        privacy = open(os.path.join(settings.MEDIA_ROOT, 'privacy.txt'), "r").read()
         if prof.hapokash is None:
             wal_id = hapokashcreate()
             try:
@@ -120,7 +122,8 @@ def dashboard(request):
             'tills': till_ac,
             'invoice': invoice,
             'rent_invoices': r_invoice,
-            "cur_balance": cur_balance
+            "cur_balance": cur_balance,
+            'terms': term, 'privacy': privacy
         }
         return render(request, 'authapp/tenant_dash.html', context)
 
@@ -701,3 +704,10 @@ def stkpushreg(mo, am):
                       headers=headers_dict)
     wallet = r.json()
     print(wallet)
+
+
+def acc_terms(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
+    tenant.accept_terms = True
+    tenant.save()
+    return redirect('dashboard')
