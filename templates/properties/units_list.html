@@ -85,12 +85,9 @@
                                         </div>
                                         <div class="card-block">
 
-                                            <a href="{% url 'unit-view' pid=u.uuid %}" class="btn btn-outline btn-primary card-link">View
-                                            </a>
+                                            <a href="{% url 'unit-view' pid=u.uuid %}" class="btn btn-outline btn-primary card-link">View</a>
                                             <a href="{% url 'tenant-add' u_uid=u.uuid %}"
                                                class="btn btn-outline btn-dark card-link">Tenant</a>
-                                            <a href="{% url 'tenant-add' u_uid=u.uuid %}"
-                                               class="btn btn-outline btn-dark card-link">Remove</a>
                                         </div>
                                     </div>
                                 </li>

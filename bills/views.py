@@ -19,21 +19,29 @@ from properties.models import *
 def tenant_bills(request, u_uid):
     tenant = Tenant.objects.get(uuid=u_uid)
     invoice = Invoice.objects.filter(invoice_for=tenant.profile.user)
+    a = []
 
     for inv in invoice:
         total = 0
+        paid = 0
         inv_items = InvoiceItems.objects.filter(invoice=inv)
-        a = []
         for i in inv_items:
             total = total + i.amount
+            trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
+        if inv.status:
+            status = "CLOSED"
+        else:
+            status = "OPEN"
 
         a.append({
             'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
             'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
-            'created_at': inv.created_at, 'paid': 0, "status": inv.status
+            'created_at': inv.created_at, 'paid': paid, "status": status
         })
     context = {
-        'bills': invoice,
+        'bills': a,
         'u_uid': u_uid,
         'user': request.user,
     }

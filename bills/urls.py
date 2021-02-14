@@ -5,6 +5,7 @@ from . import  views
 
 urlpatterns = [
     path('property/units/tenant/bill/<uuid:u_uid>', views.tenant_bills, name='bills-tenant'),
+    # path('bill/tenant/add/<uuid:u_uid>', views.invoice_tenant, name='bills-tenant'),
     path('property/units/tenant/bill/personal', views.personal_bills, name='tenant_bill-personal'),
     path('bills/invoices/all', views.all_invoices, name='all-invoices'),
     path('bills/invoice/more/<uuid:i_id>', views.invoice_info, name='more-info'),
@@ -19,6 +20,6 @@ urlpatterns = [
     path('bills/payment/stkpushinv', views.stkpushinv, name='stkpush-inv'),
     path('bills/payment/stkpush/wallet', views.stkpushtopup, name='stkpush-topup'),
     path('bills/payment/stkpush/subs', views.stkpushreg, name='stkpush-reg'),
-    # path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),
+    path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),
 
 ]

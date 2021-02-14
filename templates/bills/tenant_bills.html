@@ -59,6 +59,7 @@
                             <th>Invoice</th>
                             <th>Property</th>
                             <th>Unit</th>
+                            <th>Status</th>
                             <th>Amount</th>
                             <th>Amount paid</th>
                             <th>Created by</th>
@@ -70,6 +71,7 @@
                             <th>Invoice</th>
                             <th>Property</th>
                             <th>Unit</th>
+                            <th>Status</th>
                             <th>Amount</th>
                             <th>Amount paid</th>
                             <th>Created by</th>
@@ -80,11 +82,12 @@
                         {% for b in bills %}
                             <tr>
                                 <td>{{ b.invoice_no }}</td>
-                                <td>{{ b.unit.property.property_name }} Pines</td>
-                                <td>{{ b.unit.unit_name }}</td>
-                                <td>12</td>
-                                <td>12</td>
-                                <td>{{ b.created_by.username }}</td>
+                                <td>{{ b.property_name }} Pines</td>
+                                <td>{{ b.unit_name }}</td>
+                                <td>{{ b.status }}</td>
+                                <td>{{ b.amount }}</td>
+                                <td>{{ b.paid }}</td>
+                                <td>{{ b.username }}</td>
                                 <td>{{ b.created_at }}</td>
                             </tr>
                         {% endfor %}
