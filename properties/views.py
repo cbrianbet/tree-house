@@ -282,16 +282,30 @@ def add_units(request, floor, u_uid):
 
 
 @login_required
-def edit_units(request, floor, u_uid):
+def view_unit(request, pid):
     if request.user.acc_type.id == 5:
-        if not request.user.has_perm('properties.add_unit'):
+        if not request.user.has_perm('properties.view_properties'):
             raise PermissionDenied
-    prop = Properties.objects.get(uuid=u_uid)
-    if Unit.objects.filter(property=prop).count() >= prop.no_of_units:
-        return redirect('unit-list', u_uid=u_uid)
+
+    prop = Unit.objects.get(uuid=pid)
+
+    context = {
+        'p_id': pid,
+        't': prop,
+        'user': request.user,
+    }
+    return render(request, 'properties/unit_view.html', context)
+
+
+@login_required
+def edit_units(request, u_uid):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.change_unit'):
+            raise PermissionDenied
+    unit = Unit.objects.get(uuid=u_uid)
 
     if request.method == "POST":
-        unit = request.POST.get('name')
+        unit_name = request.POST.get('name')
         value = request.POST.get('value')
         unit_status = request.POST.get('status')
         area = request.POST.get('area')
@@ -301,22 +315,25 @@ def edit_units(request, floor, u_uid):
         specify = request.POST.get('other')
         deposit = request.POST.get('deposit')
 
-        u_save = Unit.objects.create(
-            unit_name=unit, property=prop, security_deposit=deposit, size=size, other_specify=specify, value=value,
-            parking_assigned=no_of_parking, service_charge=service_charge, area=area, unit_status=unit_status,
-            floor=floor,
-            created_by=request.user
-        )
-        u_save.save()
+        unit.unit_name=unit_name
+        unit.security_deposit=deposit
+        unit.size=size
+        unit.other_specify=specify
+        unit.value=value
+        unit.parking_assigned=no_of_parking
+        unit.service_charge=service_charge
+        unit.area=area
+        unit.updated_by=request.user
+
+        unit.save()
 
     context = {
-        'fl': floor,
+        'unit': unit,
         'u_id': u_uid,
-        'prop': prop,
         'user': request.user,
     }
 
-    return render(request, 'properties/add_unit.html', context)
+    return render(request, 'properties/edit_unit.html', context)
 
 
 @login_required

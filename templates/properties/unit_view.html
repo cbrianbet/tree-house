@@ -1,7 +1,7 @@
 {% extends 'authapp/base.html' %}
 {% load static %}
 {% block title %}
-    <title>Property | MNEST Africa</title>
+    <title>Unit | MNEST Africa</title>
 {% endblock %}
 {% block headscripts %}
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/invoice.css' %}">
@@ -16,7 +16,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{% url 'prop-list' %}">Properties</a></li>
-                <li class="breadcrumb-item active">Property information</li>
+                <li class="breadcrumb-item active">Unit information</li>
             </ol>
             <div class="page-header-actions">
             </div>
@@ -47,60 +47,46 @@
                                     Name
                                 </td>
                                 <td class="text-left">
-                                    {{ t.property_name }}
+                                    {{ t.unit_name }}
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-center">
-                                    Value
+                                    Rent
                                 </td>
                                 <td class="text-left">
-                                    {{ t.property_value }}
+                                    {{ t.value }}
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-center">
-                                    Property Type
+                                    Unit Type
                                 </td>
                                 <td class="text-left">
-                                    {{t.property_type}}
+                                    {{t.type_of_unit}}
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-center">
-                                    Number of floors
+                                    Floor Number
                                 </td>
                                 <td class="text-left">
-                                    {{ t.no_of_floors }}
+                                    {% if t.floor == 0  %}
+                                        Ground Floor
+                                    {% else %}
+                                    {{ t.floor }}
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-center">
-                                    Number of Units
+                                    Status
                                 </td>
                                 <td class="text-left">
-                                    {{ t.no_of_units }}
+                                    {{ t.unit_status }}
                                 </td>
+                            </tr>
 
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    Management Started on
-                                </td>
-                                <td class="text-left">
-                                    {{ t.mngmt_start }}
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <td class="text-center">
-                                    Number of tenants
-                                </td>
-                                <td class="text-left">
-                                    {{ t_no }}
-                                </td>
-
-                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -111,12 +97,9 @@
                     </div>
 
                     <div class="text-right">
-                        <a href="{% url 'edit-prop' p_id=t.uuid %}" class="btn btn-animate btn-animate-side btn-primary">
-                            <span><i class="icon wb-graph-up" aria-hidden="true"></i> Edit Property</span>
-                       </a>
-                        <a href="{% url 'delete-prop' pid=t.id %}" class="btn btn-animate btn-animate-side btn-danger">
-                            <span><i class="icon wb-close" aria-hidden="true"></i> Delete Property</span>
-                       </a>
+                        <a href="{% url 'unit-edit' u_uid=t.uuid %}" class="btn btn-animate btn-animate-side btn-primary">
+                            <span><i class="icon wb-graph-up" aria-hidden="true"></i> Edit Unit</span>
+                        </a>
                     </div>
                 </div>
             </div>
