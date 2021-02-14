@@ -4,6 +4,7 @@ import io
 import os
 import random
 import string
+from calendar import calendar
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -448,8 +449,9 @@ def get_random_username():
 
 def apply_invoice(rent, dep, user, tenant):
     inv_no = increment_rent_invoice_number()
-    i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user,
-                                   unit=tenant.unit)
+    i = RentInvoice.objects.create(
+        created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit, date_due=tenant.date_occupied
+    )
     i.save()
     d = Invoice.objects.create(created_by=user, invoice_no=increment_invoice_number(), invoice_for=tenant.profile.user,
                                unit=tenant.unit)
