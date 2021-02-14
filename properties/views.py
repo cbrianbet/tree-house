@@ -560,9 +560,12 @@ def prop_file_upload(request):
     if not csv_file.name.endswith('.csv'):
         messages.error(request, 'THIS IS NOT A CSV FILE')
     data_set = csv_file.read().decode('UTF-8')
+    print(data_set)
     # setup a stream which is when we loop through each line we are able to handle a data in a stream
 
     io_string = io.StringIO(data_set)
+    next(io_string)
+    next(io_string)
     next(io_string)
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
         print(column)
@@ -572,12 +575,16 @@ def prop_file_upload(request):
             property_value=column[2],
             no_of_units=column[3],
             parking=column[4],
-            mngmt_start=datetime.datetime.strptime(column[5], "%d/%m/%Y").strftime("%Y-%m-%d"),
-            property_type=column[6],
-            building_type=column[7],
-            electricity=column[8],
-            water=column[9],
-            location_desc=column[10],
+            property_type=column[5],
+            building_type=column[6],
+            electricity=column[7],
+            water=column[8],
+            location_desc=column[9],
+            penalty_type=column[10],
+            penalty_value=column[11],
+            rent_collection="Occ_date",
+            long=-1.28759,
+            lat=36.8109,
             created_by=request.user,
             company=CompanyProfile.objects.get(user=request.user).company
         )
