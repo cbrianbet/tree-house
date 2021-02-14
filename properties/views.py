@@ -6,6 +6,7 @@ import random
 import string
 from calendar import calendar
 
+from dateutil import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
@@ -390,9 +391,9 @@ def add_tenant(request, u_uid):
                 rent = float(rent) - float(discount)
                 print(rent)
             inv = apply_invoice(float(rent), float(unit.security_deposit), request.user, t)
-            inv.email_inform = inform_invoice(username, unit, email, f_name,
+            email_inform = inform_invoice(username, unit, email, f_name,
                                               Properties.objects.get(id=unit.property.id).property_name)
-            inv.save()
+            # inv.save()
 
     if Tenant.objects.filter(unit=unit).exists():
         return redirect('view-tenant', u_uid=unit.uuid)
@@ -449,19 +450,36 @@ def get_random_username():
 
 def apply_invoice(rent, dep, user, tenant):
     inv_no = increment_rent_invoice_number()
-    i = RentInvoice.objects.create(
-        created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit, date_due=tenant.created_at
-    )
-    i.save()
+
+    if tenant.unit.property.rent_collection == "Spec_date":
+        coll_day = tenant.unit.property.specific_day
+        coll_day = int(coll_day)
+    elif tenant.unit.property.rent_collection == "Occ_date":
+        coll_day = tenant.date_occupied.date().day
+        coll_day = int(coll_day)
+    month = datetime.date.today()
+    last_day = calendar.monthrange(month.year, month.month)[1]
+    last_day = int(last_day)
+
+    if coll_day > last_day:
+        coll_day = last_day
+    date = datetime.datetime(month.year, month.month, coll_day)
+    nextmonth = date + relativedelta.relativedelta(months=1)
+    print(nextmonth)
+
+    # i = RentInvoice.objects.create(
+    #     created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user, unit=tenant.unit, date_due=nextmonth
+    # )
+    # i.save()
     d = Invoice.objects.create(created_by=user, invoice_no=increment_invoice_number(), invoice_for=tenant.profile.user,
                                unit=tenant.unit)
     d.save()
-    inv_item1 = RentItems.objects.create(invoice=i, invoice_item='RENT', amount=round(rent, 2), description='RENT')
-    inv_item1.save()
+    # inv_item1 = RentItems.objects.create(invoice=i, invoice_item='RENT', amount=round(rent, 2), description='RENT')
+    # inv_item1.save()
     inv_item2 = InvoiceItems.objects.create(invoice=d, invoice_item='DEPOSIT', amount=round(dep, 2),
                                             description='DEPOSIT')
     inv_item2.save()
-    return i
+    # return i
 
 
 @login_required
