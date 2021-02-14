@@ -637,6 +637,8 @@ def unit_file_upload(request, uid):
 
     io_string = io.StringIO(data_set)
     next(io_string)
+    next(io_string)
+    next(io_string)
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
         created = Unit.objects.create(
             unit_name=column[0],

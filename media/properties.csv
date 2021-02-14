@@ -1,3 +1,3 @@
-﻿Name,Floors,value,units,parking,Property type,Building Type,Electricity,Water bill,Location description,penalty type,penalty value
-Property Name,4,4000000,10,10,Residential,Bungalow,Prepaid,agent,On riara road,percent,5
-Property Comercial,3,3000000,19,0,Commercial,,Postpaid,tenant,2nd exit on limuru road,fixed,1000
+﻿Name,Floors,value,units,parking,Property type,Building Type,Electricity,Water bill,Location description,penalty type,penalty value, DO NOT DELETE
+Property Name,4,4000000,10,10,Residential,Bungalow,Prepaid,agent,On riara road,percent,5, DO NOT DELETE
+Property Comercial,3,3000000,19,0,Commercial,,Postpaid,tenant,2nd exit on limuru road,fixed,1000, DO NOT DELETE

@@ -1,1 +1,3 @@
-Name,Value(Rent),Area,Size(For residential),Service Charge,Security Deposit,Status,parking slots,floor
+Name,Value(Rent),Area,Size(For residential),Service Charge,Deposit,Status,parking slots,floor, DO NOT DELETE
+House1,12000,12400,One Bedroom,0,12000,Vacant,1,1, DO NOT DELETE
+Unit2,30000,20000,,200,30000,Occupied,2,3, DO NOT DELETE
