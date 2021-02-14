@@ -4,7 +4,7 @@ import io
 import os
 import random
 import string
-from calendar import calendar
+import calendar
 
 from dateutil import relativedelta
 from django.contrib import messages
