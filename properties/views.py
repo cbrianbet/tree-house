@@ -504,7 +504,7 @@ def view_tenant(request, u_uid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.view_tenant'):
             raise PermissionDenied
-    prop = Tenant.objects.get(unit__uuid=u_uid)
+    prop = TenantHistory.objects.get(curr_unit__uuid=u_uid, end_date=None).tenant
     unit = Unit.objects.filter(id=prop.unit.id)
     context = {
         'p_id': u_uid,
@@ -1054,6 +1054,16 @@ def document_vacate(request):
 
     }
     return render(request, 'properties/vacate_doc.html', context)
+
+
+@login_required
+def non_compliance(request, tenant):
+    user = request.user
+    t = Tenant.objects.get(id=tenant)
+    non_comp = NonCompliance.objects.create(tenant=t, created_by=user, unit=t.unit, violation=request.POST.get('violation'))
+    non_comp.save()
+
+    return redirect('view-tenant', u_uid=t.unit.uuid)
 
 
 

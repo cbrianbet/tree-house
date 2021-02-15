@@ -220,6 +220,7 @@ class InspectionReport(models.Model):
 
 class NonCompliance(models.Model):
     violation = models.CharField(max_length=500)
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="comp_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="comp_updated_by", null=True)
