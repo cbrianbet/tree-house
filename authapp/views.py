@@ -677,14 +677,14 @@ def confirm_payment(request):
             print(a)
             if a['trx_id'] == trans:
                 return HttpResponse(reverse('web-login'))
-        if wallet['transactions']['next_page_url'] is not None:
-            for i in range(wallet['transactions']['last_page']):
+        if wallet['transactions']['last_page'] != 1:
+            for i in range(trans['last_page'] - 1):
                 search = []
                 URL = wallet['transactions']['next_page_url']
                 r = requests.get(url=URL)
                 wallet = r.json()
                 if wallet['success']:
-                    search.append(wallet['transactions']['data'])
+                    search = wallet['transactions']['data']
                     for a in search:
                         if a['trx_id'] == trans:
                             return HttpResponse(reverse('web-login'))

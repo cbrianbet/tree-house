@@ -1,3 +1,4 @@
+from datetime import datetime
 from itertools import chain
 
 import requests
@@ -7,6 +8,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 
@@ -580,6 +582,8 @@ def stkpush(request):
     print(company)
 
     landlord = Profile.objects.get(user=company)
+
+    print(landlord.hapokash)
     if user.msisdn.startswith('0'):
         mobile ='254' + user.msisdn[1:]
     else:
@@ -648,3 +652,72 @@ def stkpushreg(request):
     print(wallet)
     # if wallet['success']:
     #     return wallet['transactions']
+
+
+def confirm_inv_payment(request):
+    trans = request.POST.get('trans')
+    print(request.POST)
+    uuid = request.POST.get('uuid')
+
+    user = Profile.objects.get(user=request.user)
+    prop = Tenant.objects.get(profile=user).unit.property
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    landlord = Profile.objects.get(user=company)
+    print(landlord.hapokash)
+
+    URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(landlord.hapokash)
+    r = requests.get(url=URL)
+    wallet = r.json()
+    print(wallet)
+    if wallet['success']:
+        search = wallet['transactions']['data']
+        # print(search)
+        for a in search:
+            print(a)
+            if a['trx_id'] == trans:
+                if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                    return HttpResponse("invoice added")
+                else:
+                    return HttpResponse("Cant save")
+        if int(wallet['transactions']['last_page']) != 1:
+            for i in range(int(trans['last_page']) - 1):
+                URL = wallet['transactions']['next_page_url']
+                r = requests.get(url=URL)
+                wallet = r.json()
+                if wallet['success']:
+                    search = wallet['transactions']['data']
+                    for a in search:
+                        if a['trx_id'] == trans:
+                            if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                                return HttpResponse("invoice added")
+                            else:
+                                return HttpResponse("Cant save")
+    return "Not Found"
+
+
+def add_trans(uuid, trx, am, user):
+    trans = InvoiceItemsTransaction.objects.filter(transaction_code=trx)
+    trans2 = RentItemTransaction.objects.filter(transaction_code=trx)
+    if trans.exists() or trans2.exists():
+        return False
+    else:
+        try:
+            inv = Invoice.objects.get(uuid=uuid)
+            t = InvoiceItemsTransaction.objects.create(
+                invoice_item=InvoiceItems.objects.get(invoice=inv), transaction_code=trx, payment_mode="MPESA", amount_paid=am,
+                date_paid=date.today(), created_by=user, created_at=datetime.now()
+            )
+            t.save()
+            return True
+        except Invoice.DoesNotExist:
+            try:
+                inv = RentInvoice.objects.get(uuid=uuid)
+                t = RentItemTransaction.objects.create(
+                    invoice_item=RentItems.objects.get(invoice=inv), transaction_code=trx, payment_mode="MPESA", amount_paid=am,
+                    date_paid=date.today(), created_by=user, created_at=datetime.now()
+                )
+                t.save()
+                return True
+            except RentInvoice.DoesNotExist:
+                return False
+

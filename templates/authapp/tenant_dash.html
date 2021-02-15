@@ -564,7 +564,7 @@
                         <div class="modal-body">
                             <h6>A notification was sent to your phone to pay, enter transaction code </h6>
 
-                            <form id="transF" action="{% url 'confirm-trans' %}" method="post">
+                            <form id="transF" action="{% url 'confirm-inv' %}" method="post">
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label class="form-control-label" for="trans">Transaction code*</label>
@@ -701,7 +701,7 @@
                     } else {
                         swal({
                             title: 'Mpesa Transaction!!',
-                            text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
+                            text: 'An mpesa pop up will be sent to your phone, input correct pin to continue!!',
                             type: "info",
                             showConfirmButton: true,
                         });
@@ -743,7 +743,7 @@
                     if (data === "Not Found") {
                         swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
 
-                    } else {
+                    } else if (data === "invoice added"){
                         console.log(data)
                         swal({
                             title: 'Transaction Successful!!',
