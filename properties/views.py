@@ -387,7 +387,7 @@ def add_tenant(request, u_uid):
         p.save()
         t = Tenant.objects.create(
             secondary_msisdn=secondary_mobile, date_occupied=date_of_occupancy, unit=unit, profile=p, discount=discount,
-            created_by=request.user, discount_type=dis_type, lease=pic
+            created_by=request.user, discount_type=dis_type, id_card=pic
         )
         t.save()
 

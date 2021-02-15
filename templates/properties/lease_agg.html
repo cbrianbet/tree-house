@@ -33,135 +33,155 @@
                     </div>
 
                     <div class="page-invoice-table table-responsive">
-                        <p>
-                            TENANCY AGREEMENT BETWEEN</p>
-                        <p>{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</p>
+                        {% if tenant.unit.property.company.logo %}
+                            <img class="text-center" src="{{ tenant.unit.property.company.logo.url }}" alt="...">
+                        {% endif %}
+                        <h3 class="text-center">HOUSE RENTAL AGREEMENT</h3>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><h4>Landlord/Agent Information</h4></th>
+                                    <th><h4>Tenant Information</h4></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Name<br>{{ landlord.first_name }} {{ landlord.last_name }}</td>
+                                    <td>Name<br>{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Address<br></td>
+                                    <td>Address<br></td>
+                                </tr>
+                                <tr>
+                                    <td>Phone Number<br>{{ landlord.msisdn }}</td>
+                                    <td>Phone Number<br>{{ tenant.profile.msisdn }}</td>
+                                </tr>
+                                <tr>
+                                    <td>ID/Company<br>{{ tenant.unit.property.company.name }} <br></td>
+                                    <td>ID<br>{{ tenant.profile.id_number }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><h5> Rental Information</h5></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        Property Rental Address<br>
+                                        {{ tenant.unit.property.property_name }}<br>
+                                        {{ tenant.unit.unit_name }}
+                                    </td>
+                                    <td> Rent Amount<br>{{ tenant.unit.value }}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Start Date of Agreement (Date of Occupancy)<br>
+                                        {{ tenant.date_occupied }}<br>
+                                    </td>
+                                    <td> Security Deposit<br>{{ tenant.unit.security_deposit }}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        End Date of Agreement (Date of Vacancy)<br>
 
-                        <p>AND</p>
-                        <p>{{ landlord.first_name }} {{ landlord.last_name }}</p>
-                        <p>MOBILE: {{ landlord.mobile }}</p>
+                                    </td>
+                                    <td> Late Charges<br>{% if tenant.unit.property.penalty_type == "percent" %}
+                                        {{ tenant.unit.property.penalty_value }}% per Day{% else %}
+                                        KES. {{ tenant.unit.property.penalty_value }} per Day{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Date of First Payment<br> .
+                                    </td>
+                                    <td>
+                                        Payment Details<br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Pay Period<br>
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <br>
                         <br>
-                        <p>ALL THE PREMISES KNOWN AS {{ tenant.unit.property.property_name }}
-                            UNIT {{ tenant.unit.unit_name }}</p>
-                        <br>
-                        <br>
-                        <br>
 
-                        <p>TENANCY AGREEMENT</p>
-                        <p>THIS TENANCY AGREEMENT made this {{ tenant.created_at.day }} day
-                            of {{ tenant.created_at.month }}. {{ tenant.created_at.year }}. {{ landlord.first_name }} {{ landlord.last_name }}
-                            in the Republic of Kenya (herein after called “the Landlord” which expression shall where
-                            the context so admits include her heir’s successors and assigns) 0F THE ONE PART
+                        <p>This House Rental Agreement made on {{ tenant.created_at }}
+                            between {{ landlord.first_name }} {{ landlord.last_name }} (Landlord) and
+                            {{ tenant.profile.first_name }} {{ tenant.profile.last_name }} (Tenant).</p>
+                        <h6 class="text-center">TERMS AND CONDITIONS</h6>
+                        <p class="-bold">I. ACKNOWLEDGMENT</p>
+                        <p>The Landlord agrees to rent the house to the Tenant under these terms in its present
+                            condition
+                            located at {{ tenant.unit.property.property_name }}, Kenya The Tenant acknowledges the terms
+                            of this Agreement and comply.</p>
+                        <p>II. AGREEMENT TERM</p>
+                        <p>This House Rental Agreement will begin on {{ tenant.created_at }} and end on ____________ .
+                            After this, a renewal agreement will be created for the new term.</p>
+                        <p>III. MONTHLY RENTAL</p>
+                        <p>The monthly rental shall be per month. Payments will be made by the date specified. The
+                            monthly rental shall be collected by every “Date of when on boarded/Number of Days”. If the
+                            tenant fails to pay on the due date, late charges of will be applied.</p>
+                        <p>IV. SECURITY DEPOSIT</p>
+                        <p>The Tenant agrees to pay a security deposit of KES. {{ tenant.unit.security_deposit }}. The
+                            Security Deposit is to be refunded upon leaving the residency, terminating this contract,
+                            and returning the keys to the Landlord/Agent. The Security Deposit will cover for any damage
+                            to the premise. This Security Deposit will also cover in case the Tenant fails to pay the
+                            utility bills.</p>
+                        <p>V. UTILITIES</p>
+                        <p>Tenants will be responsible for paying all utilities like electricity, water, gas, telephone,
+                            cable, internet and service charge.</p>
+                        <p>VI. MAINTENANCE AND DAMAGES</p>
+                        <p>Tenant shall keep the premises in good condition. The Tenant will be responsible for any
+                            damage caused which means the Tenant will bear all the expenses in fixing it. Tenants shall
+                            follow reasonable standards of cleanliness. Written permission from the “landlord/agent” is
+                            needed for any alterations. The Landlord may enter the premises for the purposes of
+                            inspection, repair, maintenance, and emergency.</p>
+                        <p>VII. OCCUPANCY</p>
+                        <p>The number of occupants is limited to “Number of Occupants”. It will only be occupied by the
+                            Tenant and his/her family members.</p>
+                        <p>VIII. RULES and REGULATIONS</p>
+                        <p>The number of guests shall not exceed 3. An overnight guest may not stay for more than two
+                            (2) nights. “Pets are not allowed on the premises” (other amenities). Smoking is prohibited
+                            on the premises.</p>
+                        <p>IX. PEACE AND ORDER</p>
+                        <p>Tenants are not allowed to keep firearms, bows, combat knife and other weapons on the
+                            premises. Tenants agree not to use the premises in a way to disturb the peace in the
+                            neighborhood.</p>
+                        <p>X. ABANDONMENT</p>
+                        <p>If the Tenant abandons the house, the Landlord/Agent has the right to enter the house by any
+                            means without liabilities. The Landlord is allowed to presume that Tenant abandoned the
+                            premise if the furniture and other items were removed. If the house is unoccupied for a
+                            period of 60 consecutive days without written notification to the Landlord, it will be
+                            considered as abandonment.</p>
+                        <p>XI. AMENDMENTS</p>
+                        <p>This Agreement can only be changed or modified through the written consent of both
+                            parties.</p>
+                        <p>XII. GOVERNING LAW</p>
+                        <p>This agreement shall be governed under the laws of the Kenya. We, the undersigned, hereby
+                            agreed that we have read this agreement and bounded by its terms and conditions.</p>
+                        <p class="text-center">Date of Signing</p>
+
+                        <span class="text-left">{{ landlord.first_name }} {{ landlord.last_name }}</span><br>
+                        <p>Signature</p><br><br>
+                        <span class="text-right">{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</span><br>
+
+                        <p>Signature</p>
 
 
-                            AND {{ tenant.profile.first_name }} {{ tenant.profile.last_name }} in the Republic of Kenya
-                            (herein after called “the Tenant” which expression shall where the context so admits include
-                            her heir’s successors
-                            and assigns) OF THE OTHER PART
-                        </p>
-
-                        <p>WHEREAS: -</p>
-                        <br>
-                        <p>THE LANDLORD is the registered proprietor of ALL THAT parcel of land situate in ............
-                            known as Land Reference Number ......... and all developments thereon in the area more
-                            commonly known as {{ tenant.unit.property.property_name }} (herein after referred to as “the
-                            Premises)</p>
-
-                        <p>THE LANDLORD has agreed to let to the tenant the Premises by this agreement and the Tenant
-                            has agreed to let from LANDLORD THE PREMISES subjects to the covenant’s rights duties and
-                            obligations of the parties hereinafter contained:</p>
-
-                        <p>NOW THESE PRESENTS WITNESSETH AS FOLLOWS;</p>
-
-
-                        <p>1. IN CONSIDERATION of the rent hereinafter reserved and of the covenants by the Tenant
-                            hereinafter contained the Landlord HEREBY LETS/RENTS unto the Tenant THE PREMISES comprising
-                            together with the rights set out hereunder so far as the Landlord has the power to grant the
-                            same including but not limited to the right to use the yard, compound, parking, washing and
-                            other facilities situated outside the Premises and other conveniences provided for the use
-                            of the Tenant</p>
-                        <br>
-                        <p>TO BE HELD by the Tenant for the term of their stay subject
-                            nevertheless to prior determination as hereinafter provided, at the monthly rent for their
-                            stay of Kenyan Shillings {{ tenant.unit.value }} (Ksh ) per month
-                            payable monthly in advance on or before the day day set every calender month, provided that
-                            the first rent shall be payable on or
-                            before, and prior to taking possession of the premises,</p>
-                        <br>
-                        <p>2. IN CONSIDERATION of the covenants by the Landlord hereinafter contained THE TENANT HEREBY
-                            COVEthNANTS AND AGREES with the Landlord as follows;
-                        </p>
-                        <p>
-                            1. To pay the landlord refundable rent-security deposit of Kenyan Shilling
-                            {{ tenant.unit.security_deposit }}. as security for the performance by the Tenant of his
-                            obligations under this lease
-                            and the delivery up of the premises upon termination and in accordance with the provisions
-                            of
-                            this lease agreement, the said sum to be repaid/refunded to the Tenant less any unpaid sums
-                            lawfully due and owing to the Landlord under the terms of this lease agreement within thirty
-                            (30) days of termination of this lease after its term, PROVIDED THAT there shall be
-                            excluding any
-                            anticipatory or speculative damages costs expenses or awards in the computation of the sums
-                            due
-                            and owing to the Landlord referred to herein;
-                        </p>
-                        <p>
-                            2. To pay at the time or prior to the execution hereof the following refundable
-                            conservancy-security deposits:
-                        </p>
-                        <p>
-                            • Electricity deposit of Kenyan Shilling ;and
-                            • Water
-                        </p>
-                        <p>
-                            3. All sums herein before provided shall be payable into the accounts provided </p>
-                        <p>
-                            4. To pay to the landlord or his appointed agents the rents herby reserved in advanced and
-                            not
-                            later than the day set of every calendar monthy; if the said rent or any other payments due
-                            hereunder or any other part thereof shall remain unpaid on the due date, or if the tenant is
-                            declared bankruptcy or enters into a composition with creditors or suffers distress for rent
-                            or
-                            execution or if there is any breach or non- performance or non-observance by the tenant of
-                            any
-                            of the covenants or agreement herein and and on
-
-                            the part of the tenants to be performed and observed then the landlord may may at anytime
-                            thereafter upon giving a seven day written notice enter upon the premises and reposses and
-                            enjoy
-                            the premises and repossess and enjoy the premises without prejudice to any right of action
-                            or
-                            remedy of the landlord in respect of any antecedent breach of any covenant by the tenant.
-                        </p>
-                        <p>
-                            5. Not to use the premises or any part thereof for any purpose other than as a residential
-                            premises for one family ;being the Tenants family and his or her domestic servants or
-                            workers
-                            ,without the prior written consent of the landlord first hand and obtained.</p>
-                        <p>
-                            6. To use only electricity or gas cookers and not to use charcoal,coal,paraffin or other
-                            means
-                            of fuel for cooking within the built up area.
-                        </p>
-                        <p>
-                            7. Not to permit any part of the premises to be used or occupied by others without the
-                            landlords
-                            written consent first hand and obtained;</p>
-                        <p>
-                            8. To pay all water,electricity ,sanitary,conservancy and telephone charges
-                        <p>
-                        <p>
-                            SIGNED BY:</p>
-                        <p>
-                            LANDLORD NAME SIGN DATE
-                        </p>
-                        <p>
-                            TENANT NAMES</p>
-                        <p>
-                            SIGN DATE
-
-                        </p>
                     </div>
 
                     <div class="text-right clearfix">
@@ -170,7 +190,7 @@
                     <div class="text-right">
 
                         <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"
-                                onclick="javascript:window.print();">
+                                onclick="window.print();">
                             <span><i class="icon wb-print" aria-hidden="true"></i> Print</span>
                         </button>
                     </div>

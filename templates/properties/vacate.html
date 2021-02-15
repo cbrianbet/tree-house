@@ -60,34 +60,37 @@
 <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
     <div class="page-content vertical-align-middle animation-slide-top animation-duration-1">
         <div class="panel">
-            <h3 style="text-align: center">Re: Notice of Intent to Vacate</h3>
 
-                <img class="brand-img center" src="{% static 'authapp/assets/images/mnest-png.png' %}"
-                     width="338.6" height="180" alt="...">
+            <h3 class="align-center">HOUSE RENTAL AGREEMENT</h3>
             <br>
-            <p style="font-size: 18px">{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</p>
-            <p>{{ notice.created_at }}</p>
-            <br>
-            <p>{{ landlord.first_name }} {{ tenant.last_name }}</p>
-            <p>{{ notice.unit.property.property_name }}</p>
-            <br>
-            <p>Dear {{ landlord.first_name }},</p>
-            <p>This letter constitutes my written {{ notice.days_notice }} day notice that I will be moving out of my
-                apartment on {{ notice.vacate_date }}, the end of my current lease.
-            </p>
-            <br>
-            <p>I am leaving because of {{ notice.reason }}</p>
-            <br>
-            <p>
-                Please advise me on when my security deposit of KES {{ notice.unit.security_deposit }} will be returned
-                to me, as well as if you will be taking any money out for damages that fall outside of normal wear and
-                tear.
-            </p>
-            <p>I can be reached at {{ tenant.profile.msisdn }} and after {{ notice.new_contacts }}.</p>
-            <br>
-            <p>Sincerely,</p>
-            <p>{{ tenant.profile.first_name}} {{ tenant.profile.last_name }}</p>
-            <p>Unit: {{ notice.unit.unit_name }}</p>
+            <table class="table-responsive">
+                <thead>
+                <tr>
+                    <td><h4>Landlord/Agent Information</h4></td>
+                    <td><h4>Tenant Information</h4></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Name<br></td>
+                    <td>Name<br></td>
+                </tr>
+                <tr>
+                    <td>Address<br></td>
+                    <td>Address<br></td>
+                </tr>
+                <tr>
+                    <td>Phone Number<br></td>
+                    <td>Phone Number<br></td>
+                </tr>
+                <tr>
+                    <td>ID/Company <br></td>
+                    <td>ID<br></td>
+                </tr>
+                </tbody>
+            </table>
+            <p></p>
+
         </div>
     </div>
 </div>

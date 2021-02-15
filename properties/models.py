@@ -142,7 +142,7 @@ class Tenant(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True)
     discount = models.DecimalField(max_digits=19, decimal_places=2, null=True)
     discount_type = models.CharField(max_length=40, default="None")
-    lease = models.FileField(upload_to='ID/%Y/%m/')
+    id_card = models.FileField(upload_to='ID/%Y/%m/')
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="t_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="t_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
