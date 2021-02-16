@@ -994,7 +994,7 @@ def document(request):
         vac = None
 
     try:
-        non_com = VacateNotice.objects.get(notice_from=Tenant.objects.get(profile__user=user))
+        non_com = NonCompliance.objects.filter(tenant=Tenant.objects.get(profile__user=user))
     except :
         non_com = None
 
@@ -1012,7 +1012,6 @@ def document(request):
 def document_lease(request):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
-    tenant = Tenant.objects.get(profile__user=user)
     company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
 
     landlord = Profile.objects.get(user=company)
@@ -1026,13 +1025,15 @@ def document_lease(request):
 
 
 @login_required
-def document_non_comp(request):
+def document_non_comp(request, vid):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
+    non_comp = NonCompliance.objects.get(tenant=tenant, id=vid)
 
     context = {
         'user': user,
-        't': Tenant.objects.get(profile__user=user)
+        't': Tenant.objects.get(profile__user=user),
+        'non_comp': non_comp
 
     }
     return render(request, 'properties/non_comp.html', context)

@@ -33,6 +33,6 @@ urlpatterns = [
     path('documnets', views.document, name='documents'),
     path('documnet/lease', views.document_lease, name='document-lease'),
     path('documnet/vacate', views.document_vacate, name='document-vacate'),
-    path('documnet/non-comp', views.document_non_comp, name='document-non-comp'),
+    path('documnet/non-comp<int:vid>', views.document_non_comp, name='document-non-comp'),
     path('send/non-comp/<int:tenant>', views.non_compliance, name='non-comp'),
 ]

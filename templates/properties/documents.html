@@ -106,19 +106,19 @@
                                     </a>
                                 </td>
                             </tr>
-                            {% if non_com %}
+                            {% for a in non_com %}
                                 <tr>
-                                    <td>NON-COMPLIANCE NOTICE TO QUIT</td>
-                                    <td>{{ non_com.created_at }}</td>
-                                    <td>{{ non_com.created_by.username }}</td>
+                                    <td>NON-COMPLIANCE NOTICE TO QUIT {{ a.violation }}</td>
+                                    <td>{{ a.created_at }}</td>
+                                    <td>{{ a.created_by.username }}</td>
                                     <td>
-                                        <a href="{% url 'document-non-comp' %}"
+                                        <a href="{% url 'document-non-comp' vid=a.id %}"
                                            class="btn btn-animate btn-animate-side btn-secondary">
                                             <span><i class="icon wb-book" aria-hidden="true"></i> Document</span>
                                         </a>
                                     </td>
                                 </tr>
-                            {% endif %}
+                            {% endfor %}
 
 
                             </tbody>
