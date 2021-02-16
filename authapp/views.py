@@ -1,6 +1,7 @@
 import calendar
 import datetime
 import os
+import uuid
 
 import requests
 from django.contrib import messages
@@ -13,6 +14,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from psycopg2._psycopg import IntegrityError
 
 from authapp.decorators import unsubscribed_user
 from authapp.forms import LoginForm
@@ -54,6 +56,7 @@ def login(request):
 
 
 @login_required
+@unsubscribed_user
 def dashboard(request):
     user = request.user
     if user.acc_type.id == 4:
@@ -243,6 +246,7 @@ def dashboard(request):
 
 
 @login_required
+@unsubscribed_user
 def suspend_user(request, uid):
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         user = Users.objects.get(id=uid)
@@ -591,6 +595,24 @@ def about(request):
 
 def subsPick(request):
     subs = Subscriptions.objects.all()
+    if request.method == "POST":
+        prof = Profile.objects.get(user=request.user).msisdn
+        subsc = Subscriptions.objects.get(uuid=request.POST.get('sub_picked'))
+
+        if prof.startswith('0'):
+            mobile = '254' + prof[1:]
+        elif prof.startswith('1') or prof.startswith('7'):
+            mobile = '254' + prof[1:]
+        else:
+            mobile = prof
+
+        URL = "https://sfcapis.hapokash.app/cash_stk.php"
+
+        headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+        r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": int(subsc.value), "account_no": 17},
+                          headers=headers_dict)
+        wallet = r.json()
+        print(wallet)
     return render(request, 'authapp/subscriptions.html', {'subs': subs, 'user': request.user})
 
 
@@ -664,7 +686,7 @@ def wallet_trans(wall_id):
 def confirm_payment(request):
     trans = request.POST.get('trans')
     print(request.POST)
-    uuid = request.POST.get('')
+    uuid = request.POST.get('uuid')
     search = []
     URL = "https://portal.hapokash.app/api/wallet/transactions/17"
     r = requests.get(url=URL)
@@ -676,10 +698,16 @@ def confirm_payment(request):
         for a in search:
             print(a)
             if a['trx_id'] == trans:
-                return HttpResponse(reverse('web-login'))
-        if wallet['transactions']['last_page'] != 1:
-            for i in range(trans['last_page'] - 1):
-                search = []
+                try:
+                    sub = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company)
+                    sub.date_started = date.today()
+                    sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
+                    sub.save()
+                except:
+                    print("wrong")
+                return HttpResponse(reverse('logout'))
+        if int(wallet['transactions']['last_page']) != 1:
+            for i in range(int(wallet['transactions']['last_page']) - 1):
                 URL = wallet['transactions']['next_page_url']
                 r = requests.get(url=URL)
                 wallet = r.json()
@@ -687,7 +715,14 @@ def confirm_payment(request):
                     search = wallet['transactions']['data']
                     for a in search:
                         if a['trx_id'] == trans:
-                            return HttpResponse(reverse('web-login'))
+                            try:
+                                sub = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company)
+                                sub.date_started = date.today()
+                                sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
+                                sub.save()
+                            except:
+                                raise IntegrityError
+                            return HttpResponse(reverse('logout'))
     return "Not Found"
 
 

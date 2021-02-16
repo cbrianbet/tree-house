@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="{% static 'authapp/global/fonts/brand-icons/brand-icons.min.css' %}">
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
 
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
     <!--[if lt IE 9]>
     <script src="{% static 'authapp/global/vendor/html5shiv/html5shiv.min.js' %}"></script>
     <![endif]-->
@@ -104,7 +105,8 @@
             </div>
             <div class="panel-body">
                 <h4 class="text-center">Sorry. You dont have an active subscription</h4>
-                <form>
+                <form id="subscription" method="post" action="{% url 'subs-pick' %}">
+                {% csrf_token %}
                     <div class="text-center my-20">
                         <div class="form-group clearfix">
                             <div class="row">
@@ -133,6 +135,35 @@
             </div>
         </div>
 
+                        <!-- Modal -->
+                        <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
+                             aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+                            <div class="modal-dialog modal-simple modal-center">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Mpesa Transaction code</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h6>A notification was sent to your phone to pay, enter transaction code </h6>
+
+                                        <form id="transF" action="{% url 'confirm-trans' %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="trans">Transaction code*</label>
+                                                <input type="text" class="form-control" id="trans" name="trans"
+                                                       required="required">
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Submit</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Quit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Modal -->
     </div>
 </div>
 <!-- End Page -->
@@ -181,6 +212,102 @@
 <script src="{% static 'authapp/global/js/Plugin/asscrollable.js' %}"></script>
 {#<script src="{% static 'authapp/global/js/Plugin/slidepanel.js' %}"></script>#}
 <script src="{% static 'authapp/global/js/Plugin/switchery.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+
+<script>
+    var loginForm = $("#subscription");
+    loginForm.submit(function (e) {
+        e.preventDefault();
+        var sub = $('#sub').val()
+        $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
+        var thisForm = $(this);
+        var endPoint = thisForm.attr("action") || window.location.href;
+        var method = thisForm.attr("method");
+        var formData = thisForm.serialize();
+
+        console.log(endPoint);
+        console.log(method);
+        swal({
+            title: "Please wait!",
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
+
+        $.ajax({
+            type: method,
+            url: endPoint,
+            data: formData,
+            success: function (data) {
+                console.log(data)
+                if (data === "form error") {
+                    swal({
+                        title: 'Error!!',
+                        text: 'Pick one correctly!!',
+                        type: "error",
+                        showConfirmButton: true,
+                    });
+                } else {
+                    swal({
+                        title: 'Mpesa Transaction!!',
+                        text: 'An mpesa pop up will be sent to your phone, input correct pin to continue!!',
+                        type: "info",
+                        showConfirmButton: true,
+                    });
+                    $('#examplePositionCenter3').modal('show');
+                }
+            },
+            error: function (er) {
+                swal('Error occured!!', 'Something went wrong, Try again!!', 'error');
+            }
+        });
+
+    });
+
+    var transForm = $("#transF");
+    transForm.submit(function (e) {
+        e.preventDefault();
+        var thisForm = $(this);
+        var endPoint = thisForm.attr("action") || window.location.href;
+        var method = thisForm.attr("method");
+        var formData = thisForm.serialize();
+
+        console.log(endPoint);
+        console.log(method);
+        swal({
+            title: "Please wait!",
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
+
+        $.ajax({
+            type: method,
+            url: endPoint,
+            data: formData,
+            success: function (data) {
+                console.log(data)
+                if (data === "Not Found") {
+                    swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+
+                } else {
+                    console.log(data)
+                    swal({
+                        title: 'Transaction Successful!!',
+                        text: 'Signup Complete, Proceed to login',
+                        type: "success",
+                        showConfirmButton: true,
+                    });
+                    window.location.href = data;
+
+                }
+            },
+            error: function (er) {
+                swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+            }
+        });
+
+    });
+</script>
 
 <script>
     (function (document, window, $) {
