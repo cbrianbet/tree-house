@@ -438,7 +438,7 @@ def change_password(request):
 
 
 def signup(request):
-    sub = Subscriptions.objects.all()
+    sub = Subscriptions.objects.filter(is_active=True)
     term = open(os.path.join(settings.MEDIA_ROOT, 'terms.txt'), "r").read()
     privacy = open(os.path.join(settings.MEDIA_ROOT, 'privacy.txt'), "r").read()
     # privacy = open("../media/privacy.txt", "r")
@@ -593,8 +593,10 @@ def about(request):
     return render(request, 'authapp/about.html')
 
 
+@login_required
 def subsPick(request):
-    subs = Subscriptions.objects.all()
+    subs = Subscriptions.objects.filter(is_active=True)
+    company_end = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company)
     if request.method == "POST":
         prof = Profile.objects.get(user=request.user).msisdn
         subsc = Subscriptions.objects.get(uuid=request.POST.get('sub_picked'))
@@ -613,7 +615,7 @@ def subsPick(request):
                           headers=headers_dict)
         wallet = r.json()
         print(wallet)
-    return render(request, 'authapp/subscriptions.html', {'subs': subs, 'user': request.user})
+    return render(request, 'authapp/subscriptions.html', {'subs': subs, 'user': request.user, 'comp': company_end})
 
 
 @login_required
@@ -721,7 +723,7 @@ def confirm_payment(request):
                                 sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                                 sub.save()
                             except:
-                                raise IntegrityError
+                                print("wrong")
                             return HttpResponse(reverse('logout'))
     return "Not Found"
 

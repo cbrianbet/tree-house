@@ -97,7 +97,7 @@
                                         <span class="required">*</span>
                                     </label>
                                     <div class=" col-xl-12 col-md-9">
-                                        <textarea type="" class="form-control" rows="6" name="desc" required></textarea>
+                                        <textarea class="form-control" rows="6" name="desc" required></textarea>
                                     </div>
                                 </div>
 
@@ -157,7 +157,7 @@
                                         <i class="icon wb-edit" aria-hidden="true"></i>
                                         <span class="hidden-sm-down">Edit</span>
                                     </a>
-                                    <a class="btn btn-danger btn-outline" href="">
+                                    <a class="btn btn-danger btn-outline" href="{% url 'del-subs' uuid=b.uuid %}">
                                         <i class="icon wb-close" aria-hidden="true"></i>
                                         <span class="hidden-sm-down">Delete</span>
                                     </a>

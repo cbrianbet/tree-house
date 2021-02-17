@@ -53,6 +53,7 @@ class Subscriptions(models.Model):
     name = models.CharField(max_length=150)
     description = models.CharField(max_length=350)
     duration = models.PositiveIntegerField()
+    is_active = models.BooleanField(default=True)
     value = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="sub_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="sub_updated_by", null=True)

@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from authapp.models import Users, Profile, Subscriptions
-from properties.models import Properties, Companies, CompanyProfile
+from properties.models import Properties, Companies, CompanyProfile, SubscriptionsCompanies
 
 
 @login_required
@@ -41,7 +42,7 @@ def all_comps(request):
 
 @login_required
 def all_subs(request):
-    subs = Subscriptions.objects.all()
+    subs = Subscriptions.objects.filter(is_active=True)
     if request.method == "POST":
         val = request.POST.get('val')
         name = request.POST.get('name')
@@ -56,3 +57,19 @@ def all_subs(request):
         'list': subs,
     }
     return render(request, 'reports/subs.html', context)
+
+
+@login_required
+def delete_subs(request, uuid):
+    if request.user.acc_type.id != 1:
+        raise PermissionDenied
+    try:
+        sub = Subscriptions.objects.get(uuid=uuid)
+        if SubscriptionsCompanies.objects.filter(subs=sub).exists():
+            sub.is_active = False
+            sub.save()
+        else:
+            sub.delete()
+        return redirect('all-subs')
+    except Subscriptions.DoesNotExist():
+        raise PermissionDenied

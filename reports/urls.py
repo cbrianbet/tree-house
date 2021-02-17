@@ -8,5 +8,6 @@ urlpatterns = [
     path('properties/all', views.all_props, name='all-props'),
     path('companies/all', views.all_comps, name='all-companies'),
     path('subs', views.all_subs, name='all-subs'),
+    path('subs/delete/<uuid:uuid>', views.delete_subs, name='del-subs'),
 
 ]
