@@ -147,7 +147,7 @@
                     <div class="modal-body">
                         <h6>A notification was sent to your phone to pay, enter transaction code </h6>
 
-                        <form id="transF" action="{% url 'confirm-trans' %}" method="post">
+                        <form id="transF" action="{% url 'confirm-renew' %}" method="post">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label class="form-control-label" for="trans">Transaction code*</label>

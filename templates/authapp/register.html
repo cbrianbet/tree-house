@@ -228,9 +228,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {#                                <input type="file" id="input-file-now-custom-1" data-plugin="dropify"#}
-                            {#                                       data-default-file="../../../global/photos/placeholder.png"#}
-                            {#                                />#}
 
                             <h3 class="font-size-17 text-dark">3. Billing and Subscriptions</h3>
                             <div class="text-center my-20">
@@ -429,12 +426,15 @@
 <script>
     var loginForm = $("#signup");
     loginForm.submit(function (e) {
-        e.preventDefault();var ele = document.getElementsByName('sub_picked');
+        e.preventDefault();
+        var ele = document.getElementsByName('sub_picked');
 
         for (i = 0; i < ele.length; i++) {
             if (ele[i].checked)
                 var sub = ele[i].value;
         }
+        $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
+
         var thisForm = $(this);
         var endPoint = thisForm.attr("action") || window.location.href;
         var method = thisForm.attr("method");
@@ -476,6 +476,8 @@
                         showConfirmButton: true,
                     });
                     $('#examplePositionCenter3').modal('show');
+                    var u_name = document.getElementById("u_name").value;
+                    $('#transF').append('<input type="input" name="conf_uname" placeholder="name" value="' + u_name + '" hidden>');
                 }
             },
             error: function (er) {
@@ -586,7 +588,7 @@
                 $('#agent').show();
                 $('#landlord').hide();
                 document.getElementById("mobile").required = false;
-                document.getElementById("mobile").required = true;
+                document.getElementById("mobile2").required = true;
                 document.getElementById("id_no").required = false;
                 document.getElementById("company").required = true;
                 document.getElementById("location").required = true;

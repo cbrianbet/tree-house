@@ -37,9 +37,6 @@ def login(request):
                 return HttpResponse('Account is Disabled')
             if chus.acc_type_id == 2 or chus.acc_type_id == 3:
                 cp = CompanyProfile.objects.get(user=chus).company
-                subs = SubscriptionsCompanies.objects.filter(company=cp, date_end__gt=datetime.date.today())
-                # if not subs.exists():
-                #     return HttpResponse("subs finished")
             if user is not None:
                 if user.is_active:
                     log_in(request, user)
@@ -491,12 +488,6 @@ def signup(request):
 
                 stkpushreg(mobile, Subscriptions.objects.get(uuid=sub_picked).value)
 
-                sub = SubscriptionsCompanies.objects.create(
-                    subs=Subscriptions.objects.get(uuid=sub_picked), company=company,
-                    date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=sub_picked).duration),
-                    date_started=datetime.date.today()
-                )
-                sub.save()
                 wal_id = hapokashcreate()
                 try:
                     if wal_id['success']:
@@ -593,6 +584,7 @@ def about(request):
     return render(request, 'authapp/about.html')
 
 
+@unsubscribed_user
 @login_required
 def subsPick(request):
     subs = Subscriptions.objects.filter(is_active=True)
@@ -618,6 +610,7 @@ def subsPick(request):
     return render(request, 'authapp/subscriptions.html', {'subs': subs, 'user': request.user, 'comp': company_end})
 
 
+@unsubscribed_user
 @login_required
 def wall_bal(request):
     if request.user.acc_type.id == 5:
@@ -689,7 +682,54 @@ def confirm_payment(request):
     trans = request.POST.get('trans')
     print(request.POST)
     uuid = request.POST.get('uuid')
-    search = []
+    u_name = request.POST.get('conf_uname')
+    URL = "https://portal.hapokash.app/api/wallet/transactions/17"
+    r = requests.get(url=URL)
+    wallet = r.json()
+    print(wallet)
+    if wallet['success']:
+        search = wallet['transactions']['data']
+        # print(search)
+        for a in search:
+            print(a)
+            if a['trx_id'] == trans:
+                try:
+                    sub = SubscriptionsCompanies.objects.create(
+                        company=CompanyProfile.objects.get(user=Users.objects.get(username=u_name)).company,
+                        date_started= date.today(), subs=Subscriptions.objects.get(uuid=uuid),
+                        date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
+                    )
+                    sub.save()
+                except:
+                    print("wrong")
+                return HttpResponse(reverse('logout'))
+        if int(wallet['transactions']['last_page']) != 1:
+            for i in range(int(wallet['transactions']['last_page']) - 1):
+                URL = wallet['transactions']['next_page_url']
+                r = requests.get(url=URL)
+                wallet = r.json()
+                if wallet['success']:
+                    search = wallet['transactions']['data']
+                    for a in search:
+                        if a['trx_id'] == trans:
+                            try:
+                                sub = SubscriptionsCompanies.objects.create(
+                                    company=CompanyProfile.objects.get(user=Users.objects.get(username=u_name)).company,
+                                    date_started=date.today(), subs=Subscriptions.objects.get(uuid=uuid),
+                                    date_end=add_months(datetime.date.today(),
+                                                        Subscriptions.objects.get(uuid=uuid).duration)
+                                )
+                                sub.save()
+                            except:
+                                print("wrong")
+                            return HttpResponse(reverse('logout'))
+    return "Not Found"
+
+
+def confirm_payment_renew(request):
+    trans = request.POST.get('trans')
+    print(request.POST)
+    uuid = request.POST.get('uuid')
     URL = "https://portal.hapokash.app/api/wallet/transactions/17"
     r = requests.get(url=URL)
     wallet = r.json()
@@ -731,6 +771,8 @@ def confirm_payment(request):
 def stkpushreg(mo, am):
     if mo.startswith('0'):
         mobile = '254' + mo[1:]
+    elif mo.startswith('1') or mo.startswith('7'):
+        mobile = '254' + mo
     else:
         mobile = mo
 

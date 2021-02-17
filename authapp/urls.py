@@ -9,6 +9,7 @@ urlpatterns = [
     path('wallet/r_trans', views.hapokash_wallet_transfer, name='hapo_wallet_trans'),
     path('wallet/trans_inv', views.hapokash_wallet_transfer_Inv, name='hapo_wallet_transinv'),
     path('wallet/confirm/trans', views.confirm_payment, name='confirm-trans'),
+    path('wallet/confirm/trans/renew', views.confirm_payment_renew, name='confirm-renew'),
     path('login/', views.login, name='web-login'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('accept/terms', views.acc_terms, name='acc-terms'),
