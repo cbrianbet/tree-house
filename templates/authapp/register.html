@@ -429,9 +429,12 @@
 <script>
     var loginForm = $("#signup");
     loginForm.submit(function (e) {
-        e.preventDefault();
-        var sub = $('#sub').val()
-        $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
+        e.preventDefault();var ele = document.getElementsByName('sub_picked');
+
+        for (i = 0; i < ele.length; i++) {
+            if (ele[i].checked)
+                var sub = ele[i].value;
+        }
         var thisForm = $(this);
         var endPoint = thisForm.attr("action") || window.location.href;
         var method = thisForm.attr("method");

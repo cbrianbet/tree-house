@@ -104,9 +104,10 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <h4 class="text-center">Sorry. You dont have an active subscription</h4>
+                <h4 class="text-center">Sorry. You dont have an active subscription. Your subscription ended
+                    on {{ comp.date_end }}</h4>
                 <form id="subscription" method="post" action="{% url 'subs-pick' %}">
-                {% csrf_token %}
+                    {% csrf_token %}
                     <div class="text-center my-20">
                         <div class="form-group clearfix">
                             <div class="row">
@@ -135,35 +136,35 @@
             </div>
         </div>
 
-                        <!-- Modal -->
-                        <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
-                             aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
-                            <div class="modal-dialog modal-simple modal-center">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Mpesa Transaction code</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h6>A notification was sent to your phone to pay, enter transaction code </h6>
+        <!-- Modal -->
+        <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
+             aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-simple modal-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Mpesa Transaction code</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h6>A notification was sent to your phone to pay, enter transaction code </h6>
 
-                                        <form id="transF" action="{% url 'confirm-trans' %}" method="post">
-                                            {% csrf_token %}
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="trans">Transaction code*</label>
-                                                <input type="text" class="form-control" id="trans" name="trans"
-                                                       required="required">
-                                            </div>
-                                            <button type="submit" class="btn btn-success">Submit</button>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Quit
-                                        </button>
-                                    </div>
-                                </div>
+                        <form id="transF" action="{% url 'confirm-trans' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-control-label" for="trans">Transaction code*</label>
+                                <input type="text" class="form-control" id="trans" name="trans"
+                                       required="required">
                             </div>
-                        </div>
-                        <!-- End Modal -->
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Quit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal -->
     </div>
 </div>
 <!-- End Page -->
@@ -219,7 +220,13 @@
     var loginForm = $("#subscription");
     loginForm.submit(function (e) {
         e.preventDefault();
-        var sub = $('#sub').val()
+        var ele = document.getElementsByName('sub_picked');
+
+        for (i = 0; i < ele.length; i++) {
+            if (ele[i].checked)
+                var sub = ele[i].value;
+        }
+
         $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
         var thisForm = $(this);
         var endPoint = thisForm.attr("action") || window.location.href;

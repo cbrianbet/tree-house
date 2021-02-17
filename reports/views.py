@@ -42,6 +42,8 @@ def all_comps(request):
 
 @login_required
 def all_subs(request):
+    if request.user.acc_type.id != 1:
+        raise PermissionDenied
     subs = Subscriptions.objects.filter(is_active=True)
     if request.method == "POST":
         val = request.POST.get('val')
