@@ -12,11 +12,15 @@ def unsubscribed_user(view_func):
             company = CompanyProfile.objects.get(user=request.user).company
             try:
                 check = SubscriptionsCompanies.objects.get(company=company)
-                if check.date_end < datetime.today().date():
+
+                if check.date_end is None:
+                    return redirect('subs-pick')
+                elif check.date_end < datetime.today().date():
                     return redirect('subs-pick')
 
                 print(company, check)
             except SubscriptionsCompanies.DoesNotExist:
+                SubscriptionsCompanies.objects.create(company=company)
                 return redirect('subs-pick')
 
             return view_func(request, *args, **kwargs)

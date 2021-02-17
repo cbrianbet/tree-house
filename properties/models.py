@@ -164,12 +164,23 @@ class PropertyStaff(models.Model):
 
 class SubscriptionsCompanies(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
-    subs = models.ForeignKey(Subscriptions, on_delete=models.CASCADE)
-    date_started = models.DateField()
-    date_end = models.DateField()
+    subs = models.ForeignKey(Subscriptions, on_delete=models.CASCADE, null=True)
+    date_started = models.DateField(null=True)
+    date_end = models.DateField(null=True)
 
     class Meta:
         db_table = "Subscription_Company"
+
+
+class TransactionCodes(models.Model):
+    trx = models.CharField(max_length=20)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="trx_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="trx_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "Trans codes"
 
 
 class PeopleAttached(models.Model):

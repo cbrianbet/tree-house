@@ -584,7 +584,6 @@ def about(request):
     return render(request, 'authapp/about.html')
 
 
-@unsubscribed_user
 @login_required
 def subsPick(request):
     subs = Subscriptions.objects.filter(is_active=True)
