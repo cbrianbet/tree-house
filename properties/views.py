@@ -17,6 +17,7 @@ from django.db.models import Count, Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
+from authapp.decorators import unsubscribed_user
 from authapp.models import AccTypes
 from authapp.views import hapokashcreate
 from bills.models import Invoice, InvoiceItems, RentInvoice, RentItems
@@ -28,6 +29,7 @@ from .pdfs import render_to_pdf
 
 
 @login_required
+@unsubscribed_user
 def properties_list(request):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.view_properties'):
@@ -57,6 +59,7 @@ def properties_list(request):
 
 
 @login_required
+@unsubscribed_user
 def properties_add(request):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.add_properties'):
@@ -103,6 +106,7 @@ def properties_add(request):
 
 
 @login_required
+@unsubscribed_user
 def properties_payment(request, u_id):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.change_properties'):
@@ -142,6 +146,7 @@ def properties_payment(request, u_id):
 
 
 @login_required
+@unsubscribed_user
 def properties_edit(request, p_id):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.change_properties'):
@@ -205,6 +210,7 @@ def properties_edit(request, p_id):
 
 
 @login_required
+@unsubscribed_user
 def view_prop(request, p_id):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.view_properties'):
@@ -223,6 +229,7 @@ def view_prop(request, p_id):
 
 
 @login_required
+@unsubscribed_user
 def list_units(request, u_uid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.view_unit'):
@@ -244,6 +251,7 @@ def list_units(request, u_uid):
 
 
 @login_required
+@unsubscribed_user
 def add_units(request, floor, u_uid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.add_unit'):
@@ -282,6 +290,7 @@ def add_units(request, floor, u_uid):
 
 
 @login_required
+@unsubscribed_user
 def view_unit(request, pid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.view_properties'):
@@ -298,6 +307,7 @@ def view_unit(request, pid):
 
 
 @login_required
+@unsubscribed_user
 def edit_units(request, u_uid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.change_unit'):
@@ -337,6 +347,7 @@ def edit_units(request, u_uid):
 
 
 @login_required
+@unsubscribed_user
 def add_tenant(request, u_uid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.add_tenant'):
@@ -500,6 +511,7 @@ def apply_invoice(rent, dep, user, tenant):
 
 
 @login_required
+@unsubscribed_user
 def view_tenant(request, u_uid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.view_tenant'):
@@ -517,6 +529,7 @@ def view_tenant(request, u_uid):
 
 
 @login_required
+@unsubscribed_user
 def swap_tenant(request, u_uid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.change_tenant'):
@@ -560,12 +573,14 @@ def swap_tenant(request, u_uid):
 
 
 @login_required
+@unsubscribed_user
 def get_unit(request):
     return
 
 
 # File uploads
 @login_required
+@unsubscribed_user
 def prop_file_upload(request):
     # declaring template
     if request.user.acc_type.id == 5:
@@ -610,11 +625,13 @@ def prop_file_upload(request):
 
 
 @login_required
+@unsubscribed_user
 def tenant_file_upload(request):
     return
 
 
 @login_required
+@unsubscribed_user
 def prop_template(request):
     file_path = os.path.join(settings.MEDIA_ROOT, 'properties.csv')
     print(file_path)
@@ -627,6 +644,7 @@ def prop_template(request):
 
 
 @login_required
+@unsubscribed_user
 def unit_template(request):
     file_path = os.path.join(settings.MEDIA_ROOT, 'Units.csv')
     print(file_path)
@@ -639,6 +657,7 @@ def unit_template(request):
 
 
 @login_required
+@unsubscribed_user
 def unit_file_upload(request, uid):
     # declaring template
     if request.user.acc_type.id == 5:
@@ -675,6 +694,7 @@ def unit_file_upload(request, uid):
 
 
 @login_required
+@unsubscribed_user
 def staff(request):
     if request.user.acc_type.id == 4:
         raise PermissionDenied
@@ -751,6 +771,7 @@ def staff(request):
 
 
 @login_required
+@unsubscribed_user
 def edit_staff(request, uid):
     if request.user.acc_type.id == 4:
         raise PermissionDenied
@@ -910,6 +931,7 @@ def vacate_tenant_request(request):
 
 
 @login_required
+@unsubscribed_user
 def delete_property(request, pid):
     if request.user.acc_type.id == 5:
         if not request.user.has_perm('properties.delete_properties'):
@@ -934,6 +956,7 @@ def delete_property(request, pid):
 
 
 @login_required
+@unsubscribed_user
 def generate_vacate_notice(request):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
@@ -952,6 +975,7 @@ def generate_vacate_notice(request):
 
 
 @login_required
+@unsubscribed_user
 def inspection_report(request, id):
     user = request.user
     vac = VacateNotice.objects.get(id=id)
@@ -970,6 +994,7 @@ def inspection_report(request, id):
 
 
 @login_required
+@unsubscribed_user
 def vacate_list(request):
     if request.user.acc_type.id == 4:
         return PermissionDenied
@@ -986,6 +1011,7 @@ def vacate_list(request):
 
 
 @login_required
+@unsubscribed_user
 def document(request):
     user = request.user
     try:
@@ -1009,6 +1035,7 @@ def document(request):
 
 
 @login_required
+@unsubscribed_user
 def document_lease(request):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
@@ -1025,6 +1052,7 @@ def document_lease(request):
 
 
 @login_required
+@unsubscribed_user
 def document_non_comp(request, vid):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
@@ -1040,6 +1068,7 @@ def document_non_comp(request, vid):
 
 
 @login_required
+@unsubscribed_user
 def document_vacate(request):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
@@ -1058,6 +1087,7 @@ def document_vacate(request):
 
 
 @login_required
+@unsubscribed_user
 def non_compliance(request, tenant):
     user = request.user
     t = Tenant.objects.get(id=tenant)

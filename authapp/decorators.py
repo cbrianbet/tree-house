@@ -28,10 +28,14 @@ def unsubscribed_user(view_func):
             tenant = Tenant.objects.get(profile__user=request.user)
             try:
                 check = SubscriptionsCompanies.objects.get(company=tenant.unit.property.company)
+
+                if check.date_end is None:
+                    return redirect('subs-pick')
                 if check.date_end < datetime.today().date():
                     return redirect('subs-pick')
 
             except SubscriptionsCompanies.DoesNotExist:
+                SubscriptionsCompanies.objects.create(company=tenant.unit.property.company)
                 return redirect('subs-pick')
 
             return view_func(request, *args, **kwargs)

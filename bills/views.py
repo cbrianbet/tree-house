@@ -12,12 +12,14 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 
+from authapp.decorators import unsubscribed_user
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from properties.models import *
 
 
 @login_required
+@unsubscribed_user
 def tenant_bills(request, u_uid):
     tenant = Tenant.objects.get(uuid=u_uid)
     invoice = Invoice.objects.filter(invoice_for=tenant.profile.user)
@@ -51,6 +53,7 @@ def tenant_bills(request, u_uid):
 
 
 @login_required
+@unsubscribed_user
 def all_invoices(request):
     if request.user.acc_type.id == 4:
         return redirect('tenant_bill-personal')
@@ -106,6 +109,7 @@ def all_invoices(request):
 
 
 @login_required
+@unsubscribed_user
 def invoice_info(request, i_id):
     try:
         invoice = Invoice.objects.get(uuid=i_id)
@@ -172,6 +176,7 @@ def invoice_info(request, i_id):
 
 
 @login_required
+@unsubscribed_user
 def record_payment_request(request, i_id):
     try:
         invoice = Invoice.objects.get(uuid=i_id)
@@ -259,6 +264,7 @@ def inform_agent_payment(u, n, e, p, un):
 
 
 @login_required
+@unsubscribed_user
 def invoice(request, i_id):
     invoice = Invoice.objects.get(uuid=i_id)
     inv_items = InvoiceItems.objects.filter(invoice=invoice)
@@ -305,6 +311,7 @@ def invoice(request, i_id):
 
 
 @login_required
+@unsubscribed_user
 def rent_invoice(request, i_id):
     invoice = RentInvoice.objects.get(uuid=i_id)
     inv_items = RentItems.objects.filter(invoice=invoice)
@@ -344,6 +351,7 @@ def rent_invoice(request, i_id):
 
 
 @login_required
+@unsubscribed_user
 def personal_bills(request):
     tenant = Tenant.objects.get(profile__user=request.user)
     invoice = Invoice.objects.filter(invoice_for=tenant.profile.user)
@@ -390,6 +398,7 @@ def personal_bills(request):
 
 
 @login_required
+@unsubscribed_user
 def invoice_tenant(request, u_uid):
     t = Tenant.objects.get(uuid=u_uid)
     if request.method == "POST":
@@ -487,6 +496,7 @@ def inform_apprved(u, n, prop, e):
 
 
 @login_required
+@unsubscribed_user
 def reject_request(request, pid):
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         try:
@@ -520,6 +530,7 @@ def inform_rej(u, n, prop, e):
         print('failed')
 
 
+@unsubscribed_user
 @login_required
 def list_request(request):
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
@@ -555,6 +566,7 @@ def list_request(request):
 
 
 @login_required
+@unsubscribed_user
 def individual_trans(request, uuid):
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         comp = CompanyProfile.objects.get(user=request.user).company

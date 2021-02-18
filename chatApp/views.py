@@ -6,8 +6,11 @@ from messengerbot import MessengerClient, messages, attachments, templates, elem
 from chatbot import Chat, register_call
 import wikipedia
 
+from authapp.decorators import unsubscribed_user
+
 
 @login_required
+@unsubscribed_user
 def chat(request):
 
     context = {
@@ -17,6 +20,7 @@ def chat(request):
 
 
 @login_required
+@unsubscribed_user
 def chat_owner(request):
 
 
