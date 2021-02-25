@@ -73,12 +73,37 @@ def dashboard(request):
                 print(wal_id)
 
         URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        r = requests.get(url=URL, headers=headers)
 
-        r = requests.get(url=URL)
         wallet = r.json()
+        print(wallet)
 
         if wallet['success']:
             cur_balance = wallet['wallet']['current_balance']
+        else:
+            refreshToken()
+
+            URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+            headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+            }
+            r = requests.get(url=URL, headers=headers)
+
+            wallet = r.json()
+            print(wallet)
+
+            if wallet['success']:
+                cur_balance = wallet['wallet']['current_balance']
+
+
+            # return HttpResponse(wallet)
 
         tenant = Tenant.objects.get(profile=prof)
         bank_ac = BankAcc.objects.filter(prop__prop=tenant.unit.property)
@@ -507,9 +532,43 @@ def signup(request):
 
 def hapokashcreate():
     URL = "https://portal.hapokash.app/api/wallet/create"
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
     PARAMS = {"currency": "KES"}
-    r = requests.post(url=URL, data=PARAMS)
-    return r.json()
+    r = requests.post(url=URL, data=PARAMS, headers=headers)
+    if r.json()['success']:
+        return r.json()
+    else:
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/create"
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        PARAMS = {"currency": "KES"}
+        r = requests.post(url=URL, data=PARAMS, headers=headers)
+        if r.json()['success']:
+            return r.json()
+
+
+def refreshToken():
+    url = "https://portal.hapokash.app/oauth/token"
+
+    payload = "{\"grant_type\":\"client_credentials\",\"client_id\":\"3\",\"client_secret\":\"MpZsUna0SwG23iZS4dVVXQLdBcb1Y8KVplVz5Wri\"}"
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload).json()
+    at =AuthTokens.objects.get(id=1)
+    at.auth = response['access_token']
+    at.save()
+
 
 
 def hapokash_wallet_transfer(request):
@@ -527,7 +586,12 @@ def hapokash_wallet_transfer(request):
         "amount": request.POST.get('amount'),
         "narration": "Payment For Rent From wallet"
     }
-    ra = requests.post(url=URL, json=PARAMS).json()
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+    ra = requests.post(url=URL, json=PARAMS, headers=headers).json()
     print(ra)
     if ra['success']:
         pay = RentItemTransaction.objects.create(
@@ -536,6 +600,29 @@ def hapokash_wallet_transfer(request):
             remarks="Payment For Rent From wallet", date_paid=datetime.date.today(), created_by=request.user
         )
         pay.save()
+    elif not ra['success'] and ra['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/transfer"
+        PARAMS = {
+            "debit_wallet_id": user.hapokash,
+            "credit_wallet_id": landlord.hapokash,
+            "amount": request.POST.get('amount'),
+            "narration": "Payment For Rent From wallet"
+        }
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        ra = requests.post(url=URL, json=PARAMS, headers=headers).json()
+        print(ra)
+        if ra['success']:
+            pay = RentItemTransaction.objects.create(
+                invoice_item=RentItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'),
+                payment_mode="Wallet Transfer",
+                remarks="Payment For Rent From wallet", date_paid=datetime.date.today(), created_by=request.user
+            )
+            pay.save()
     return redirect('dashboard')
 
 
@@ -554,7 +641,12 @@ def hapokash_wallet_transfer_Inv(request):
         "amount": request.POST.get('amount'),
         "narration": "Payment For Invoice From wallet"
     }
-    r = requests.post(url=URL, json=PARAMS).json()
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+    r = requests.post(url=URL, json=PARAMS, headers=headers).json()
 
     if r['success']:
         pay = InvoiceItemsTransaction.objects.create(
@@ -563,6 +655,29 @@ def hapokash_wallet_transfer_Inv(request):
             remarks="Payment For Invoice From wallet", date_paid=datetime.date.today(), created_by=request.user
         )
         pay.save()
+    elif not r['success'] and r['message'] == "Unauthenticated.":
+        URL = "https://portal.hapokash.app/api/wallet/transfer"
+        PARAMS = {
+            "debit_wallet_id": user.hapokash,
+            "credit_wallet_id": landlord.hapokash,
+            "amount": request.POST.get('amount'),
+            "narration": "Payment For Invoice From wallet"
+        }
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        r = requests.post(url=URL, json=PARAMS, headers=headers).json()
+
+        if r['success']:
+            pay = InvoiceItemsTransaction.objects.create(
+                invoice_item=InvoiceItems.objects.get(invoice=invoice), amount_paid=request.POST.get('amount'),
+                payment_mode="Wallet Transfer",
+                remarks="Payment For Invoice From wallet", date_paid=datetime.date.today(), created_by=request.user
+            )
+            pay.save()
+
     return redirect('dashboard')
 
 
@@ -631,13 +746,36 @@ def wall_bal(request):
             print(wal_id)
 
     URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
 
-    r = requests.get(url=URL)
+    r = requests.get(url=URL, headers=headers)
     wallet = r.json()
 
     if wallet['success']:
         cur_balance = wallet['wallet']['current_balance']
         pre_balance = wallet['wallet']['previous_balance']
+    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+
+        if wallet['success']:
+            cur_balance = wallet['wallet']['current_balance']
+            pre_balance = wallet['wallet']['previous_balance']
+        else:
+            cur_balance = 0
+            pre_balance = 0
     else:
         cur_balance = 0
         pre_balance = 0
@@ -648,12 +786,30 @@ def wall_bal(request):
         for i in range(trans['last_page'] - 1):
             print(trans['next_page_url'])
             URL = trans['next_page_url']
+            headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+            }
 
-            r = requests.get(url=URL)
+            r = requests.get(url=URL, headers=headers)
             wallet = r.json()
             print(wallet)
             if wallet['success']:
                 trans['data'] = trans['data'] + wallet['transactions']['data']
+            elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+                refreshToken()
+                headers = {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+                }
+
+                r = requests.get(url=URL, headers=headers)
+                wallet = r.json()
+                print(wallet)
+                if wallet['success']:
+                    trans['data'] = trans['data'] + wallet['transactions']['data']
 
     for d in trans['data']:
         d.update((k, datetime.datetime.strptime(
@@ -671,12 +827,31 @@ def wall_bal(request):
 
 def wallet_trans(wall_id):
     URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(wall_id)
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
 
-    r = requests.get(url=URL)
+    r = requests.get(url=URL, headers=headers)
     wallet = r.json()
     print(wallet)
     if wallet['success']:
         return wallet['transactions']
+    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(wall_id)
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+        print(wallet)
+        if wallet['success']:
+            return wallet['transactions']
 
 
 def confirm_payment(request):
@@ -685,7 +860,14 @@ def confirm_payment(request):
     uuid = request.POST.get('uuid')
     u_name = request.POST.get('conf_uname')
     URL = "https://portal.hapokash.app/api/wallet/transactions/17"
-    r = requests.get(url=URL)
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+
+    r = requests.get(url=URL, headers=headers)
+
     wallet = r.json()
     print(wallet)
     if wallet['success']:
@@ -707,7 +889,7 @@ def confirm_payment(request):
         if int(wallet['transactions']['last_page']) != 1:
             for i in range(int(wallet['transactions']['last_page']) - 1):
                 URL = wallet['transactions']['next_page_url']
-                r = requests.get(url=URL)
+                r = requests.get(url=URL, headers=headers)
                 wallet = r.json()
                 if wallet['success']:
                     search = wallet['transactions']['data']
@@ -724,6 +906,55 @@ def confirm_payment(request):
                             except:
                                 print("wrong")
                             return HttpResponse(reverse('logout'))
+
+    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        r = requests.get(url=URL, headers=headers)
+
+        wallet = r.json()
+        if wallet['success']:
+            search = wallet['transactions']['data']
+            # print(search)
+            for a in search:
+                print(a)
+                if a['trx_id'] == trans:
+                    try:
+                        sub = SubscriptionsCompanies.objects.create(
+                            company=CompanyProfile.objects.get(user=Users.objects.get(username=u_name)).company,
+                            date_started=date.today(), subs=Subscriptions.objects.get(uuid=uuid),
+                            date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
+                        )
+                        sub.save()
+                    except:
+                        print("wrong")
+                    return HttpResponse(reverse('logout'))
+            if int(wallet['transactions']['last_page']) != 1:
+                for i in range(int(wallet['transactions']['last_page']) - 1):
+                    URL = wallet['transactions']['next_page_url']
+                    r = requests.get(url=URL, headers=headers)
+                    wallet = r.json()
+                    if wallet['success']:
+                        search = wallet['transactions']['data']
+                        for a in search:
+                            if a['trx_id'] == trans:
+                                try:
+                                    sub = SubscriptionsCompanies.objects.create(
+                                        company=CompanyProfile.objects.get(
+                                            user=Users.objects.get(username=u_name)).company,
+                                        date_started=date.today(), subs=Subscriptions.objects.get(uuid=uuid),
+                                        date_end=add_months(datetime.date.today(),
+                                                            Subscriptions.objects.get(uuid=uuid).duration)
+                                    )
+                                    sub.save()
+                                except:
+                                    print("wrong")
+                                return HttpResponse(reverse('logout'))
     return "Not Found"
 
 
@@ -732,9 +963,15 @@ def confirm_payment_renew(request):
     print(request.POST)
     uuid = request.POST.get('uuid')
     URL = "https://portal.hapokash.app/api/wallet/transactions/17"
-    r = requests.get(url=URL)
+
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+
+    r = requests.get(url=URL, headers=headers)
     wallet = r.json()
-    print(wallet)
     if wallet['success']:
         search = wallet['transactions']['data']
         # print(search)
@@ -752,7 +989,7 @@ def confirm_payment_renew(request):
         if int(wallet['transactions']['last_page']) != 1:
             for i in range(int(wallet['transactions']['last_page']) - 1):
                 URL = wallet['transactions']['next_page_url']
-                r = requests.get(url=URL)
+                r = requests.get(url=URL, headers=headers)
                 wallet = r.json()
                 if wallet['success']:
                     search = wallet['transactions']['data']
@@ -766,6 +1003,53 @@ def confirm_payment_renew(request):
                             except:
                                 print("wrong")
                             return HttpResponse(reverse('logout'))
+
+    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/transactions/17"
+
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+        if wallet['success']:
+            search = wallet['transactions']['data']
+            # print(search)
+            for a in search:
+                print(a)
+                if a['trx_id'] == trans:
+                    try:
+                        sub = SubscriptionsCompanies.objects.get(
+                            company=CompanyProfile.objects.get(user=request.user).company)
+                        sub.date_started = date.today()
+                        sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
+                        sub.save()
+                    except:
+                        print("wrong")
+                    return HttpResponse(reverse('logout'))
+            if int(wallet['transactions']['last_page']) != 1:
+                for i in range(int(wallet['transactions']['last_page']) - 1):
+                    URL = wallet['transactions']['next_page_url']
+                    r = requests.get(url=URL, headers=headers)
+                    wallet = r.json()
+                    if wallet['success']:
+                        search = wallet['transactions']['data']
+                        for a in search:
+                            if a['trx_id'] == trans:
+                                try:
+                                    sub = SubscriptionsCompanies.objects.get(
+                                        company=CompanyProfile.objects.get(user=request.user).company)
+                                    sub.date_started = date.today()
+                                    sub.date_end = add_months(datetime.date.today(),
+                                                              Subscriptions.objects.get(uuid=uuid).duration)
+                                    sub.save()
+                                except:
+                                    print("wrong")
+                                return HttpResponse(reverse('logout'))
     return "Not Found"
 
 

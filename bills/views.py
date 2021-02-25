@@ -13,6 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 
 from authapp.decorators import unsubscribed_user
+from authapp.models import AuthTokens
+from authapp.views import refreshToken
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from properties.models import *
@@ -677,8 +679,14 @@ def confirm_inv_payment(request):
     landlord = Profile.objects.get(user=company)
     print(landlord.hapokash)
 
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+
     URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(landlord.hapokash)
-    r = requests.get(url=URL)
+    r = requests.get(url=URL, headers=headers)
     wallet = r.json()
     print(wallet)
     if wallet['success']:
@@ -694,7 +702,7 @@ def confirm_inv_payment(request):
         if int(wallet['transactions']['last_page']) != 1:
             for i in range(int(trans['last_page']) - 1):
                 URL = wallet['transactions']['next_page_url']
-                r = requests.get(url=URL)
+                r = requests.get(url=URL, headers=headers)
                 wallet = r.json()
                 if wallet['success']:
                     search = wallet['transactions']['data']
@@ -704,6 +712,42 @@ def confirm_inv_payment(request):
                                 return HttpResponse("invoice added")
                             else:
                                 return HttpResponse("Cant save")
+    else:
+        refreshToken()
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(landlord.hapokash)
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+        print(wallet)
+        if wallet['success']:
+            search = wallet['transactions']['data']
+            # print(search)
+            for a in search:
+                print(a)
+                if a['trx_id'] == trans:
+                    if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                        return HttpResponse("invoice added")
+                    else:
+                        return HttpResponse("Cant save")
+            if int(wallet['transactions']['last_page']) != 1:
+                for i in range(int(trans['last_page']) - 1):
+                    URL = wallet['transactions']['next_page_url']
+                    r = requests.get(url=URL, headers=headers)
+                    wallet = r.json()
+                    if wallet['success']:
+                        search = wallet['transactions']['data']
+                        for a in search:
+                            if a['trx_id'] == trans:
+                                if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                                    return HttpResponse("invoice added")
+                                else:
+                                    return HttpResponse("Cant save")
+
     return "Not Found"
 
 

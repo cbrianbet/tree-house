@@ -63,3 +63,11 @@ class Subscriptions(models.Model):
 
     class Meta:
         db_table = "Subscription"
+
+
+class AuthTokens(models.Model):
+    auth = models.CharField(max_length=1500)
+
+
+    class Meta:
+        db_table = "AuthTokens"
