@@ -57,12 +57,17 @@
                                     <br>
                                     <button class="btn btn-animate btn-animate-side btn-success block"
                                             data-target="#examplePositionCenter" data-toggle="modal">
-                                        <span><i class="icon wb-arrow-up" aria-hidden="true"></i> Top up Wallet</span>
+                                        <span><i class="icon wb-arrow-up" aria-hidden="true"></i> Top up Wallet Via Mpesa</span>
+                                    </button>
+                                    <br>
+                                    <button class="btn btn-animate btn-animate-side btn-success block"
+                                            data-target="#card_payment" data-toggle="modal">
+                                        <span><i class="icon wb-arrow-up" aria-hidden="true"></i> Top up Wallet Via Card</span>
                                     </button>
                                     <br>
                                     <button class="btn btn-animate btn-animate-side btn-success block"
                                             data-target="#examplePositionCenter" data-toggle="modal">
-                                        <span><i class="icon wb-arrow-up" aria-hidden="true"></i>Transfer to other wallet</span>
+                                        <span><i class="icon wb-chevron-right" aria-hidden="true"></i>Transfer to other wallet</span>
                                     </button>
                                 </div>
                             </div>
@@ -226,6 +231,49 @@
                     </div>
                 </div>
                 <!-- End Modal -->
+                <!-- Modal -->
+                <div class="modal fade example-modal-lg" id="card_payment" aria-hidden="true"
+                     aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-simple modal-center">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Top up via card</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form id="card-form">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="emailc">Email*</label>
+                                        <input type="email" class="form-control" id="emailc" name="emailc"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="namec">Name*</label>
+                                        <input type="text" class="form-control" id="namec" name="namec"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="phone_noc">Phone Number*</label>
+                                        <input type="tel" class="form-control" id="phone_noc" name="phone_noc"
+                                               required="required">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="amountc">Amount*</label>
+                                        <input type="number" min="1" class="form-control" id="amountc" name="amountc"
+                                               required="required">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Top up</button>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
             </div>
             <!-- End Panel -->
         </div>
@@ -234,9 +282,35 @@
 
 {% endblock %}
 {% block footscripts %}
-<script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
-<script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
 
+    <script>
+        var CardForm = $("#card-form");
+        CardForm.submit(function (e) {
+            e.preventDefault();
+            FlutterwaveCheckout({
+                //public_key: "FLWPUBK_TEST-14d251e0b448f6c8a22134084b798a20-X", //test
+                public_key: "FLWPUBK-e96eebe004986246294db7041123a73b-X", //live
+                tx_ref: "{{profile.hapokash}}",
+                amount: $('#amountc').val(),
+                currency: "KES",
+                country: "KE",
+                payment_options: "card",
+                customer: {
+                    email: $('#emailc').val(),
+                    phone_number: $('#phone_noc').val(),
+                    name: $('#namec').val(),
+                },
+                customizations: {
+                    title: "HapoKash",
+                    description: "Wallet Top Up",
+                    logo: "https://portal.hapokash.app/assets/img/logo.png",
+                },
+            });
+        })
+    </script>
     <script>
         var loginForm = $("#hkpay");
         loginForm.submit(function (e) {

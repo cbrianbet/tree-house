@@ -570,7 +570,6 @@ def refreshToken():
     at.save()
 
 
-
 def hapokash_wallet_transfer(request):
     user = Profile.objects.get(user=request.user)
     invoice = RentInvoice.objects.get(uuid=request.POST.get('invoice'))
@@ -821,6 +820,7 @@ def wall_bal(request):
         'cur_balance': cur_balance,
         'previous_balance': pre_balance,
         'trans': trans,
+        'profile': Profile.objects.get(user=request.user)
     }
     return render(request, 'authapp/wallet.html', context)
 
