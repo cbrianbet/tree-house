@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 
 from authapp.models import Users, Profile, Subscriptions
-from properties.models import Properties, Companies, CompanyProfile, SubscriptionsCompanies
+from properties.models import *
 
 
 @login_required
@@ -75,3 +75,16 @@ def delete_subs(request, uuid):
         return redirect('all-subs')
     except Subscriptions.DoesNotExist():
         raise PermissionDenied
+
+
+@login_required
+def tenant_list(request, id):
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
+        comp = CompanyProfile.objects.get(user=request.user).company
+        units = Unit.objects.filter(property__company=comp, unit_status="Occupied", property_id=id)
+        t = TenantHistory.objects.filter(end_date=None, curr_unit__in=units)
+        context = {
+            'user': request.user,
+            'list': t,
+        }
+        return render(request, 'reports/tenant_list.html', context)
