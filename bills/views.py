@@ -603,7 +603,7 @@ def stkpush(request):
     else:
         mobile = user.msisdn
 
-    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
     r = requests.post(url=URL, json={"shortcode": "5061001","msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
@@ -625,7 +625,7 @@ def stkpushinv(request):
     else:
         mobile = user.msisdn
 
-    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
     r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
@@ -642,12 +642,60 @@ def stkpushtopup(request):
     else:
         mobile = request.POST.get('mobile')
 
-    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
     print(mobile)
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
     r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": user.hapokash}, headers=headers_dict)
     wallet = r.json()
+    print(wallet)
+    return HttpResponse('success')
+
+
+def hapowithdraw(request):
+    user = Profile.objects.get(user=request.user)
+
+    if request.POST.get('mobile').startswith('0'):
+        mobile ='254' + request.POST.get('mobile')[1:]
+    else:
+        mobile = request.POST.get('mobile')
+
+    URL = "https://portal.hapokash.app/api/wallet/withdraw"
+    print(mobile)
+
+    bod_data = {
+        "wallet_id":user.hapokash,
+        "amount": request.POST.get('amount'),
+        "msisdn":mobile,
+        "narration":"Withdrawal to {}".format(mobile)
+    }
+
+    headers_dict = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+    r = requests.post(url=URL, json=bod_data, headers=headers_dict)
+    wallet = r.json()
+    if not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        bod_data = {
+            "wallet_id": user.hapokash,
+            "amount": request.POST.get('amount'),
+            "msisdn": mobile,
+            "narration": "Withdrawal to {}".format(mobile)
+        }
+
+        headers_dict = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        r = requests.post(url=URL, json=bod_data, headers=headers_dict)
+        wallet = r.json()
+    elif not wallet['success']:
+        return HttpResponse(wallet['message'])
+
     print(wallet)
     return HttpResponse('success')
 
@@ -658,7 +706,7 @@ def stkpushreg(request):
     if mobile.startswith('0'):
         mobile ='254' + mobile[1:]
 
-    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
     r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": 17}, headers=headers_dict)

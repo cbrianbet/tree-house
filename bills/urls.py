@@ -18,6 +18,7 @@ urlpatterns = [
     path('bills/payment/stkpush', views.stkpush, name='stkpush-payrent'),
     path('bills/payment/stkpushinv', views.stkpushinv, name='stkpush-inv'),
     path('bills/payment/stkpush/wallet', views.stkpushtopup, name='stkpush-topup'),
+    path('bills/payment/wallet/withdraw', views.hapowithdraw, name='withdraw-wallet'),
     path('bills/payment/stkpush/subs', views.stkpushreg, name='stkpush-reg'),
     path('bills/payment/confirm/inv', views.confirm_inv_payment, name='confirm-inv'),
     path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),

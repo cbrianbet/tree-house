@@ -212,12 +212,18 @@
                             </div>
                             <div class="modal-body">
                                 <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                                <form id="hkpay">
+                                <form id="hkwith" method="post" action="{% url 'withdraw-wallet' %}">
                                     {% csrf_token %}
                                     <div class="form-group">
                                         <label class="form-control-label" for="amount">Amount*</label>
-                                        <input type="text" class="form-control" id="amount" name="amount"
-                                               required="required">
+                                        <small>Your wallet balance is {{ cur_balance }}</small>
+                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control" id="amount" name="amount"
+                                               required="required" placeholder="Ksh. 10 is the least amount you can withdraw">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="amount">Mobile*</label>
+                                        <input type="text" class="form-control" id="mobile" name="mobile"
+                                               required="required" placeholder="0700000000">
                                     </div>
 
                                     <button type="submit" class="btn btn-success">Withdraw</button>
@@ -398,6 +404,53 @@
                             showConfirmButton: true,
                         });
                         $('#examplePositionCenter').modal('hide');
+                    }
+                },
+                error: function (er) {
+                    swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+                }
+            });
+
+        });
+
+        var withdraw = $("#hkwith");
+        withdraw.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "success") {
+                        swal({
+                            title: 'Transaction Successful!!',
+                            text: 'Withdrawal is being processed',
+                            type: "success",
+                            showConfirmButton: true,
+                        });
+
+                    } else {
+                        console.log(data)
+                        swal({
+                            title: 'Something went wrong!!',
+                            text: data,
+                            type: "error",
+                            showConfirmButton: true,
+                        });
                     }
                 },
                 error: function (er) {
