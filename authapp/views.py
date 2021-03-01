@@ -332,6 +332,7 @@ def suspend_company(request, uid):
 
 
 @login_required
+@csrf_exempt
 def delete_company(request, uid):
     if not request.user.acc_type.id == 1:
         raise PermissionDenied
