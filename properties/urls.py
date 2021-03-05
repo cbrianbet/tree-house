@@ -14,6 +14,7 @@ urlpatterns = [
     path('property/units/edit/<uuid:u_uid>', views.edit_units, name='unit-edit'),
     path('property/units/tenant/add/<uuid:u_uid>', views.add_tenant, name='tenant-add'),
     path('property/units/tenant/<uuid:u_uid>', views.view_tenant, name='view-tenant'),
+    path('property/tenant/remove/<uuid:u_uid>', views.remove_tenant, name='remove-tenant'),
     path('property/view/<uuid:p_id>', views.view_prop, name='view-prop'),
     path('property/edit/<uuid:p_id>', views.properties_edit, name='edit-prop'),
     path('property/units/tenant/swap/<uuid:u_uid>', views.swap_tenant, name='swap-tenant'),

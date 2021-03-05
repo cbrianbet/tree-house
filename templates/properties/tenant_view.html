@@ -156,6 +156,10 @@
                            class="btn btn-animate btn-animate-side btn-secondary">
                             <span><i class="icon wb-book" aria-hidden="true"></i> Bills</span>
                         </a>
+                        <a href="{% url 'remove-tenant' u_uid=t.uuid %}"
+                           class="btn btn-animate btn-animate-side btn-danger">
+                            <span><i class="icon wb-close" aria-hidden="true"></i> Remove Tenant</span>
+                        </a>
                     </div>
                 </div>
             </div>

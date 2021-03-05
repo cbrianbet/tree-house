@@ -36,19 +36,17 @@ def properties_list(request):
             raise PermissionDenied
         prop = PropertyStaff.objects.filter(user=request.user).values_list('property__uuid', flat=True)
         p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company, uuid__in=prop)
-        queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
-            count=Count('unit__property__uuid')).order_by(
-            'unit__property__uuid')
+        th = TenantHistory.objects.filter(curr_unit__property__in=p, end_date=None).values('curr_unit__property__uuid').annotate(
+            count=Count('curr_unit__property__uuid')).order_by('curr_unit__property__uuid')
 
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
-        queryset1 = Tenant.objects.filter(unit__property__in=p).values('unit__property__uuid').annotate(
-            count=Count('unit__property__uuid')).order_by(
-            'unit__property__uuid')
+        th = TenantHistory.objects.filter(curr_unit__property__in=p, end_date=None).values('curr_unit__property__uuid').annotate(
+            count=Count('curr_unit__property__uuid')).order_by('curr_unit__property__uuid')
 
     tenants = {}
-    for entry in queryset1:
-        tenants.update({entry['unit__property__uuid']: entry['count']})
+    for entry in th:
+        tenants.update({entry['curr_unit__property__uuid']: entry['count']})
     print(tenants)
     context = {
         'prop': p,
@@ -423,7 +421,7 @@ def add_tenant(request, u_uid):
                                               Properties.objects.get(id=unit.property.id).property_name)
             # inv.save()
 
-    if Tenant.objects.filter(unit=unit).exists():
+    if TenantHistory.objects.filter(curr_unit=unit, end_date=None).exists():
         return redirect('view-tenant', u_uid=unit.uuid)
 
     context = {
@@ -526,6 +524,22 @@ def view_tenant(request, u_uid):
         'history': TenantHistory.objects.filter(tenant=prop),
     }
     return render(request, 'properties/tenant_view.html', context)
+
+
+@login_required
+@unsubscribed_user
+def remove_tenant(request, u_uid):
+    if request.user.acc_type.id == 5:
+        if not request.user.has_perm('properties.view_tenant'):
+            raise PermissionDenied
+    prop = TenantHistory.objects.get(tenant__uuid=u_uid, end_date=None)
+    prop.end_date = datetime.date.today()
+    prop.save()
+    unit = Unit.objects.get(id=prop.curr_unit.id)
+    unit.unit_status = "Vacant"
+    unit.save()
+
+    return redirect('unit-list', u_uid=unit.property.uuid)
 
 
 @login_required
