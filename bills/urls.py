@@ -22,5 +22,6 @@ urlpatterns = [
     path('bills/payment/stkpush/subs', views.stkpushreg, name='stkpush-reg'),
     path('bills/payment/confirm/inv', views.confirm_inv_payment, name='confirm-inv'),
     path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),
+    path('wallet/transfer', views.wallet_transfer, name='wallet-transfer'),
 
 ]

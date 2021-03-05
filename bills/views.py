@@ -825,3 +825,43 @@ def add_trans(uuid, trx, am, user):
             except RentInvoice.DoesNotExist:
                 return False
 
+
+def wallet_transfer(request):
+    user = Profile.objects.get(user=request.user)
+
+    URL = "https://portal.hapokash.app/api/wallet/transfer"
+    PARAMS = {
+        "debit_wallet_id": user.hapokash,
+        "credit_wallet_id": request.POST.get('wallet'),
+        "amount": request.POST.get('amount'),
+        "narration": "Wallet Transfer"
+    }
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+    ra = requests.post(url=URL, json=PARAMS, headers=headers).json()
+    print(ra)
+    if ra['success']:
+        return HttpResponse('success')
+    elif not ra['success'] and ra['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/transfer"
+        PARAMS = {
+            "debit_wallet_id": user.hapokash,
+            "credit_wallet_id": request.POST.get('wallet'),
+            "amount": request.POST.get('amount'),
+            "narration": "Wallet Transfer"
+        }
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        ra = requests.post(url=URL, json=PARAMS, headers=headers).json()
+        print(ra)
+        if ra['success']:
+            return HttpResponse('success')
+    else:
+        return HttpResponse(ra['message'])

@@ -66,7 +66,7 @@
                                     </button>
                                     <br>
                                     <button class="btn btn-animate btn-animate-side block" style="background: rgba(218,165,32, 1); color:white;"
-                                            data-target="#examplePositionCenter" data-toggle="modal">
+                                            data-target="#transfer" data-toggle="modal">
                                         <span><i class="icon wb-chevron-right" aria-hidden="true"></i>Transfer to other wallet</span>
                                     </button>
                                 </div>
@@ -227,6 +227,44 @@
                                     </div>
 
                                     <button type="submit" class="btn btn-success">Withdraw</button>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
+                <!-- Modal -->
+                <div class="modal fade example-modal-lg" id="transfer" aria-hidden="true"
+                     aria-labelledby="examplePositionCenter"
+                     role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-simple modal-center">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Wallet transfer</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h6>Wallet balance KSH. {{ cur_balance }}</h6>
+                                <form id="walltrans" method="post" action="{% url 'wallet-transfer' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="amount">Amount*</label>
+                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control" id="amount" name="amount"
+                                               required="required" placeholder="Amount">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="wallet">Wallet ID*</label>
+                                        <input type="number" class="form-control" id="wallet" name="wallet"
+                                               required="required" placeholder="Wallet ID">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Transfer</button>
                                 </form>
 
                             </div>
@@ -455,6 +493,56 @@
                 },
                 error: function (er) {
                     swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+                }
+            });
+
+        });
+    </script>
+    <script>
+        var Trans = $("#walltrans");
+        Trans.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "success") {
+                        swal({
+                            title: 'Success',
+                            text: 'Transfer successfull',
+                            type: "info",
+                            showConfirmButton: true,
+                        });
+                        $('#transfer').modal('hide');
+                        window.reload();
+
+                    } else {
+                        swal({
+                            title: 'Error!!',
+                            text: data,
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log("error");
+                    swal('Error!!', 'Something went wrong!!', 'error');
                 }
             });
 
