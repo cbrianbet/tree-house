@@ -403,6 +403,7 @@ def profile(request):
     elif user.acc_type.id == 3 or user.acc_type.id == 2:
         profile = Profile.objects.get(user=user)
         comp = CompanyProfile.objects.get(user=profile.user)
+        subs = SubscriptionsCompanies.objects.filter(company=comp.company).order_by('date_end')[0]
 
         if request.method == "POST":
             if not request.user.check_password(request.POST.get('password')):
@@ -416,6 +417,7 @@ def profile(request):
             'user': user,
             'profile': profile,
             'comp': comp,
+            'subs': subs,
         }
 
         return render(request, 'authapp/companyprofile.html', context)

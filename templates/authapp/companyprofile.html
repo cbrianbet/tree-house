@@ -28,6 +28,7 @@
                             </a>
                             <h4 class="profile-user">{{ profile.first_name }} {{ profile.last_name }}</h4>
                             <p class="profile-job">{{ profile.user.acc_type.acc_type }}</p>
+                            <h4 class="profile-user">Hapokash ID: {{ profile.hapokash }}</h4>
                             <p></p>
 
 
@@ -240,6 +241,10 @@
                                 <div class="tab-pane animation-slide-left" id="sub" role="tabpanel">
 
                                     <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
+                                        <p class="profile-job">Current subscription: <b>{{ subs.subs.description }}</b></p>
+                                        <p class="profile-job">Start Date: <b>{{ subs.date_started }}</b></p>
+                                        <p class="profile-job">End Date: <b>{{ subs.date_end }}</b></p>
+
                                     </div>
                                 </div>
                             </div>
