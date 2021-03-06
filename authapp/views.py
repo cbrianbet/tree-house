@@ -21,7 +21,7 @@ from authapp.forms import LoginForm
 from authapp.models import *
 from bills.models import *
 from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies, Properties, BankAcc, \
-    PaymentPaybill, PaymentTill
+    PaymentPaybill, PaymentTill, TransactionCodes
 from tree_house import settings
 
 
@@ -872,6 +872,9 @@ def confirm_payment(request):
     }
 
     r = requests.get(url=URL, headers=headers)
+    past_trx =TransactionCodes.objects.filter(trx=trans)
+    if past_trx.exists():
+        return HttpResponse("Exists")
 
     wallet = r.json()
     print(wallet)
@@ -888,6 +891,8 @@ def confirm_payment(request):
                         date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                     )
                     sub.save()
+                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
+                    past_trx.save()
                 except:
                     print("wrong")
                 return HttpResponse(reverse('logout'))
@@ -908,6 +913,8 @@ def confirm_payment(request):
                                                         Subscriptions.objects.get(uuid=uuid).duration)
                                 )
                                 sub.save()
+                                past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
+                                past_trx.save()
                             except:
                                 print("wrong")
                             return HttpResponse(reverse('logout'))
@@ -936,6 +943,8 @@ def confirm_payment(request):
                             date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                         )
                         sub.save()
+                        past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
+                        past_trx.save()
                     except:
                         print("wrong")
                     return HttpResponse(reverse('logout'))
@@ -957,6 +966,8 @@ def confirm_payment(request):
                                                             Subscriptions.objects.get(uuid=uuid).duration)
                                     )
                                     sub.save()
+                                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
+                                    past_trx.save()
                                 except:
                                     print("wrong")
                                 return HttpResponse(reverse('logout'))
@@ -976,6 +987,10 @@ def confirm_payment_renew(request):
     }
 
     r = requests.get(url=URL, headers=headers)
+    past_trx =TransactionCodes.objects.filter(trx=trans)
+    if past_trx.exists():
+        return HttpResponse("Exists")
+
     wallet = r.json()
     if wallet['success']:
         search = wallet['transactions']['data']
@@ -988,6 +1003,11 @@ def confirm_payment_renew(request):
                     sub.date_started = date.today()
                     sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                     sub.save()
+                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
+                    past_trx.save()
+
+                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                    past_trx.save()
                 except:
                     print("wrong")
                 return HttpResponse(reverse('logout'))
@@ -1005,6 +1025,8 @@ def confirm_payment_renew(request):
                                 sub.date_started = date.today()
                                 sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                                 sub.save()
+                                past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                                past_trx.save()
                             except:
                                 print("wrong")
                             return HttpResponse(reverse('logout'))
@@ -1033,6 +1055,8 @@ def confirm_payment_renew(request):
                         sub.date_started = date.today()
                         sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                         sub.save()
+                        past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                        past_trx.save()
                     except:
                         print("wrong")
                     return HttpResponse(reverse('logout'))
@@ -1052,6 +1076,8 @@ def confirm_payment_renew(request):
                                     sub.date_end = add_months(datetime.date.today(),
                                                               Subscriptions.objects.get(uuid=uuid).duration)
                                     sub.save()
+                                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                                    past_trx.save()
                                 except:
                                     print("wrong")
                                 return HttpResponse(reverse('logout'))

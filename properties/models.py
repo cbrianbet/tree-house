@@ -174,7 +174,7 @@ class SubscriptionsCompanies(models.Model):
 
 class TransactionCodes(models.Model):
     trx = models.CharField(max_length=20)
-    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="trx_created_by")
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="trx_created_by", null=True)
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="trx_updated_by", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

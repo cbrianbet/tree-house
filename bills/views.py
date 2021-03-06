@@ -735,6 +735,9 @@ def confirm_inv_payment(request):
 
     URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(landlord.hapokash)
     r = requests.get(url=URL, headers=headers)
+    past_trx =TransactionCodes.objects.filter(trx=trans)
+    if past_trx.exists():
+        return HttpResponse("Exists")
     wallet = r.json()
     print(wallet)
     if wallet['success']:
@@ -744,6 +747,8 @@ def confirm_inv_payment(request):
             print(a)
             if a['trx_id'] == trans:
                 if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                    past_trx.save()
                     return HttpResponse("invoice added")
                 else:
                     return HttpResponse("Cant save")
@@ -757,6 +762,8 @@ def confirm_inv_payment(request):
                     for a in search:
                         if a['trx_id'] == trans:
                             if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                                past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                                past_trx.save()
                                 return HttpResponse("invoice added")
                             else:
                                 return HttpResponse("Cant save")
@@ -779,6 +786,8 @@ def confirm_inv_payment(request):
                 print(a)
                 if a['trx_id'] == trans:
                     if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                        past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                        past_trx.save()
                         return HttpResponse("invoice added")
                     else:
                         return HttpResponse("Cant save")
@@ -792,6 +801,8 @@ def confirm_inv_payment(request):
                         for a in search:
                             if a['trx_id'] == trans:
                                 if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                                    past_trx.save()
                                     return HttpResponse("invoice added")
                                 else:
                                     return HttpResponse("Cant save")
