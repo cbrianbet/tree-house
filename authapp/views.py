@@ -714,7 +714,9 @@ def subsPick(request):
         if prof.startswith('0'):
             mobile = '254' + prof[1:]
         elif prof.startswith('1') or prof.startswith('7'):
-            mobile = '254' + prof[1:]
+            mobile = '254' + prof
+        elif prof.startswith('+'):
+            mobile = prof[1:]
         else:
             mobile = prof
 
