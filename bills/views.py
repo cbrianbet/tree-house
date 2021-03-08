@@ -596,17 +596,22 @@ def stkpush(request):
     print(company)
 
     landlord = Profile.objects.get(user=company)
+    mo  = user.msisdn
 
     print(landlord.hapokash)
     if user.msisdn.startswith('0'):
         mobile ='254' + user.msisdn[1:]
+    elif mo.startswith('1') or mo.startswith('7'):
+        mobile = '254' + mo
+    elif mo.startswith('+'):
+        mobile = mo[1:]
     else:
-        mobile = user.msisdn
+        mobile = mo
 
     URL = "https://portal.hapokash.app/api/wallet/top_up"
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, json={"shortcode": "5061001","msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
+    r = requests.post(url=URL, json={"msisdn": mobile, "amount": request.POST.get('amount'), "account_no": landlord.hapokash}, headers=headers_dict)
     wallet = r.text
     print(wallet)
 

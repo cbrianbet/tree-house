@@ -720,13 +720,12 @@ def subsPick(request):
         else:
             mobile = prof
 
-        URL = "https://sfcapis.hapokash.app/cash_stk.php"
+        URL = "https://portal.hapokash.app/api/wallet/top_up"
 
         headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-        r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": int(subsc.value), "account_no": 17},
+        r = requests.post(url=URL, json={"msisdn": mobile, "amount": int(subsc.value), "account_no": 17},
                           headers=headers_dict)
-        wallet = r.json()
-        print(wallet)
+        print(r.json())
     return render(request, 'authapp/subscriptions.html', {'subs': subs, 'user': request.user, 'comp': company_end})
 
 
@@ -1089,13 +1088,15 @@ def stkpushreg(mo, am):
         mobile = '254' + mo[1:]
     elif mo.startswith('1') or mo.startswith('7'):
         mobile = '254' + mo
+    elif mo.startswith('+'):
+        mobile = mo[1:]
     else:
         mobile = mo
 
-    URL = "https://sfcapis.hapokash.app/cash_stk.php"
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": int(am), "account_no": 17},
+    r = requests.post(url=URL, json={"msisdn": mobile, "amount": int(am), "account_no": 17},
                       headers=headers_dict)
     wallet = r.json()
     print(wallet)
