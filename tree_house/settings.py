@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.chatbot',
     'rest_framework',
+    'crispy_forms',
 
     'authapp',
     'properties',

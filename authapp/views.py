@@ -7,12 +7,17 @@ import requests
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as log_in, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count, Sum
+from django.core.mail import send_mail, BadHeaderError
+from django.db.models import Count, Sum, Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from psycopg2._psycopg import IntegrityError
 
@@ -101,7 +106,6 @@ def dashboard(request):
 
             if wallet['success']:
                 cur_balance = wallet['wallet']['current_balance']
-
 
             # return HttpResponse(wallet)
 
@@ -568,7 +572,7 @@ def refreshToken():
     }
 
     response = requests.request("POST", url, headers=headers, data=payload).json()
-    at =AuthTokens.objects.get(id=1)
+    at = AuthTokens.objects.get(id=1)
     at.auth = response['access_token']
     at.save()
 
@@ -871,7 +875,7 @@ def confirm_payment(request):
     }
 
     r = requests.get(url=URL, headers=headers)
-    past_trx =TransactionCodes.objects.filter(trx=trans)
+    past_trx = TransactionCodes.objects.filter(trx=trans)
     if past_trx.exists():
         return HttpResponse("Exists")
 
@@ -886,8 +890,8 @@ def confirm_payment(request):
                 try:
                     sub = SubscriptionsCompanies.objects.create(
                         company=CompanyProfile.objects.get(user=Users.objects.get(username=u_name)).company,
-                        date_started= date.today(), subs=Subscriptions.objects.get(uuid=uuid),
-                        date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
+                        date_started=date.today(), subs=Subscriptions.objects.get(uuid=uuid),
+                        date_end=add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                     )
                     sub.save()
                     past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
@@ -912,7 +916,8 @@ def confirm_payment(request):
                                                         Subscriptions.objects.get(uuid=uuid).duration)
                                 )
                                 sub.save()
-                                past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
+                                past_trx = TransactionCodes.objects.create(trx=trans,
+                                                                           created_by=Users.objects.get(id=1))
                                 past_trx.save()
                             except:
                                 print("wrong")
@@ -965,7 +970,8 @@ def confirm_payment(request):
                                                             Subscriptions.objects.get(uuid=uuid).duration)
                                     )
                                     sub.save()
-                                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=Users.objects.get(id=1))
+                                    past_trx = TransactionCodes.objects.create(trx=trans,
+                                                                               created_by=Users.objects.get(id=1))
                                     past_trx.save()
                                 except:
                                     print("wrong")
@@ -986,7 +992,7 @@ def confirm_payment_renew(request):
     }
 
     r = requests.get(url=URL, headers=headers)
-    past_trx =TransactionCodes.objects.filter(trx=trans)
+    past_trx = TransactionCodes.objects.filter(trx=trans)
     if past_trx.exists():
         return HttpResponse("Exists")
 
@@ -998,7 +1004,8 @@ def confirm_payment_renew(request):
             print(a)
             if a['trx_id'] == trans:
                 try:
-                    sub = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company)
+                    sub = SubscriptionsCompanies.objects.get(
+                        company=CompanyProfile.objects.get(user=request.user).company)
                     sub.date_started = date.today()
                     sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
                     sub.save()
@@ -1020,9 +1027,11 @@ def confirm_payment_renew(request):
                     for a in search:
                         if a['trx_id'] == trans:
                             try:
-                                sub = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company)
+                                sub = SubscriptionsCompanies.objects.get(
+                                    company=CompanyProfile.objects.get(user=request.user).company)
                                 sub.date_started = date.today()
-                                sub.date_end = add_months(datetime.date.today(), Subscriptions.objects.get(uuid=uuid).duration)
+                                sub.date_end = add_months(datetime.date.today(),
+                                                          Subscriptions.objects.get(uuid=uuid).duration)
                                 sub.save()
                                 past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
                                 past_trx.save()
@@ -1107,3 +1116,35 @@ def acc_terms(request):
     tenant.accept_terms = True
     tenant.save()
     return redirect('dashboard')
+
+
+def password_reset_request(request):
+    if request.method == "POST":
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_users = Users.objects.filter(Q(email=data))
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "Password Reset Requested"
+                    email_template_name = "password/password_reset_email.txt"
+                    c = {
+                        "email": user.email,
+                        'domain': 'mnestafrica.com',
+                        'site_name': 'MNEST',
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "user": user,
+                        'token': default_token_generator.make_token(user),
+                        'protocol': 'https',
+                    }
+                    email = render_to_string(email_template_name, c)
+                    try:
+                        send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
+                    except BadHeaderError:
+                        return HttpResponse('Invalid header found.')
+                    return redirect("/password_reset/done/")
+
+            else:
+                messages.error(request, 'An invalid email has been entered.')
+    password_reset_form = PasswordResetForm()
+    return render(request=request, template_name="password/password_reset.html", context={"password_reset_form": password_reset_form})
