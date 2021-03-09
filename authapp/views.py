@@ -1123,10 +1123,10 @@ def password_reset_request(request):
         password_reset_form = PasswordResetForm(request.POST)
         if password_reset_form.is_valid():
             data = password_reset_form.cleaned_data['email']
-            associated_users = Users.objects.filter(Q(email=data))
+            associated_users = Users.objects.filter(Q(email=data, is_active=True))
             if associated_users.exists():
                 for user in associated_users:
-                    subject = "Password Reset Requested"
+                    subject = "Password Reset Requested for {}".format(user.username)
                     email_template_name = "password/password_reset_email.txt"
                     c = {
                         "email": user.email,
