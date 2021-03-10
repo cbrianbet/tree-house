@@ -991,6 +991,8 @@ def generate_vacate_notice(request):
 @login_required
 @unsubscribed_user
 def inspection_report(request, id):
+    if  request.user.acc_type.id == 4:
+        raise PermissionDenied
     user = request.user
     vac = VacateNotice.objects.get(id=id)
     if request.method == "POST":
