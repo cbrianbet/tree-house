@@ -994,7 +994,7 @@ def inspection_report(request, id):
     user = request.user
     vac = VacateNotice.objects.get(id=id)
     if request.method == "POST":
-        fault = request.POST.get('fault')
+        fault = request.POST.get('faults')
         charge = request.POST.get('charges')
 
         insp = InspectionReport.objects.create(faults=fault, charges=charge, created_by=user, notice=vac)

@@ -143,16 +143,16 @@ def invoice_info(request, i_id):
                 try:
                     pay_item = InvoiceItemsTransaction.objects.create(
                         created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
-                        transaction_code=trans[i], waiver=waiver,
-                        amount_paid=float(amount[i]), payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
+                        transaction_code=trans[i], waiver=waiver, amount_paid=float(amount[i]), payment_mode=payment[i],
+                        remarks=remar[i], date_paid=datepaid[i]
                     )
 
                     pay_item.save()
                 except:
                     pay_item = RentItemTransaction.objects.create(
                         created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]),
-                        transaction_code=trans[i],
-                        amount_paid=float(amount[i]), payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i]
+                        transaction_code=trans[i], waiver=waiver, amount_paid=float(amount[i]), payment_mode=payment[i],
+                        remarks=remar[i], date_paid=datepaid[i]
                     )
 
                     pay_item.save()
