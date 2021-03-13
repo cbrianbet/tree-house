@@ -25,8 +25,8 @@
                 <div class="col-xl-5 col-12">
                     <form action="{% url 'dashboard' %}" method="post">
                         {% csrf_token %}
-                        <label>For: </label>
-                        <input type="month" id="start" name="month"  value="{{ date_now }}" max="{{ date_now }}">
+                        <label for="start">For: </label>
+                        <input type="month" id="start" name="month"  value="{{ date_now }}" max="{{ datenow }}">
                         <button type="submit" class="btn btn-primary">Filter</button>
                     </form>
                 </div>

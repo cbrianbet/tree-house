@@ -179,6 +179,8 @@ def dashboard(request):
         else:
             year = request.POST.get('month').split('-')[0]
             month = request.POST.get('month').split('-')[1]
+        month_now = datetime.date.today().month
+        year_now = datetime.date.today().year
 
         prop = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
         unit = Unit.objects.filter(property__in=prop)
@@ -226,6 +228,7 @@ def dashboard(request):
             'req': req.count(),
             'oreq': oreq.count(),
             'date_now': '{}-{}'.format(year, str('%02d' % int(month))),
+            'datenow': '{}-{}'.format(year_now, str('%02d' % int(month_now))),
             'paid': paid['amount_paid__sum'] + unpaid1['amount_paid__sum'],
             'due_to_pay': unpaid['amount__sum'] - unpaid1['amount_paid__sum'],
         }

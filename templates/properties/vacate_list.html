@@ -46,65 +46,158 @@
                 <header class="panel-heading">
                     <h3 class="panel-title"></h3>
                 </header>
-                <div class="panel-body">
 
-                    <div class="tab-pane" role="tabpanel">
+                <div class="example-wrap">
+                    <div class="nav-tabs-horizontal" data-plugin="tabs">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" data-toggle="tab" href="#exampleTabsIconOne"
+                                   aria-controls="exampleTabsIconOne" role="tab">
+                                    <i class="icon wb-list-numbered m-1" aria-hidden="true"></i> Pending Requests
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" data-toggle="tab" href="#exampleTabsIconTwo"
+                                   aria-controls="exampleTabsIconTwo" role="tab">
+                                    <i class="icon wb-list-numbered m-1" aria-hidden="true"></i> Approved Requests
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content pt-15">
+                            <div class="tab-pane active" id="exampleTabsIconOne" role="tabpanel">
+                                <div class="panel-body">
 
-                        <table class="table table-hover dataTable table-striped w-full"
-                               id="exampleTableTools">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Date to Vacate</th>
-                                <th>Tenant</th>
-                                <th>Unit</th>
-                                <th>Property</th>
-                                <th>Created at</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tfoot>
-                            <tr>
-                                <th>#</th>
-                                <th>Date to Vacate</th>
-                                <th>Tenant</th>
-                                <th>Unit</th>
-                                <th>Property</th>
-                                <th>Created at</th>
-                                <th></th>
-                            </tr>
-                            </tfoot>
-                            <tbody>
-                            {% for b in list %}
+                                    <div class="tab-pane" role="tabpanel">
 
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ b.vacate_date }}</td>
-                                    <td>{{ b.notice_from.profile.user.username }}</td>
-                                    <td>{{ b.unit.unit_name }}</td>
-                                    <td>{{ b.unit.property.property_name }}</td>
-                                    <td>{{ b.created_at }}</td>
+                                        <table class="table table-hover dataTable table-striped w-full"
+                                               id="exampleTableTools">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date to Vacate</th>
+                                                <th>Tenant</th>
+                                                <th>Unit</th>
+                                                <th>Property</th>
+                                                <th>Created at</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tfoot>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date to Vacate</th>
+                                                <th>Tenant</th>
+                                                <th>Unit</th>
+                                                <th>Property</th>
+                                                <th>Created at</th>
+                                                <th></th>
+                                            </tr>
+                                            </tfoot>
+                                            <tbody>
+                                            {% for b in list %}
 
-                                    <td>
-                                        <a class="btn btn-primary" href="{% url 'ins-report' id=b.id %}" >
-                                            <i class="icon wb-chevron-left" aria-hidden="true"></i>
-                                            <span class="hidden-sm-down">Inspection Report</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ b.vacate_date }}</td>
+                                                    <td>{{ b.notice_from.profile.user.username }}</td>
+                                                    <td>{{ b.unit.unit_name }}</td>
+                                                    <td>{{ b.unit.property.property_name }}</td>
+                                                    <td>{{ b.created_at }}</td>
 
-                            </tbody>
-                        </table>
+                                                    <td>
+                                                        <a class="btn btn-primary"
+                                                           href="{% url 'ins-report' id=b.id %}">
+                                                            <i class="icon wb-chevron-left" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Inspection Report</span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-primary"
+                                                           href="{% url 'ins-report' id=b.id %}">
+                                                            <i class="icon wb-chevron-left" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Inspection Report</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="exampleTabsIconTwo" role="tabpanel">
+                                <!-- Panel Table Tools -->
+                                <div class="panel-body">
+
+                                    <div class="tab-pane" role="tabpanel">
+
+                                        <table class="table table-hover dataTable table-striped w-full"
+                                               id="exampleTableTools">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date to Vacate</th>
+                                                <th>Tenant</th>
+                                                <th>Unit</th>
+                                                <th>Property</th>
+                                                <th>Created at</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tfoot>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date to Vacate</th>
+                                                <th>Tenant</th>
+                                                <th>Unit</th>
+                                                <th>Property</th>
+                                                <th>Created at</th>
+                                                <th></th>
+                                            </tr>
+                                            </tfoot>
+                                            <tbody>
+                                            {% for b in list %}
+
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ b.vacate_date }}</td>
+                                                    <td>{{ b.notice_from.profile.user.username }}</td>
+                                                    <td>{{ b.unit.unit_name }}</td>
+                                                    <td>{{ b.unit.property.property_name }}</td>
+                                                    <td>{{ b.created_at }}</td>
+
+                                                    <td>
+                                                        <a class="btn btn-primary"
+                                                           href="{% url 'ins-report' id=b.id %}">
+                                                            <i class="icon wb-chevron-left" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Inspection Report</span>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-primary"
+                                                           href="{% url 'ins-report' id=b.id %}">
+                                                            <i class="icon wb-chevron-left" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Inspection Report</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <!-- End Panel Table Tools -->
+
                 </div>
             </div>
-            <!-- End Panel Table Tools -->
-
+            <!-- End Page -->
         </div>
     </div>
-    <!-- End Page -->
-
 {% endblock %}
 
 
