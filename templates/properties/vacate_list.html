@@ -112,10 +112,10 @@
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a class="btn btn-primary"
-                                                           href="{% url 'ins-report' id=b.id %}">
-                                                            <i class="icon wb-chevron-left" aria-hidden="true"></i>
-                                                            <span class="hidden-sm-down">Inspection Report</span>
+                                                        <a class="btn btn-success"
+                                                           href="{% url 'app-vac-req' id=b.id %}">
+                                                            <i class="icon wb-add-file" aria-hidden="true"></i>
+                                                            <span class="hidden-sm-down">Approve Request</span>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -142,7 +142,8 @@
                                                 <th>Unit</th>
                                                 <th>Property</th>
                                                 <th>Created at</th>
-                                                <th></th>
+                                                <th>Approved at</th>
+                                                <th> </th>
                                             </tr>
                                             </thead>
                                             <tfoot>
@@ -153,11 +154,12 @@
                                                 <th>Unit</th>
                                                 <th>Property</th>
                                                 <th>Created at</th>
-                                                <th></th>
+                                                <th>Approved at</th>
+                                                <th> </th>
                                             </tr>
                                             </tfoot>
                                             <tbody>
-                                            {% for b in list %}
+                                            {% for b in vac_app %}
 
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
@@ -166,14 +168,8 @@
                                                     <td>{{ b.unit.unit_name }}</td>
                                                     <td>{{ b.unit.property.property_name }}</td>
                                                     <td>{{ b.created_at }}</td>
+                                                    <td>{{ b.updated_at }}</td>
 
-                                                    <td>
-                                                        <a class="btn btn-primary"
-                                                           href="{% url 'ins-report' id=b.id %}">
-                                                            <i class="icon wb-chevron-left" aria-hidden="true"></i>
-                                                            <span class="hidden-sm-down">Inspection Report</span>
-                                                        </a>
-                                                    </td>
                                                     <td>
                                                         <a class="btn btn-primary"
                                                            href="{% url 'ins-report' id=b.id %}">

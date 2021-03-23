@@ -31,6 +31,7 @@ urlpatterns = [
     path('vacate/letter', views.generate_vacate_notice, name='generate-vacate-request'),
     path('vacate/list', views.vacate_list, name='vacate-list'),
     path('inspection/report/<int:id>', views.inspection_report, name='ins-report'),
+    path('vac/approve/<int:id>', views.approve_vac, name='app-vac-req'),
     path('documnets', views.document, name='documents'),
     path('documnet/lease', views.document_lease, name='document-lease'),
     path('documnet/vacate', views.document_vacate, name='document-vacate'),

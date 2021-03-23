@@ -995,6 +995,7 @@ def inspection_report(request, id):
         raise PermissionDenied
     user = request.user
     vac = VacateNotice.objects.get(id=id)
+
     if request.method == "POST":
         fault = request.POST.get('faults')
         charge = request.POST.get('charges')
@@ -1002,11 +1003,33 @@ def inspection_report(request, id):
         insp = InspectionReport.objects.create(faults=fault, charges=charge, created_by=user, notice=vac)
         insp.save()
 
+    if vac.status:
+        insp = InspectionReport.objects.filter(notice=vac)
+        context = {
+            'user': user,
+            'id': id,
+            'ins': insp
+        }
+        return render(request, 'properties/insp_report_past.html', context)
+
     context = {
         'user': user,
         'id': id
     }
     return render(request, 'properties/inspection_report.html', context)
+
+
+@login_required
+@unsubscribed_user
+def approve_vac(request, id):
+    if  request.user.acc_type.id == 4:
+        raise PermissionDenied
+
+    vac = VacateNotice.objects.get(id=id)
+    vac.status =True
+    vac.save()
+
+    return redirect('vacate-list')
 
 
 @login_required
@@ -1018,10 +1041,12 @@ def vacate_list(request):
     p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
 
     vacate = VacateNotice.objects.filter(unit__property__in=p, status=False)
+    vac_app = VacateNotice.objects.filter(unit__property__in=p, status=True)
 
     context = {
         'user': request.user,
         'list': vacate,
+        'vac_app': vac_app
     }
     return render(request, 'properties/vacate_list.html', context)
 
