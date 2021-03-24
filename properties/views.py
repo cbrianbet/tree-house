@@ -10,11 +10,12 @@ from dateutil import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
+from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.core.mail import send_mail
 from django.db.models import Count, Q
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 
 from authapp.decorators import unsubscribed_user
@@ -1049,6 +1050,27 @@ def vacate_list(request):
         'vac_app': vac_app
     }
     return render(request, 'properties/vacate_list.html', context)
+
+
+@login_required
+@unsubscribed_user
+def search_vacant(request):
+    user = request.user
+    units = []
+    property = Properties.objects.all()
+    if request.method == "POST":
+        units = Unit.objects.filter(unit_status="Vacant", property_id=request.POST.get('prop')).order_by('floor')
+        data =  list(units.values())
+        return JsonResponse(data, safe=False)
+
+    context = {
+        'user': user,
+        'u': units,
+        'props': property,
+        't': Tenant.objects.get(profile__user=user)
+
+    }
+    return render(request, 'properties/search_vacant.html', context)
 
 
 @login_required
