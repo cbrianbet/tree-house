@@ -1054,6 +1054,90 @@ def vacate_list(request):
 
 @login_required
 @unsubscribed_user
+def enquire_list(request):
+    if request.user.acc_type.id == 4:
+        return PermissionDenied
+
+    company = CompanyProfile.objects.get(user=request.user)
+    eq = Enquire.objects.filter(unit__property__company=company.company, response=None)
+
+    context = {
+        'eq': eq
+    }
+    return render(request, 'properties/enq_vacant_list.html', context)
+
+
+@login_required
+@unsubscribed_user
+def respond_yes(request, u_id):
+    if request.user.acc_type.id == 4:
+        return PermissionDenied
+
+    eq = Enquire.objects.get(uuid=u_id)
+    eq.response = True
+    eq.save()
+
+    subject = "Enquiry for {}".format(eq.unit.unit_name)
+    message = '''
+            This is a notice that your request for the unit has been approved. The contact details will be sent
+            '''
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [eq.user.email], fail_silently=False)
+    except:
+        print('failed')
+    return redirect('enquire-list')
+
+
+@login_required
+@unsubscribed_user
+def respond_no(request, u_id):
+    if request.user.acc_type.id == 4:
+        return PermissionDenied
+
+    company = CompanyProfile.objects.get(company=Unit.objects.get(id=u_id).property.company, user__acc_type_id__in=[2, 3]).user
+    landlord = Profile.objects.get(user=company)
+    eq = Enquire.objects.get(uuid=u_id)
+    eq.response = False
+    eq.save()
+
+    subject = "Enquiry for {}".format(eq.unit.unit_name)
+    message = '''
+            This is a notice that your request for the unit has been rejected.
+            '''
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [eq.user.email], fail_silently=False)
+    except:
+        print('failed')
+    return redirect('enquire-list')
+
+
+@login_required
+@unsubscribed_user
+def enquire_unit(request, u_id):
+    if request.user.acc_type.id != 4:
+        return PermissionDenied
+
+    company = CompanyProfile.objects.get(company=Unit.objects.get(id=u_id).property.company, user__acc_type_id__in=[2, 3]).user
+    landlord = Profile.objects.get(user=company)
+    eq = Enquire.objects.create(unit=Unit.objects.get(id=u_id), user=request.user, created_by=request.user)
+    eq.save()
+    send_email_enq(Unit.objects.get(id=u_id).unit_name, Profile.objects.get(user=request.user), landlord.user.email)
+    return redirect('dashboard')
+
+
+def send_email_enq(t, prof, l):
+    subject = "Enquiry for {}".format(t)
+    message = '''
+        This is a notice that {} {} is enquiring about unit: {}. Login to respond.
+        '''.format(prof.first_name, prof.last_name, t)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [l], fail_silently=False)
+    except:
+        print('failed')
+
+
+@login_required
+@unsubscribed_user
 def search_vacant(request):
     user = request.user
     units = []

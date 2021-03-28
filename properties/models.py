@@ -250,3 +250,17 @@ class TenantHistory(models.Model):
 
     class Meta:
         db_table = "Tenant History"
+
+
+class Enquire(models.Model):
+    uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True, blank=True)
+    response = models.BooleanField(null=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="eq_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="eq_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "Enquire Units"

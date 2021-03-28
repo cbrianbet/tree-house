@@ -146,8 +146,8 @@
                        var floor = data[i].floor;
                        var rent = data[i].value;
                        var ser = data[i].service_charge;
-                       var uuid = data[i].uuid;
-                        $('#exampleTableTools tbody').append('<tr><td>'+index+'</td><td>'+name+'</td><td>'+floor+'</td><td>'+rent+'</td><td>'+ser+'</td><td> <a class="btn btn-primary" href="."> <i class="icon wb-chevron-left" aria-hidden="true"></i> <span class="hidden-sm-down">Enquire</span></a></td></tr>')
+                       var id = data[i].id;
+                        $('#exampleTableTools tbody').append('<tr><td>'+index+'</td><td>'+name+'</td><td>'+floor+'</td><td>'+rent+'</td><td>'+ser+'</td><td> <a class="btn btn-primary" href="/vacate/enquire/'+ id +'"> <i class="icon wb-chevron-left" aria-hidden="true"></i> <span class="hidden-sm-down">Enquire</span></a></td></tr>')
                     }
                 }
             })
