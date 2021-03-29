@@ -9,18 +9,38 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+import json
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# -- Variable that connects our base directory to our temlates folder
+TEMPLATES_DIR = os.path.join(BASE_DIR,"templates")
+# -- Variable that connects our base directory to our static folder
+STATIC_DIR = os.path.join(BASE_DIR,"static")
+
+# Get secret properties
+with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+    secrets = json.load(secrets_file)
+
+def get_secret(setting, secrets=secrets):
+    """Get secret setting or fail with ImproperlyConfigured"""
+    try:
+        return secrets[setting]
+    except KeyError:
+        raise ImproperlyConfigured("Set the {} setting".format(setting))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '76tf)ek-6uf0gig$r=d%le7_d$u9fhgrd4$gi3n0^-35s+bft@'
+SECRET_KEY = get_secret('SECRET_KEY')
 
 LOGIN_REDIRECT_URL = '/login'
 LOGIN_URL = '/login'
@@ -33,8 +53,8 @@ ALLOWED_HOSTS = ['*']
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'cbrianbet@gmail.com'
-EMAIL_HOST_PASSWORD = 'kaka10139'
+EMAIL_HOST_USER = 'mnestafrica@gmail.com'
+EMAIL_HOST_PASSWORD = get_secret('E_PASS')
 
 
 # Application definition
@@ -96,9 +116,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'TreeHouse',
-        'USER': 'monkey',
-        'PASSWORD': 'Mon@12%w2rd',
-        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
+        'USER': get_secret('USER'),
+        'PASSWORD': get_secret('PWD'),
+        'HOST': get_secret('HOST'),  # Or an IP Address that your DB is hosted on
         'PORT': '5432',
     }
 }
