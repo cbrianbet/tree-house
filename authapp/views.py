@@ -87,7 +87,7 @@ def dashboard(request):
 
         wallet = r.json()
         print(wallet)
-
+        cur_balance = 0
         if wallet['success']:
             cur_balance = wallet['wallet']['current_balance']
         else:
@@ -547,8 +547,8 @@ def hapokashcreate():
         'Content-Type': 'application/json',
         'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
     }
-    PARAMS = {"currency": "KES"}
-    r = requests.post(url=URL, data=PARAMS, headers=headers)
+    PARAMS = {"currency":"KES"}
+    r = requests.post(url=URL, json=PARAMS, headers=headers)
     if r.json()['success']:
         return r.json()
     else:
@@ -560,7 +560,7 @@ def hapokashcreate():
             'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
         }
         PARAMS = {"currency": "KES"}
-        r = requests.post(url=URL, data=PARAMS, headers=headers)
+        r = requests.post(url=URL, json=PARAMS, headers=headers)
         if r.json()['success']:
             return r.json()
 
