@@ -62,7 +62,7 @@ class Properties(models.Model):
 
 class PaymentAccount(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
-    payment_mode = models.CharField(max_length=30)
+    payment_mode = models.CharField(max_length=130)
     prop = models.ForeignKey(Properties, on_delete=models.CASCADE)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="p_m_created_by")
     updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="p_m_updated_by", null=True)
@@ -75,8 +75,8 @@ class PaymentAccount(models.Model):
 
 class PaymentPaybill(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
-    acc = models.CharField(max_length=30)
-    paybill = models.CharField(max_length=30)
+    acc = models.CharField(max_length=130)
+    paybill = models.CharField(max_length=130)
     prop = models.ForeignKey(PaymentAccount, on_delete=models.CASCADE)
 
     class Meta:
@@ -85,7 +85,7 @@ class PaymentPaybill(models.Model):
 
 class PaymentTill(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
-    till = models.CharField(max_length=30)
+    till = models.CharField(max_length=130)
     prop = models.ForeignKey(PaymentAccount, on_delete=models.CASCADE)
 
     class Meta:
