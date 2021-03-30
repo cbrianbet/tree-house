@@ -17,6 +17,8 @@ from django.core.mail import send_mail
 from django.db.models import Count, Q
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from authapp.decorators import unsubscribed_user
 from authapp.models import AccTypes
@@ -881,17 +883,21 @@ def get_random_username_staff():
 
 def inform_staff(u, p, e, n, prop):
     subject = "Welcome to {}".format(prop)
+
+
+    html_message = render_to_string('properties/email_temp_03.html', {'u':u, 'p':p})
+    plain_message = strip_tags(html_message)
     message = '''
     Dear {}, 
     This email is to let you know that we are continuing to utilise the latest technologies available to provide you with an even better service. 
     A special login has been created for you as follows:
-    Web URL:	mnestafrica.com
+    Web URL:	mnestafrica.com/login
     username: {}
     Password: {}
     It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
         n, u, p)
     try:
-        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [e], html_message=html_message, fail_silently=False)
     except:
         print('failed')
 
@@ -1078,11 +1084,13 @@ def respond_yes(request, u_id):
     eq.save()
 
     subject = "Enquiry for {}".format(eq.unit.unit_name)
+    html_message = render_to_string('properties/email_temp_01.html')
+    plain_message = strip_tags(html_message)
     message = '''
             This is a notice that your request for the unit has been approved. The contact details will be sent
             '''
     try:
-        send_mail(subject, message, EMAIL_HOST_USER, [eq.user.email], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [eq.user.email], html_message=html_message,fail_silently=False)
     except:
         print('failed')
     return redirect('enquire-list')
@@ -1130,8 +1138,11 @@ def send_email_enq(t, prof, l):
     message = '''
         This is a notice that {} {} is enquiring about unit: {}. Login to respond.
         '''.format(prof.first_name, prof.last_name, t)
+
+    html_message = render_to_string('properties/email_temp_01.html')
+    plain_message = strip_tags(html_message)
     try:
-        send_mail(subject, message, EMAIL_HOST_USER, [l], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [l], html_message=html_message,fail_silently=False)
     except:
         print('failed')
 

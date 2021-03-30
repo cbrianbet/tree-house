@@ -17,6 +17,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_bytes
+from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from psycopg2._psycopg import IntegrityError
@@ -28,6 +29,7 @@ from bills.models import *
 from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies, Properties, BankAcc, \
     PaymentPaybill, PaymentTill, TransactionCodes
 from tree_house import settings
+from tree_house.settings import EMAIL_HOST_USER
 
 
 def login(request):
@@ -532,12 +534,24 @@ def signup(request):
                         print('false')
                 except:
                     print(wal_id)
+            send_register(user.email)
 
         except Exception  as e:
             raise e
 
         return redirect('web-login')
     return render(request, 'authapp/register.html', {'sub': sub, 'terms': term, 'privacy': privacy})
+
+
+def send_register(l):
+    subject = "Welcome"
+
+    html_message = render_to_string('properties/email_temp_02.html')
+    plain_message = strip_tags(html_message)
+    try:
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [l], html_message=html_message,fail_silently=False)
+    except:
+        print('failed register')
 
 
 def hapokashcreate():
