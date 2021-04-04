@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from properties.models import *
 
 
@@ -25,18 +25,17 @@ def unsubscribed_user(view_func):
 
             return view_func(request, *args, **kwargs)
         if request.user.acc_type.id == 4:
-            tenant = Tenant.objects.get(profile__user=request.user)
+            tenant = TenantHistory.objects.get(end_date=None, tenant__profile__user=request.user).curr_unit
             try:
-                check = SubscriptionsCompanies.objects.get(company=tenant.unit.property.company)
+                check = SubscriptionsCompanies.objects.get(company=tenant.property.company)
 
                 if check.date_end is None:
-                    return redirect('subs-pick')
+                    return render(request, 'authapp/error-500.html')
                 if check.date_end < datetime.today().date():
-                    return redirect('subs-pick')
+                    return render(request, 'authapp/error-500.html')
 
             except SubscriptionsCompanies.DoesNotExist:
-                SubscriptionsCompanies.objects.create(company=tenant.unit.property.company)
-                return redirect('subs-pick')
+                return render(request, 'authapp/error-500.html')
 
             return view_func(request, *args, **kwargs)
         else:

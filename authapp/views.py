@@ -724,9 +724,10 @@ def about(request):
 
 @login_required
 def subsPick(request):
-    if request.user.id == 4:
+    if request.user.acc_type.id == 4:
         return HttpResponse("Cannot continue, Agency subscription not paid")
     subs = Subscriptions.objects.filter(is_active=True)
+    print(request.user)
     company_end = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company)
     if request.method == "POST":
         prof = Profile.objects.get(user=request.user).msisdn
