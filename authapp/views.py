@@ -22,7 +22,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from psycopg2._psycopg import IntegrityError
 
-from authapp.decorators import unsubscribed_user
+from authapp.decorators import unsubscribed_user, unauthenticated_user
 from authapp.forms import LoginForm
 from authapp.models import *
 from bills.models import *
@@ -32,6 +32,7 @@ from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 
 
+@unauthenticated_user
 def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -749,7 +750,7 @@ def logout_request(request):
 
 
 def about(request):
-    return render(request, 'authapp/about.html')
+    return render(request, 'authapp/about.html', {'u': Profile.objects.get(user=request.user)})
 
 
 @login_required
