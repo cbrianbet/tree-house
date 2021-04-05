@@ -413,6 +413,10 @@ def profile(request):
         profile = Profile.objects.get(user=user)
         comp = CompanyProfile.objects.get(user=profile.user)
         subs = SubscriptionsCompanies.objects.filter(company=comp.company).order_by('date_end')[0]
+        try:
+            sign = SignatureLandlord.objects.get(user=user)
+        except SignatureLandlord.DoesNotExist:
+            sign = None
 
         if request.method == "POST":
             if not request.user.check_password(request.POST.get('password')):
@@ -427,6 +431,7 @@ def profile(request):
             'profile': profile,
             'comp': comp,
             'subs': subs,
+            'sign': sign
         }
 
         return render(request, 'authapp/companyprofile.html', context)
@@ -438,6 +443,31 @@ def profile(request):
         return render(request, 'authapp/companyprofile.html', context)
 
     return render(request, 'authapp/profile.html', context)
+
+
+# @login_required
+# @unsubscribed_user
+@csrf_exempt
+def profile_sign(request):
+    user = request.user
+    if user.acc_type.id == 3 or user.acc_type.id == 2:
+
+        if request.method == "POST":
+            print(request.FILES)
+
+            if request.FILES:
+                logo = request.FILES['image_file']
+            else:
+                logo = ''
+            if SignatureLandlord.objects.filter(user=user).exists():
+                sign =SignatureLandlord.objects.get(user=user)
+                sign.pics = logo
+                sign.save()
+            else:
+                sign = SignatureLandlord.objects.create(pics=logo, user=request.user)
+                sign.save()
+
+        return HttpResponse("DONE")
 
 
 @csrf_exempt

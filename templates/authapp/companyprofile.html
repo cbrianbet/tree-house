@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/plyr/plyr.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/structure/timeline.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/dropify/dropify.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/blueimp-file-upload/jquery.fileupload.css' %}">
+    <style>
+        #sig-canvas {
+            border: 2px dotted #CCCCCC;
+            border-radius: 15px;
+            cursor: crosshair;
+        }
+    </style>
 
 {% endblock %}
 
@@ -66,6 +76,11 @@
                                            role="tab">Subscription
                                         </a>
                                     </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" data-toggle="tab" href="#sign" aria-controls="sign"
+                                           role="tab">Signature
+                                        </a>
+                                    </li>
                                 {% endif %}
                                 <li class="nav-item dropdown">
                                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#"
@@ -81,6 +96,9 @@
                                             <a class="dropdown-item" data-toggle="tab" href="#sub"
                                                aria-controls="sub"
                                                role="tab">Subscription</a>
+                                            <a class="dropdown-item" data-toggle="tab" href="#sign"
+                                               aria-controls="sign"
+                                               role="tab">Signature</a>
                                         {% endif %}
                                     </div>
                                 </li>
@@ -136,6 +154,7 @@
                                                            name="password">
                                                 </div>
                                             </div>
+
                                         </div>
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                     </form>
@@ -238,10 +257,53 @@
                                     </div>
                                 </div>
 
+                                <div class="tab-pane animation-slide-left" id="sign" role="tabpanel">
+                                    {#                                    <form id="sign_upload" action="{% url 'sign_upload' %}" method="post">#}
+                                    {% csrf_token %}
+
+                                    <div class="row row-lg">
+                                        <div class="col-xl-6 form-horizontal">
+
+                                            <label class="form-control-label" for="pic">Draw Signature</label>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <canvas id="sig-canvas" height="160">
+                                                        Get a better browser.
+                                                    </canvas>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-primary" id="sig-submitBtn">Submit
+                                                        Signature
+                                                    </button>
+                                                    <button class="btn btn-default" id="sig-clearBtn">Clear Signature
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xl-6 form-horizontal">
+                                            <label class="form-control-label" for="pic">Current Signature</label>
+                                            {% if sign.pics.url %}
+                                                <img id="sig-image" src="{{ sign.pics.url }}" alt="Current signature."/>
+                                            {% else %}
+                                                <img id="sig-image" src="" alt="Current signature."/>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {#                                    </form>#}
+
+
                                 <div class="tab-pane animation-slide-left" id="sub" role="tabpanel">
 
                                     <div class="tab-pane active animation-slide-left" id="activities" role="tabpanel">
-                                        <p class="profile-job">Current subscription: <b>{{ subs.subs.description }}</b></p>
+                                        <p class="profile-job">Current subscription: <b>{{ subs.subs.description }}</b>
+                                        </p>
                                         <p class="profile-job">Start Date: <b>{{ subs.date_started }}</b></p>
                                         <p class="profile-job">End Date: <b>{{ subs.date_end }}</b></p>
 
@@ -270,6 +332,9 @@
     <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/jquery-appear/jquery.appear.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/plyr/plyr.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/dropify/dropify.min.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/dropify.js' %}"></script>
+
 
 
     <script src="{% static 'authapp/global/js/Plugin/plyr.js' %}"></script>
@@ -293,7 +358,9 @@
             var thisForm = $(this);
             var endPoint = thisForm.attr("action") || window.location.href;
             var method = thisForm.attr("method");
-            var formData = thisForm.serialize();
+
+            var formData = thisForm.serialize()
+            console.log(formData)
 
             console.log(endPoint);
             console.log(method);
@@ -325,12 +392,153 @@
                     }
                 },
                 error: function (er) {
-                    console.log("Login error");
-                    // console.log(er.responseText);
+                    console.log("Error");
                     swal('Wrong credentials!!', 'Password incorrect!!', 'error');
                 }
             });
 
         });
+        (function () {
+            window.requestAnimFrame = (function (callback) {
+                return window.requestAnimationFrame ||
+                    window.webkitRequestAnimationFrame ||
+                    window.oRequestAnimationFrame ||
+                    window.msRequestAnimaitonFrame ||
+                    function (callback) {
+                        window.setTimeout(callback, 1000 / 60);
+                    };
+            })();
+
+            var canvas = document.getElementById("sig-canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.strokeStyle = "#222222";
+            ctx.lineWidth = 4;
+
+            var drawing = false;
+            var mousePos = {
+                x: 0,
+                y: 0
+            };
+            var lastPos = mousePos;
+
+            canvas.addEventListener("mousedown", function (e) {
+                drawing = true;
+                lastPos = getMousePos(canvas, e);
+            }, false);
+
+            canvas.addEventListener("mouseup", function (e) {
+                drawing = false;
+            }, false);
+
+            canvas.addEventListener("mousemove", function (e) {
+                mousePos = getMousePos(canvas, e);
+            }, false);
+
+            // Add touch event support for mobile
+            canvas.addEventListener("touchstart", function (e) {
+
+            }, false);
+
+            canvas.addEventListener("touchmove", function (e) {
+                var touch = e.touches[0];
+                var me = new MouseEvent("mousemove", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(me);
+            }, false);
+
+            canvas.addEventListener("touchstart", function (e) {
+                mousePos = getTouchPos(canvas, e);
+                var touch = e.touches[0];
+                var me = new MouseEvent("mousedown", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(me);
+            }, false);
+
+            canvas.addEventListener("touchend", function (e) {
+                var me = new MouseEvent("mouseup", {});
+                canvas.dispatchEvent(me);
+            }, false);
+
+            function getMousePos(canvasDom, mouseEvent) {
+                var rect = canvasDom.getBoundingClientRect();
+                return {
+                    x: mouseEvent.clientX - rect.left,
+                    y: mouseEvent.clientY - rect.top
+                }
+            }
+
+            function getTouchPos(canvasDom, touchEvent) {
+                var rect = canvasDom.getBoundingClientRect();
+                return {
+                    x: touchEvent.touches[0].clientX - rect.left,
+                    y: touchEvent.touches[0].clientY - rect.top
+                }
+            }
+
+            function renderCanvas() {
+                if (drawing) {
+                    ctx.moveTo(lastPos.x, lastPos.y);
+                    ctx.lineTo(mousePos.x, mousePos.y);
+                    ctx.stroke();
+                    lastPos = mousePos;
+                }
+            }
+
+            // Prevent scrolling when touching the canvas
+            document.body.addEventListener("touchstart", function (e) {
+                if (e.target == canvas) {
+                    e.preventDefault();
+                }
+            }, false);
+            document.body.addEventListener("touchend", function (e) {
+                if (e.target == canvas) {
+                    e.preventDefault();
+                }
+            }, false);
+            document.body.addEventListener("touchmove", function (e) {
+                if (e.target == canvas) {
+                    e.preventDefault();
+                }
+            }, false);
+
+            (function drawLoop() {
+                requestAnimFrame(drawLoop);
+                renderCanvas();
+            })();
+
+            function clearCanvas() {
+                canvas.width = canvas.width;
+            }
+
+            // Set up the UI
+            var sigText = document.getElementById("sig-dataUrl");
+            var sigImage = document.getElementById("sig-image");
+            var clearBtn = document.getElementById("sig-clearBtn");
+            var submitBtn = document.getElementById("sig-submitBtn");
+            clearBtn.addEventListener("click", function (e) {
+                clearCanvas();
+                sigImage.setAttribute("src", "");
+            }, false);
+            submitBtn.addEventListener("click", function (e) {
+                var dataUrl = canvas.toDataURL();
+                sigImage.setAttribute("src", dataUrl);
+                canvas.toBlob(function (blob) {
+
+                    var formCanv = new FormData();
+
+                    formCanv.append("image_file", blob);
+                    console.log(formCanv)
+                    var xhr = new XMLHttpRequest;
+                    xhr.open("POST", "/api/upload");
+                    xhr.send(formCanv);
+
+                }, "image/png");
+            }, false);
+
+        })();
     </script>
 {% endblock %}

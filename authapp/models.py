@@ -71,3 +71,12 @@ class AuthTokens(models.Model):
 
     class Meta:
         db_table = "AuthTokens"
+
+
+class SignatureLandlord(models.Model):
+    pics = models.ImageField(upload_to='sign/%Y/%m/', null=True, blank=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+
+
+    class Meta:
+        db_table = "Signatures"
