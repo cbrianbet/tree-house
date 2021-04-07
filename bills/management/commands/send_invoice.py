@@ -23,11 +23,11 @@ class Command(BaseCommand):
         try:
             tenant = Tenant.objects.all()
             today = date.today().day
-            month = date.today()
-            last_day = calendar.monthrange(month.year, month.month)[1]
+            ttoday = date.today()
+            last_day = calendar.monthrange(ttoday.year, ttoday.month)[1]
             last_day = int(last_day)
             today = int(today)
-            print(today, last_day)
+            print(today, last_day, ttoday)
             for t in tenant:
                 print(t)
                 coll_day = 0
@@ -42,16 +42,16 @@ class Command(BaseCommand):
                     if coll_day > last_day:
                         coll_day = last_day
                     if today == (coll_day - 3):
-                        apply_invoice(t.unit.value, calendar.month_name[month.month], Users.objects.get(id=1), t,
-                                      '{}-{}-{}'.format(coll_day, calendar.month_name[month.month], month.year))
+                        apply_invoice(t.unit.value, calendar.month_name[ttoday.month], Users.objects.get(id=1), t,
+                                      '{}-{}-{}'.format(coll_day, calendar.month_name[ttoday.month], ttoday.year))
 
                 elif coll_day == 0:
                     print('Not assigned')
 
                 elif coll_day <= 3:
-                    month = date.today()
-                    year = month.year
-                    month = month.month
+                    ttoday = date.today()
+                    year = ttoday.year
+                    month = ttoday.month
                     if month == 1:
                         month = 12
                         year = year - 1
@@ -86,6 +86,7 @@ def apply_invoice(rent, month, user, tenant, date):
                                              amount=round(rent, 2),
                                              description='RENT')
         inv_item1.save()
+        i.save()
         i.email_inform = send_email(tenant, date)
         i.save()
         return True
