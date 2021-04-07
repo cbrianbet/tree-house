@@ -484,7 +484,8 @@ def apply_invoice(rent, dep, user, tenant):
         coll_day = tenant.unit.property.specific_day
         coll_day = int(coll_day)
     elif tenant.unit.property.rent_collection == "Occ_date":
-        coll_day = tenant.date_occupied.date().day
+        print(Tenant.objects.get(id=tenant.id).date_occupied)
+        coll_day = Tenant.objects.get(id=tenant.id).date_occupied.date().day
         coll_day = int(coll_day)
     month = datetime.date.today()
     last_day = calendar.monthrange(month.year, month.month)[1]
