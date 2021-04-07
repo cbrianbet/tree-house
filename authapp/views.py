@@ -750,7 +750,7 @@ def logout_request(request):
 
 
 def about(request):
-    return render(request, 'authapp/about.html', {'u': Profile.objects.get(user=request.user)})
+    return render(request, 'authapp/about.html')
 
 
 @login_required
