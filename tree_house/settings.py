@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'bills',
     'chatApp',
     'reports',
+    'back_auto'
 ]
 
 MIDDLEWARE = [

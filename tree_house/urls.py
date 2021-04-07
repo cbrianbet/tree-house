@@ -12,6 +12,7 @@ urlpatterns = [
     url('', include('bills.urls')),
     url('', include('chatApp.urls')),
     url('', include('reports.urls')),
+    url('', include('back_auto.urls')),
     # path('accounts/', include('django.contrib.auth.urls')),
 
     path('password_reset/done/',
