@@ -438,6 +438,8 @@ def add_tenant(request, u_uid):
 
 def inform(u, p, e, n, prop):
     subject = "Welcome to {}".format(prop)
+    html_message = render_to_string('properties/email_temp_04.html', {'n': n,'u':u, 'p':p})
+    plain_message = strip_tags(html_message)
     message = '''
     Dear {}, 
     We are thrilled to have you on-board! 
@@ -449,7 +451,7 @@ def inform(u, p, e, n, prop):
     It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
         n, u, p)
     try:
-        send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [e], html_message=html_message,  fail_silently=False)
     except:
         print('failed')
 
@@ -884,8 +886,6 @@ def get_random_username_staff():
 
 def inform_staff(u, p, e, n, prop):
     subject = "Welcome to {}".format(prop)
-
-
     html_message = render_to_string('properties/email_temp_03.html', {'u':u, 'p':p})
     plain_message = strip_tags(html_message)
     message = '''
