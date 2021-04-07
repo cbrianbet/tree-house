@@ -809,6 +809,7 @@ def wall_bal(request):
     }
 
     r = requests.get(url=URL, headers=headers)
+    print(r.json())
     wallet = r.json()
 
     if wallet['success']:
@@ -839,9 +840,9 @@ def wall_bal(request):
     trans = wallet_trans(prof.hapokash)
     print(trans)
     if trans['last_page'] != 1:
+        URL = trans['next_page_url']
         for i in range(trans['last_page'] - 1):
             print(trans['next_page_url'])
-            URL = trans['next_page_url']
             headers = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -866,6 +867,7 @@ def wall_bal(request):
                 print(wallet)
                 if wallet['success']:
                     trans['data'] = trans['data'] + wallet['transactions']['data']
+            URL = wallet['transactions']['next_page_url']
 
     for d in trans['data']:
         d.update((k, datetime.datetime.strptime(
