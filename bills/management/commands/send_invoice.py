@@ -75,31 +75,29 @@ class Command(BaseCommand):
             raise CommandError('Tenant does not exist')
 
 
-
 def apply_invoice(rent, month, user, tenant, date):
     try:
         inv_no = increment_rent_invoice_number()
         i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user,
                                        unit=tenant.unit, date_due=datetime.datetime.now() + datetime.timedelta(days=3))
         i.save()
-       	print( i.id)
-        inv_item1 = RentItems.objects.create(invoice_id=i.id, invoice_item='RENT FOR {}'.format(month),
-                                             amount=round(rent, 2),
+        if i.pk:
+            inv_item1 = RentItems.objects.create(invoice_id=i.id, invoice_item='RENT FOR {}'.format(month),
+                                             amount=round(int(rent), 2),
                                              description='RENT')
-        print(inv_item1.save())
-        print(inv_item1.id)
-        i.save()
+            inv_item1.save()
         i.email_inform = send_email(tenant, date)
         i.save()
         return True
-    except:
+    except Exception as e:
+        print(e)
         return False
 
 
 def send_email(t, date):
     subject = "Invoice for {}".format(t.unit.property.property_name)
     message = '''
-        Dear {}, 
+        Dear {},
         This email is to let you know that a Rent Invoice has been created for your unit {} at {}.
         login to your portal at	mnestafrica.com to view it under bills. The incoice is due on: {}  
         Your username is : {} incase you forgot.'''.format(t.profile.first_name, t.unit.unit_name,
@@ -108,6 +106,6 @@ def send_email(t, date):
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [t.profile.user.email], fail_silently=False)
         return True
-    except:
-        print('failed')
+    except Exception as e:
+        print(e)
         return False
