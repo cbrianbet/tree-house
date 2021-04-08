@@ -82,10 +82,12 @@ def apply_invoice(rent, month, user, tenant, date):
         i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user,
                                        unit=tenant.unit, date_due=datetime.datetime.now() + datetime.timedelta(days=3))
         i.save()
-        inv_item1 = RentItems.objects.create(invoice=i, invoice_item='RENT FOR {}'.format(month),
+       	print( i.id)
+        inv_item1 = RentItems.objects.create(invoice_id=i.id, invoice_item='RENT FOR {}'.format(month),
                                              amount=round(rent, 2),
                                              description='RENT')
-        inv_item1.save()
+        print(inv_item1.save())
+        print(inv_item1.id)
         i.save()
         i.email_inform = send_email(tenant, date)
         i.save()
