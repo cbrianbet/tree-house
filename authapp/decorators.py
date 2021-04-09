@@ -17,6 +17,14 @@ def unsubscribed_user(view_func):
                     return redirect('subs-pick')
                 elif check.date_end < datetime.today().date():
                     return redirect('subs-pick')
+                elif check.subs is None:
+                    num_months = (check.date_end.year - check.date_started.year) * 12 + (check.date_end.month - check.date_started.month)
+                    try:
+                        sub = Subscriptions.objects.filter(duration=num_months)[0]
+                        check.subs = sub
+                        check.save()
+                    except:
+                        return redirect('subs-pick')
 
                 print(company, check)
             except SubscriptionsCompanies.DoesNotExist:
