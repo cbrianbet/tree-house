@@ -570,12 +570,13 @@ def list_request(request):
 @login_required
 @unsubscribed_user
 def individual_trans(request, uuid):
+    rentrec = []
+    invrec = []
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         comp = CompanyProfile.objects.get(user=request.user).company
         prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
         rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
         invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
-        print(rentrec)
     if request.user.acc_type.id == 4:
         rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
         invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')

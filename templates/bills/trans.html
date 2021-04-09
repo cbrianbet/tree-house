@@ -59,9 +59,8 @@
                             <th>Transaction Code</th>
                             <th>Date paid</th>
                             <th>Remarks</th>
-                            <th>Received by</th>
+                            <th>Paid by</th>
                             <th>Created at</th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -71,38 +70,36 @@
                             <th>Transaction Code</th>
                             <th>Date paid</th>
                             <th>Remarks</th>
-                            <th>Received by</th>
+                            <th>Paid by</th>
                             <th>Created at</th>
-                            <th></th>
                         </tr>
                         </tfoot>
                         <tbody>
                         {% if rreq.count > 0 %}
-                        {% for b in rreq %}
-                            <tr>
-                                <td>{{ b.amount_paid }}</td>
-                                <td>{{ b.payment_mode }}</td>
-                                <td>{{ b.transaction_code }}</td>
-                                <td>{{ b.date_paid }}</td>
-                                <td>{{ b.remarks }}</td>
-                                <td>{{ b.created_by.username }}</td>
-                                <td>{{ b.created_at }}</td>
+                            {% for b in rreq %}
+                                <tr>
+                                    <td>{{ b.amount_paid }}</td>
+                                    <td>{{ b.payment_mode }}</td>
+                                    <td>{{ b.transaction_code }}</td>
+                                    <td>{{ b.date_paid }}</td>
+                                    <td>{{ b.remarks }}</td>
+                                    <td>{{ b.invoice_item.invoice.invoice_for.username }}</td>
+                                    <td>{{ b.created_at }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% elif req.count > 0 %}
+                            {% for b in req %}
+                                <tr>
+                                    <td>{{ b.amount_paid }}</td>
+                                    <td>{{ b.payment_mode }}</td>
+                                    <td>{{ b.transaction_code }}</td>
+                                    <td>{{ b.date_paid }}</td>
+                                    <td>{{ b.remarks }}</td>
+                                    <td>{{ b.invoice_item.invoice.invoice_for.username }}</td>
+                                    <td>{{ b.created_at }}</td>
 
-                            </tr>
-                        {% endfor %}
-                            {% elif req.count > 0 %}
-                        {% for b in req %}
-                            <tr>
-                                <td>{{ b.amount_paid }}</td>
-                                <td>{{ b.payment_mode }}</td>
-                                <td>{{ b.transaction_code }}</td>
-                                <td>{{ b.date_paid }}</td>
-                                <td>{{ b.remarks }}</td>
-                                <td>{{ b.created_by.username }}</td>
-                                <td>{{ b.created_at }}</td>
-
-                            </tr>
-                        {% endfor %}
+                                </tr>
+                            {% endfor %}
                         {% endif %}
 
                         </tbody>
