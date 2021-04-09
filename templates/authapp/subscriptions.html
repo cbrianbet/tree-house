@@ -295,7 +295,10 @@
                 console.log(data)
                 if (data === "Not Found") {
                     swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
-
+                } else if (data === "exists") {
+                    swal('Transaction Code Error!!', 'Try again, Transaction code given already exists!!', 'error');
+                } else if (data === "wrong") {
+                    swal('Error!!', 'Something went wrong!!', 'error');
                 } else {
                     console.log(data)
                     swal({

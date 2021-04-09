@@ -928,7 +928,7 @@ def confirm_payment(request):
     r = requests.get(url=URL, headers=headers)
     past_trx = TransactionCodes.objects.filter(trx=trans)
     if past_trx.exists():
-        return HttpResponse("Exists")
+        return HttpResponse("exists")
 
     wallet = r.json()
     print(wallet)
@@ -938,6 +938,8 @@ def confirm_payment(request):
         for a in search:
             print(a)
             if a['trx_id'] == trans:
+                if TransactionCodes.objects.filter(trx=trans).exists():
+                    print("exists")
                 try:
                     sub = SubscriptionsCompanies.objects.create(
                         company=CompanyProfile.objects.get(user=Users.objects.get(username=u_name)).company,
@@ -951,14 +953,18 @@ def confirm_payment(request):
                     print("wrong")
                 return HttpResponse(reverse('logout'))
         if int(wallet['transactions']['last_page']) != 1:
+            URL = wallet['transactions']['next_page_url']
             for i in range(int(wallet['transactions']['last_page']) - 1):
-                URL = wallet['transactions']['next_page_url']
                 r = requests.get(url=URL, headers=headers)
                 wallet = r.json()
+                print()
                 if wallet['success']:
                     search = wallet['transactions']['data']
                     for a in search:
+                        print(a)
                         if a['trx_id'] == trans:
+                            if TransactionCodes.objects.filter(trx=trans).exists():
+                                print("exists")
                             try:
                                 sub = SubscriptionsCompanies.objects.create(
                                     company=CompanyProfile.objects.get(user=Users.objects.get(username=u_name)).company,
@@ -973,6 +979,7 @@ def confirm_payment(request):
                             except:
                                 print("wrong")
                             return HttpResponse(reverse('logout'))
+                URL = wallet['transactions']['next_page_url']
 
     elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
         refreshToken()
@@ -1045,7 +1052,7 @@ def confirm_payment_renew(request):
     r = requests.get(url=URL, headers=headers)
     past_trx = TransactionCodes.objects.filter(trx=trans)
     if past_trx.exists():
-        return HttpResponse("Exists")
+        return HttpResponse("exists")
 
     wallet = r.json()
     if wallet['success']:
