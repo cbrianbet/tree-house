@@ -189,6 +189,7 @@ def dashboard(request):
         unit = Unit.objects.filter(property__in=prop)
 
         inv = RentInvoice.objects.filter(unit__in=unit, date_due__year=year, date_due__month=month)
+        dinv = Invoice.objects.filter(unit__in=unit, created_at__year=year, created_at__month=month)
         items = RentItems.objects.filter(invoice__in=inv)
         print(inv)
         print(request.POST.get('month'))
@@ -204,6 +205,8 @@ def dashboard(request):
         #
         pec1 = inv.filter(status=True)
         pec2 = inv.filter(status=False)
+        pec1inv = dinv.filter(status=True)
+        pec2inv = dinv.filter(status=False)
         unp = Unit.objects.filter(id__in=pec2.values_list('unit_id', flat=True))
 
         req = RentInvItemsRequest.objects.filter(invoice_item__in=items)
@@ -226,6 +229,8 @@ def dashboard(request):
             'due': inv.filter(status=False).count(),
             'pec1': pec1.count(),
             'pec2': pec2.count(),
+            'pec1d': pec1inv.count(),
+            'pec2d': pec2inv.count(),
             'all_inv': inv.count(),
             'unpunits': unp.count(),
             'req': req.count(),

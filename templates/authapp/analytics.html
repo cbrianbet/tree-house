@@ -118,6 +118,16 @@
                                             <!-- End The Second Counter Block-->
                                             <!-- The Second Counter Block-->
 
+                                            <div class="col-xl-12 col-md-12 mt-25">
+                                                <div class="counter">
+                                                    <div class="counter-label">Units with Unpaid Invoices</div>
+                                                    <div class="counter-number-group text-truncate">
+                                                        <span class="counter-number-related green-600"></span>
+                                                        <span class="counter-number teal-600">{{ unpunits }}/{{ occ }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <!-- End The Second Counter Block-->
                                         </div>
                                     </div>
@@ -128,19 +138,24 @@
                                     <!-- End MorrisDonut -->
                                 </div>
                                 <div class="col-md-4 px-0">
+                                    <!-- MorrisDonut -->
+                                    <div id="paid_donut-1"></div>
+                                    <!-- End MorrisDonut -->
+                                </div>
+                                <div class="col-md-4 px-0">
 
                                     <div id="productOptionsData" class="text-center">
                                         <div class="row no-space">
                                             <!-- The First Counter Block-->
-                                            <div class="col-xl-12 col-md-12 mt-25">
-                                                <div class="counter">
-                                                    <div class="counter-label">Units with Unpaid Invoices</div>
-                                                    <div class="counter-number-group text-truncate">
-                                                        <span class="counter-number-related green-600"></span>
-                                                        <span class="counter-number teal-600">{{ unpunits }}/{{ occ }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+{#                                            <div class="col-xl-12 col-md-12 mt-25">#}
+{#                                                <div class="counter">#}
+{#                                                    <div class="counter-label">Units with Unpaid Invoices</div>#}
+{#                                                    <div class="counter-number-group text-truncate">#}
+{#                                                        <span class="counter-number-related green-600"></span>#}
+{#                                                        <span class="counter-number teal-600">{{ unpunits }}/{{ occ }}</span>#}
+{#                                                    </div>#}
+{#                                                </div>#}
+{#                                            </div>#}
                                         </div>
                                     </div>
                                 </div>
@@ -253,12 +268,30 @@
                 resize: true,
                 element: 'paid_donut',
                 data: [{
-                    label: 'Paid',
+                    label: 'Paid(Rent Invoices)',
                     value: {{pec1}}
                     //label: 'From last week'
                 }, {
-                    label: 'Unpaid',
+                    label: 'Unpaid(Rent Invoices)',
                     value:{{pec2}}
+                    //label: 'From last month'
+                }],
+                colors: ['#11c26d', '#ff4c52', '#f3a754']
+                //valueColors: ['#37474f', '#f96868', '#76838f']
+            }).on('click', function (i, row) {
+                console.log(i, row);
+            });
+
+            Morris.Donut({
+                resize: true,
+                element: 'paid_donut-1',
+                data: [{
+                    label: 'Paid(Other Invoices)',
+                    value: {{pec1d}}
+                    //label: 'From last week'
+                }, {
+                    label: 'Unpaid(Other Invoices)',
+                    value:{{pec2d}}
                     //label: 'From last month'
                 }],
                 colors: ['#11c26d', '#ff4c52', '#f3a754']
