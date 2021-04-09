@@ -21,7 +21,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
 from authapp.decorators import unsubscribed_user
-from authapp.models import AccTypes
+from authapp.models import AccTypes, SignatureLandlord
 from authapp.views import hapokashcreate
 from bills.models import Invoice, InvoiceItems, RentInvoice, RentItems
 from bills.views import increment_invoice_number, increment_rent_invoice_number
@@ -1201,11 +1201,12 @@ def document_lease(request):
     company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
 
     landlord = Profile.objects.get(user=company)
-
+    sign = SignatureLandlord.objects.get(user=company)
     context = {
         'user': user,
         'tenant': Tenant.objects.get(profile__user=user),
-        'landlord': landlord
+        'landlord': landlord,
+        'sign': sign
     }
     return render(request, 'properties/lease_agg.html', context)
 
@@ -1217,11 +1218,12 @@ def document_non_comp(request, vid):
     tenant = Tenant.objects.get(profile__user=user)
     non_comp = NonCompliance.objects.get(tenant=tenant, id=vid)
 
+    sign = SignatureLandlord.objects.get(user=non_comp.created_by)
     context = {
         'user': user,
         't': Tenant.objects.get(profile__user=user),
-        'non_comp': non_comp
-
+        'non_comp': non_comp,
+        'sign': sign
     }
     return render(request, 'properties/non_comp.html', context)
 

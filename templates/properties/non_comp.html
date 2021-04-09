@@ -65,7 +65,8 @@
                             possession.</p>
                         <p>☐ - First-class mail addressed to the person in possession.</p>
                         <p>
-                            Signature:_____________________________
+                            Signature:{% if sign.pics.url %} <img id="sig-image" src="{{ sign.pics.url }}" alt="Current signature."/>
+                        {% else %} {% endif %}
                         </p>
                     </div>
 

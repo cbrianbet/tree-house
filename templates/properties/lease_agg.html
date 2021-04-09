@@ -175,8 +175,10 @@
                             agreed that we have read this agreement and bounded by its terms and conditions.</p>
                         <p class="text-center">Date of Signing</p>
 
-                        <span class="text-left">{{ landlord.first_name }} {{ landlord.last_name }}</span><br>
-                        <p>Signature</p><br><br>
+                        <span class="text-left">{{ landlord.first_name }} {{ landlord.last_name }}</span>
+                        <p>Signature {% if sign.pics.url %} <img id="sig-image" src="{{ sign.pics.url }}" alt="Current signature."/>
+                        {% else %} {% endif %}</p>
+                            <br>
                         <span class="text-right">{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</span><br>
 
                         <p>Signature</p>
