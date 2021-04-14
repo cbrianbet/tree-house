@@ -140,3 +140,4 @@ dmypy.json
 /media/ID/
 secrets.json
 /media/sign/
+/authapp/static/authapp/assets/landing/
