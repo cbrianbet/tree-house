@@ -755,7 +755,7 @@ def logout_request(request):
 
 
 def about(request):
-    return render(request, 'authapp/about.html')
+    return render(request, 'authapp/index.html')
 
 
 @login_required
