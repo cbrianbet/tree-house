@@ -26,6 +26,7 @@
     {#    <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">#}
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
 
+    <link rel="stylesheet" href="{% static 'authapp/assets/landing/dist/css/style.css' %}">
 
     <!-- Fonts -->
     <link rel="stylesheet" href="{% static 'authapp/global/fonts/web-icons/web-icons.min.css' %}">
@@ -104,37 +105,102 @@
                 </h3>
             </div>
             <div class="panel-body">
+
                 <h4 class="text-center">Sorry. You dont have an active subscription. Your subscription ended
                     on {{ comp.date_end }}</h4>
-                <form id="subscription" method="post" action="{% url 'subs-pick' %}">
-                    {% csrf_token %}
-                    <div class="text-center my-20">
-                        <div class="form-group clearfix">
-                            <div class="row">
-                                {% for foo in subs %}
-                                    <div class="col-md-4">
-                                        <div class="card card-inverse bg-primary">
-                                            <div class="card-body">
-                                                <h4 class="text-uppercase">{{ foo.name }}</h4>
-                                                <span>{{ foo.description }}</span>
-                                                <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
-                                                <h5 class="card-title">Period: {{ foo.duration }} months</h5>
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" name="sub_picked" required id="sub"
-                                                           data-sub-type="{{ foo.uuid }}" value="{{ foo.uuid }}">
-                                                    <label>Select</label>
+
+                <section class="pricing section">
+                    <div class="container">
+                        <div class="pricing-inner section-inner has-top-divider">
+
+                            <form id="subscription" method="post" action="{% url 'subs-pick' %}">
+                                {% csrf_token %}
+                                <div class="pricing-tables-wrap">
+                                    {% for foo in subs %}
+                                        <div class="pricing-table is-revealing">
+                                            <div class="pricing-table-inner"
+                                                 style="background: #1E4D92; background: linear-gradient(57deg, rgba(212,165,55 ,1) 0%, #1E4D92 100%);">
+                                                <div class="pricing-table-main">
+                                                    <div class="pricing-table-header">
+                                                        <div class="pricing-table-title mt-12 mb-16 text-white">{{ foo.name }}
+                                                        </div>
+                                                        <div class="pricing-table-price mb-24 pb-32"><span
+                                                                class="pricing-table-price-currency h3">KES.</span><span
+                                                                class="pricing-table-price-amount h1">{{ foo.value }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <ul class="pricing-table-features list-reset text-xs mb-56">
+                                                        <li>
+                                                <span class="list-icon">
+                                                    <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.3.3L5 9.6 1.7 6.3c-.4-.4-1-.4-1.4 0-.4.4-.4 1 0 1.4l4 4c.2.2.4.3.7.3.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0z"
+                                                              fill="#00C6A7" fill-rule="nonzero"/>
+                                                    </svg>
+                                                </span>
+                                                            <span class="text-white">Enjoy MNEST for upto {{ foo.duration }} months </span>
+                                                        </li>
+                                                        <li>
+                                                <span class="list-icon">
+                                                    <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.3.3L5 9.6 1.7 6.3c-.4-.4-1-.4-1.4 0-.4.4-.4 1 0 1.4l4 4c.2.2.4.3.7.3.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0z"
+                                                              fill="#00C6A7" fill-rule="nonzero"/>
+                                                    </svg>
+                                                </span>
+                                                            <span class="text-white">{{ foo.description }}</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="pricing-table-cta">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input type="radio" name="sub_picked" required id="sub"
+                                                               data-sub-type="{{ foo.uuid }}" value="{{ foo.uuid }}">
+                                                        <label class="text-white">Select</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="button button-secondary button-shadow"
+                                        data-dismiss="modal">Submit
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success " data-dismiss="modal">Submit</button>
-                </form>
+                </section>
+                {#                <form id="subscription" method="post" action="{% url 'subs-pick' %}">#}
+                {#                    {% csrf_token %}#}
+                {#                    <div class="text-center my-20">#}
+                {#                        <div class="form-group clearfix">#}
+                {#                            <div class="row">#}
+                {#                                {% for foo in subs %}#}
+                {#                                    <div class="col-md-4">#}
+                {#                                        <div class="card card-inverse"#}
+                {#                                             style="background: #1E4D92; background: linear-gradient(57deg, rgba(212,165,55 ,1) 0%, #1E4D92 100%);">#}
+                {#                                            <div class="card-body">#}
+                {#                                                <h4 class="text-uppercase">{{ foo.name }}</h4>#}
+                {#                                                <span class="text-white">{{ foo.description }}</span>#}
+                {#                                                <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>#}
+                {#                                                <h5 class="card-title">Period: {{ foo.duration }} months</h5>#}
+                {#                                                <div class="radio-custom radio-primary">#}
+                {#                                                    <input type="radio" name="sub_picked" required id="sub"#}
+                {#                                                           data-sub-type="{{ foo.uuid }}" value="{{ foo.uuid }}">#}
+                {#                                                    <label>Select</label>#}
+                {#                                                </div>#}
+                {#                                            </div>#}
+                {#                                        </div>#}
+                {#                                    </div>#}
+                {#                                {% endfor %}#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#                    <button type="submit" class="btn btn-success " data-dismiss="modal">Submit</button>#}
+                {#                </form>#}
+
             </div>
+
         </div>
+
 
         <!-- Modal -->
         <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
