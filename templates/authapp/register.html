@@ -244,16 +244,16 @@
                                     <div class="row">
                                         {% for foo in sub %}
                                             <div class="col-md-4">
-                                                <div class="card card-inverse bg-primary">
+                                                <div class="card card-inverse" style="background: #1E4D92; background: linear-gradient(57deg, rgba(212,165,55 ,1) 0%, #1E4D92 100%);">
                                                     <div class="card-body">
                                                         <h4 class="text-uppercase">{{ foo.name }}</h4>
-                                                        <span>{{ foo.description }}</span>
+                                                        <span  class="text-white">{{ foo.description }}</span>
                                                         <h5 class="card-title">Price: KSHS.{{ foo.value }}</h5>
                                                         <h5 class="card-title">Period: {{ foo.duration }} months</h5>
                                                         <div class="radio-custom radio-primary">
                                                             <input type="radio" name="sub_picked" required id="sub"
                                                                    data-sub-type="{{ foo.uuid }}" value="{{ foo.uuid }}">
-                                                            <label>Select</label>
+                                                            <label class="text-white">Select</label>
                                                         </div>
                                                     </div>
                                                 </div>
