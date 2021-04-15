@@ -13,6 +13,8 @@ urlpatterns = [
     url('', include('chatApp.urls')),
     url('', include('reports.urls')),
     url('', include('back_auto.urls')),
+    url(r'^auth/', include('djoser.urls')),
+    url(r'^auth/', include('djoser.urls.authtoken')),
     # path('accounts/', include('django.contrib.auth.urls')),
 
     path('password_reset/done/',

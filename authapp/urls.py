@@ -24,5 +24,8 @@ urlpatterns = [
     path('suspend/comp/<int:uid>', views.suspend_company, name='suspend_comp'),
     path('delete/comp/<int:uid>', views.delete_company, name='delete_comp'),
     path('logout/', views.logout_request, name='logout'),
-    path("password_reset", views.password_reset_request, name="password_reset")
+    path("password_reset", views.password_reset_request, name="password_reset"),
+
+    #apis
+    path("api/update/user", views.user_update_api, name="update_user"),
 ]

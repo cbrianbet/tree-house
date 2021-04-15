@@ -21,6 +21,9 @@ from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from psycopg2._psycopg import IntegrityError
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from authapp.decorators import unsubscribed_user, unauthenticated_user
 from authapp.forms import LoginForm
@@ -520,13 +523,17 @@ def signup(request):
         pwrd = request.POST.get('password')
         f_name = request.POST.get('f_name')
         l_name = request.POST.get('l_name')
-        terms = request.POST.get('terms')
+        terms = request.POST.get('term')
         company_name = request.POST.get('company')
         no_of_units = request.POST.get('props_no')
         type = request.POST.get('acc_type')
         number = request.POST.get('id_no')
         location = request.POST.get('location')
         sub_picked = request.POST.get('sub_picked')
+        if terms == "on":
+            terms = True
+        else:
+            terms = False
         if request.POST.get('mobile') == '':
             mobile = request.POST.get('mobile2')
         else:
@@ -1211,3 +1218,40 @@ def password_reset_request(request):
                 messages.error(request, 'An invalid email has been entered.')
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="password/password_reset.html", context={"password_reset_form": password_reset_form})
+
+#apis
+@api_view(['POST'])
+def signup_api(request):
+    return Response({}, status.HTTP_201_CREATED)
+
+
+@api_view(['PATCH'])
+def user_update_api(request):
+    user = Users.objects.get(id=request.user.id)
+    try:
+        user.email = request.data['email']
+        user.save()
+    except Exception as e:
+        print(e)
+    prof = Profile.objects.get(user=user)
+    try:
+        prof.first_name = request.data['first_name']
+        prof.save()
+    except Exception as e:
+        print(e)
+    try:
+        prof.last_name = request.data['last_name']
+        prof.save()
+    except Exception as e:
+        print(e)
+    try:
+        prof.id_number = request.data['id_number']
+        prof.save()
+    except Exception as e:
+        print(e)
+    try:
+        prof.msisdn = request.data['msisdn']
+        prof.save()
+    except Exception as e:
+        print(e)
+    return Response({'success': True, 'message': "User updated"}, status.HTTP_200_OK)
