@@ -1207,7 +1207,7 @@ def password_reset_request(request):
                         'token': default_token_generator.make_token(user),
                         'protocol': 'https',
                     }
-                    email = render_to_string(email_template_name, c)
+                    email = render_to_string('properties/email_temp_08.html', c)
                     try:
                         send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
                     except BadHeaderError:

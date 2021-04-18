@@ -1083,9 +1083,13 @@ def respond_yes(request, u_id):
     eq = Enquire.objects.get(uuid=u_id)
     eq.response = True
     eq.save()
+    unit =Unit.objects.get(id=eq.unit_id)
+
+    company = CompanyProfile.objects.get(company=unit.property.company, user__acc_type_id__in=[2, 3]).user
+    landlord = Profile.objects.get(user=company)
 
     subject = "Enquiry for {}".format(eq.unit.unit_name)
-    html_message = render_to_string('properties/email_temp_01.html')
+    html_message = render_to_string('properties/email_temp_07.html',  {'unit': unit, 'landlord': landlord} )
     plain_message = strip_tags(html_message)
     message = '''
             This is a notice that your request for the unit has been approved. The contact details will be sent
@@ -1113,8 +1117,10 @@ def respond_no(request, u_id):
     message = '''
             This is a notice that your request for the unit has been rejected.
             '''
+    html_message = render_to_string('properties/email_temp_06.html')
+    plain_message = strip_tags(html_message)
     try:
-        send_mail(subject, message, EMAIL_HOST_USER, [eq.user.email], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [eq.user.email], html_message=html_message, fail_silently=False)
     except:
         print('failed')
     return redirect('enquire-list')
@@ -1140,7 +1146,7 @@ def send_email_enq(t, prof, l):
         This is a notice that {} {} is enquiring about unit: {}. Login to respond.
         '''.format(prof.first_name, prof.last_name, t)
 
-    html_message = render_to_string('properties/email_temp_01.html')
+    html_message = render_to_string('properties/email_temp_05.html', {"prof": prof, "t": t})
     plain_message = strip_tags(html_message)
     try:
         send_mail(subject, plain_message, EMAIL_HOST_USER, [l], html_message=html_message,fail_silently=False)
@@ -1256,6 +1262,5 @@ def non_compliance(request, tenant):
     non_comp.save()
 
     return redirect('view-tenant', u_uid=t.unit.uuid)
-
 
 
