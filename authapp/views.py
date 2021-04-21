@@ -963,7 +963,7 @@ def confirm_payment(request):
                     past_trx.save()
                 except:
                     print("wrong")
-                return HttpResponse(reverse('logout'))
+                return HttpResponse(reverse('web-logout'))
         if int(wallet['transactions']['last_page']) != 1:
             URL = wallet['transactions']['next_page_url']
             for i in range(int(wallet['transactions']['last_page']) - 1):
@@ -1021,7 +1021,7 @@ def confirm_payment(request):
                         past_trx.save()
                     except:
                         print("wrong")
-                    return HttpResponse(reverse('logout'))
+                    return HttpResponse(reverse('web-logout'))
             if int(wallet['transactions']['last_page']) != 1:
                 for i in range(int(wallet['transactions']['last_page']) - 1):
                     URL = wallet['transactions']['next_page_url']
@@ -1045,7 +1045,7 @@ def confirm_payment(request):
                                     past_trx.save()
                                 except:
                                     print("wrong")
-                                return HttpResponse(reverse('logout'))
+                                return HttpResponse(reverse('web-logout'))
     return "Not Found"
 
 
@@ -1086,7 +1086,7 @@ def confirm_payment_renew(request):
                     past_trx.save()
                 except:
                     print("wrong")
-                return HttpResponse(reverse('logout'))
+                return HttpResponse(reverse('web-logout'))
         if int(wallet['transactions']['last_page']) != 1:
             for i in range(int(wallet['transactions']['last_page']) - 1):
                 URL = wallet['transactions']['next_page_url']
@@ -1107,7 +1107,7 @@ def confirm_payment_renew(request):
                                 past_trx.save()
                             except:
                                 print("wrong")
-                            return HttpResponse(reverse('logout'))
+                            return HttpResponse(reverse('web-logout'))
 
     elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
         refreshToken()
@@ -1137,7 +1137,7 @@ def confirm_payment_renew(request):
                         past_trx.save()
                     except:
                         print("wrong")
-                    return HttpResponse(reverse('logout'))
+                    return HttpResponse(reverse('web-logout'))
             if int(wallet['transactions']['last_page']) != 1:
                 for i in range(int(wallet['transactions']['last_page']) - 1):
                     URL = wallet['transactions']['next_page_url']
