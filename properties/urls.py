@@ -42,4 +42,9 @@ urlpatterns = [
     path('documnet/vacate', views.document_vacate, name='document-vacate'),
     path('documnet/non-comp<int:vid>', views.document_non_comp, name='document-non-comp'),
     path('send/non-comp/<int:tenant>', views.non_compliance, name='non-comp'),
+
+    #api
+    path('api/tenant/current', views.current_app_api, name='curr-app-api'),
+    path('api/tenant/previous', views.previous_app_api, name='prev-app-api'),
+
 ]

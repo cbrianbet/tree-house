@@ -19,6 +19,10 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from authapp.decorators import unsubscribed_user
 from authapp.models import AccTypes, SignatureLandlord
@@ -29,6 +33,7 @@ from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from .pdfs import render_to_pdf
+from .serializer import TenantHistorySerializer
 
 
 @login_required
@@ -1264,3 +1269,18 @@ def non_compliance(request, tenant):
     return redirect('view-tenant', u_uid=t.unit.uuid)
 
 
+#api
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def current_app_api(request):
+    hist = TenantHistory.objects.get(tenant__profile__user_id=request.user.id, end_date=None)
+    ser = TenantHistorySerializer(hist, many=False)
+    return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def previous_app_api(request):
+    hist = TenantHistory.objects.filter(tenant__profile__user_id=request.user.id, end_date__lt=datetime.date.today())
+    ser = TenantHistorySerializer(hist, many=True)
+    return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
