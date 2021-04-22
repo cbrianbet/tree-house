@@ -1208,8 +1208,9 @@ def password_reset_request(request):
                         'protocol': 'https',
                     }
                     email = render_to_string('properties/email_temp_08.html', c)
+                    plain_message = strip_tags(email)
                     try:
-                        send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
+                        send_mail(subject, plain_message, 'admin@example.com', [user.email], html_message=email, fail_silently=False)
                     except BadHeaderError:
                         return HttpResponse('Invalid header found.')
                 return redirect("/password_reset/done/")
@@ -1243,8 +1244,9 @@ def password_reset_api(request):
                     'protocol': 'https',
                 }
                 email = render_to_string('properties/email_temp_08.html', c)
+                plain_message = strip_tags(email)
                 try:
-                    send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
+                    send_mail(subject, plain_message, 'admin@example.com', [user.email], html_message=email, fail_silently=False)
                 except BadHeaderError:
                     return HttpResponse('Invalid header found.')
             return Response({"success": True, "message": "Check email"}, status.HTTP_200_OK)
