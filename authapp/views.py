@@ -1225,6 +1225,35 @@ def signup_api(request):
     return Response({}, status.HTTP_201_CREATED)
 
 
+@api_view(['POST'])
+def password_reset_api(request):
+    if request.method == "POST":
+        associated_users = Users.objects.filter(Q(email=request.data['email'], is_active=True))
+        if associated_users.exists():
+            for user in associated_users:
+                subject = "Password Reset Requested for {}".format(user.username)
+                email_template_name = "password/password_reset_email.txt"
+                c = {
+                    "email": user.email,
+                    'domain': 'mnestafrica.com',
+                    'site_name': 'MNEST',
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "user": user,
+                    'token': default_token_generator.make_token(user),
+                    'protocol': 'https',
+                }
+                email = render_to_string('properties/email_temp_08.html', c)
+                try:
+                    send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
+                except BadHeaderError:
+                    return HttpResponse('Invalid header found.')
+            return Response({"success": True, "message": "Check email"}, status.HTTP_200_OK)
+
+        else:
+            return Response({"success": False, "message": "Enter valid email"}, status.HTTP_404_NOT_FOUND)
+
+
+
 @api_view(['PATCH'])
 def user_update_api(request):
     user = Users.objects.get(id=request.user.id)
