@@ -1212,7 +1212,10 @@ def document_lease(request):
     company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
 
     landlord = Profile.objects.get(user=company)
-    sign = SignatureLandlord.objects.get(user=company)
+    try:
+        sign = SignatureLandlord.objects.get(user=company)
+    except SignatureLandlord.DoesNotExist:
+        sign = None
     context = {
         'user': user,
         'tenant': Tenant.objects.get(profile__user=user),
