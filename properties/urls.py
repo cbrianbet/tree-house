@@ -46,5 +46,6 @@ urlpatterns = [
     #api
     path('api/tenant/current', views.current_app_api, name='curr-app-api'),
     path('api/tenant/previous', views.previous_app_api, name='prev-app-api'),
+    path('api/tenant/vacate', views.generate_vacate_notice_api, name='vacate-api'),
 
 ]

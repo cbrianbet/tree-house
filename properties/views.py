@@ -1287,3 +1287,25 @@ def previous_app_api(request):
     hist = TenantHistory.objects.filter(tenant__profile__user_id=request.user.id, end_date__lt=datetime.date.today())
     ser = TenantHistorySerializer(hist, many=True)
     return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_vacate_notice_api(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
+    if VacateNotice.objects.filter(notice_from=tenant).exists():
+        return Response({"success": False, "message": "Vacate notice already sent   "}, status.HTTP_200_OK)
+    if request.method == "POST":
+        print(request.data)
+        reason = request.data['reason']
+        moving_contact = request.data['moving_contact']
+        days_notice = request.data['days_notice']
+        date = request.data['date']
+
+        req = VacateNotice.objects.create(reason=reason, new_contacts=moving_contact, days_notice=days_notice,
+                                          vacate_date=date, notice_from=tenant, created_by=request.user,
+                                          unit=tenant.unit)
+        req.save()
+
+    return Response({"success": True, "message": "Vacate notice sent"}, status.HTTP_200_OK)
+
