@@ -1220,6 +1220,7 @@ def password_reset_request(request):
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="password/password_reset.html", context={"password_reset_form": password_reset_form})
 
+
 #apis
 @api_view(['POST'])
 def signup_api(request):
@@ -1255,7 +1256,6 @@ def password_reset_api(request):
             return Response({"success": False, "message": "Enter valid email"}, status.HTTP_404_NOT_FOUND)
 
 
-
 @api_view(['PATCH'])
 def user_update_api(request):
     user = Users.objects.get(id=request.user.id)
@@ -1286,3 +1286,53 @@ def user_update_api(request):
     except Exception as e:
         print(e)
     return Response({'success': True, 'message': "User updated"}, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def tenant_bill_bal(request):
+    user = request.user
+    prof = Profile.objects.get(user=user)
+
+    if prof.hapokash is None:
+        wal_id = hapokashcreate()
+        try:
+            if wal_id['success']:
+                prof.hapokash = wal_id['wallet']['id']
+                prof.save()
+            else:
+                print('false')
+        except:
+            print(wal_id)
+
+
+    invoice = Invoice.objects.filter(invoice_for=user, status=False)
+    inv_item = InvoiceItems.objects.filter(invoice__in=invoice)
+    inv_tran = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_item)
+
+    r_invoice = RentInvoice.objects.filter(invoice_for=user, status=False)
+    r_inv_item = RentItems.objects.filter(invoice__in=r_invoice)
+    r_inv_tran = RentItemTransaction.objects.filter(invoice_item__in=r_inv_item)
+
+    bals = 0
+    for due in inv_item:
+        bals = due.amount + bals
+
+    for due in inv_tran:
+        bals = bals - due.amount_paid
+
+    bals = '{0:,}'.format(bals)
+
+    r_bals = 0
+    for due in r_inv_item:
+        r_bals = due.amount + r_bals + due.delay_penalties
+
+    for due in r_inv_tran:
+        r_bals = r_bals - due.amount_paid
+
+    r_bals = '{0:,}'.format(r_bals)
+    context = {
+        'invoice balance': bals,
+        'rent invoice balance': r_bals,
+        'open_invoices': invoice.count() + r_invoice.count(),
+    }
+    return Response({"success": True, "data": context}, status.HTTP_200_OK)

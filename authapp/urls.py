@@ -29,4 +29,5 @@ urlpatterns = [
     #apis
     path("api/update/user", views.user_update_api, name="update_user"),
     path("api/reset_password", views.password_reset_api, name="reset_api"),
+    path("api/invoice/balances", views.tenant_bill_bal, name="tenant-bill-bal"),
 ]
