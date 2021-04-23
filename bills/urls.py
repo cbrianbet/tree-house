@@ -25,8 +25,10 @@ urlpatterns = [
     path('wallet/transfer', views.wallet_transfer, name='wallet-transfer'),
 
     #api
-    path('api/wallet/details', views.wallet_transfer, name='wallet-transfer'),
+    # path('api/wallet/details', views.wallet_transfer, name='wallet-transfer'),
     path('api/wallet/mpesa/stktopup', views.stkpushtopup_api, name='stk-topup-api'),
     path('api/wallet/mpesa/withdraw', views.hapowithdraw_api, name='withdraw-api'),
-    path('wallet/transfer', views.wallet_transfer, name='wallet-transfer'),
+    # path('wallet/transfer', views.wallet_transfer, name='wallet-transfer'),
+    path('api/wallet/trans', views.wall_trans_api, name='wallet-trans-api'),
+    path('api/wallet/details', views.wall_details_api, name='wallet-details-api'),
 ]

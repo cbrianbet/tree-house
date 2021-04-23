@@ -19,7 +19,7 @@ from rest_framework.response import Response
 
 from authapp.decorators import unsubscribed_user
 from authapp.models import AuthTokens
-from authapp.views import refreshToken
+from authapp.views import refreshToken, hapokashcreate, wallet_trans
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from properties.models import *
@@ -906,7 +906,7 @@ def stkpushtopup_api(request):
     URL = "https://portal.hapokash.app/api/wallet/top_up"
 
     headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
-    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": user.hapokash}, headers=headers_dict)
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.data['amount'], "account_no": user.hapokash}, headers=headers_dict)
     wallet = r.json()
     print(wallet)
     return Response(wallet, status.HTTP_200_OK)
@@ -930,7 +930,7 @@ def hapowithdraw_api(request):
 
     bod_data = {
         "wallet_id":user.hapokash,
-        "amount": request.POST.get('amount'),
+        "amount": request.data['amount'],
         "msisdn":mobile,
         "narration":"Withdrawal to {}".format(mobile)
     }
@@ -962,4 +962,159 @@ def hapowithdraw_api(request):
         return HttpResponse(wallet['message'])
 
     print(wallet)
+    return Response(wallet, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def wall_trans_api(request):
+    prof = Profile.objects.get(user=request.user)
+
+    if prof.hapokash is None:
+        wal_id = hapokashcreate()
+        try:
+            if wal_id['success']:
+                prof.hapokash = wal_id['wallet']['id']
+                prof.save()
+            else:
+                print('false')
+        except:
+            print(wal_id)
+
+    URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+
+    r = requests.get(url=URL, headers=headers)
+    print(r.json())
+    wallet = r.json()
+
+    if wallet['success']:
+        cur_balance = wallet['wallet']['current_balance']
+        pre_balance = wallet['wallet']['previous_balance']
+    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+
+        if wallet['success']:
+            cur_balance = wallet['wallet']['current_balance']
+            pre_balance = wallet['wallet']['previous_balance']
+        else:
+            cur_balance = 0
+            pre_balance = 0
+    else:
+        cur_balance = 0
+        pre_balance = 0
+
+    trans = wallet_trans(prof.hapokash)
+    print(trans)
+    if trans['last_page'] != 1:
+        URL = trans['next_page_url']
+        for i in range(trans['last_page'] - 1):
+            print(trans['next_page_url'])
+            headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+            }
+
+            r = requests.get(url=URL, headers=headers)
+            wallet = r.json()
+            print(wallet)
+            if wallet['success']:
+                trans['data'] = trans['data'] + wallet['transactions']['data']
+            elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+                refreshToken()
+                headers = {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+                }
+
+                r = requests.get(url=URL, headers=headers)
+                wallet = r.json()
+                print(wallet)
+                if wallet['success']:
+                    trans['data'] = trans['data'] + wallet['transactions']['data']
+            URL = wallet['transactions']['next_page_url']
+
+    for d in trans['data']:
+        d.update((k, datetime.strptime(
+            '{} {}'.format(v.split('T')[0], v.split('T')[1].split('.')[0]), '%Y-%m-%d %H:%M:%S'
+        ).strftime('%d/%B/%Y, %H:%M:%S')) for k, v in d.items() if k == "created_at")
+
+    context = {
+        'success': True,
+        'trans': trans['data']
+    }
+    return Response(context, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def wall_details_api(request):
+    prof = Profile.objects.get(user=request.user)
+
+    if prof.hapokash is None:
+        wal_id = hapokashcreate()
+        try:
+            if wal_id['success']:
+                prof.hapokash = wal_id['wallet']['id']
+                prof.save()
+            else:
+                print('false')
+        except:
+            print(wal_id)
+
+    URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+
+    r = requests.get(url=URL, headers=headers)
+    print(r.json())
+    wallet = r.json()
+
+    if wallet['success']:
+        cur_balance = wallet['wallet']['current_balance']
+        pre_balance = wallet['wallet']['previous_balance']
+    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+
+        if wallet['success']:
+            cur_balance = wallet['wallet']['current_balance']
+            pre_balance = wallet['wallet']['previous_balance']
+        else:
+            cur_balance = 0
+            pre_balance = 0
+    else:
+        cur_balance = 0
+        pre_balance = 0
+
+    context = {
+        'cur_balance': cur_balance,
+        'previous_balance': pre_balance
+    }
     return Response(wallet, status.HTTP_200_OK)
