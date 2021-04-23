@@ -33,7 +33,7 @@ from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from .pdfs import render_to_pdf
-from .serializer import TenantHistorySerializer
+from .serializer import TenantHistorySerializer, VacantUnitSerializer
 
 
 @login_required
@@ -1309,3 +1309,22 @@ def generate_vacate_notice_api(request):
 
     return Response({"success": True, "message": "Vacate notice sent"}, status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def vacancy_search_within(request):
+    user = request.user
+    t = Tenant.objects.get(profile__user=user)
+    units = Unit.objects.filter(property=t.unit.property, unit_status="Vacant")
+    ser = VacantUnitSerializer(units, many=True)
+    return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def vacancy_search_api(request):
+    user = request.user
+    t = Tenant.objects.get(profile__user=user)
+    units = Unit.objects.filter(unit_status="Vacant").exclude(property=t.unit.property).order_by('property_id')
+    ser = VacantUnitSerializer(units, many=True)
+    return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)

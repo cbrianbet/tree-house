@@ -47,5 +47,7 @@ urlpatterns = [
     path('api/tenant/current', views.current_app_api, name='curr-app-api'),
     path('api/tenant/previous', views.previous_app_api, name='prev-app-api'),
     path('api/tenant/vacate', views.generate_vacate_notice_api, name='vacate-api'),
+    path('api/vacant/within', views.vacancy_search_within, name='vacant-w-api'),
+    path('api/vacant', views.vacancy_search_api, name='vacant-api'),
 
 ]

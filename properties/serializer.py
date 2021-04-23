@@ -18,3 +18,16 @@ class TenantHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TenantHistory
         fields = "__all__"
+
+
+class PropertiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Properties
+        fields = "__all__"
+
+
+class VacantUnitSerializer(serializers.ModelSerializer):
+    property = PropertiesSerializer(read_only=True)
+    class Meta:
+        model = Unit
+        fields = "__all__"
