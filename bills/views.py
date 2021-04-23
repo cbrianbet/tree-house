@@ -12,6 +12,11 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from authapp.decorators import unsubscribed_user
 from authapp.models import AuthTokens
 from authapp.views import refreshToken
@@ -882,3 +887,79 @@ def wallet_transfer(request):
             return HttpResponse('success')
     else:
         return HttpResponse(ra['message'])
+
+
+#api
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def stkpushtopup_api(request):
+    user = Profile.objects.get(user=request.user)
+    mobile = request.data['mobile']
+
+    if mobile.startswith('0'):
+        mobile = '254' + mobile[1:]
+    elif mobile.startswith('1') or mobile.startswith('7'):
+        mobile = '254' + mobile
+    elif mobile.startswith('+'):
+        mobile = mobile[1:]
+
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
+
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": user.hapokash}, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
+    return Response(wallet, status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def hapowithdraw_api(request):
+    user = Profile.objects.get(user=request.user)
+    mobile = request.data['mobile']
+
+    if mobile.startswith('0'):
+        mobile = '254' + mobile[1:]
+    elif mobile.startswith('1') or mobile.startswith('7'):
+        mobile = '254' + mobile
+    elif mobile.startswith('+'):
+        mobile = mobile[1:]
+
+    URL = "https://portal.hapokash.app/api/wallet/withdraw"
+    print(mobile)
+
+    bod_data = {
+        "wallet_id":user.hapokash,
+        "amount": request.POST.get('amount'),
+        "msisdn":mobile,
+        "narration":"Withdrawal to {}".format(mobile)
+    }
+
+    headers_dict = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+    r = requests.post(url=URL, json=bod_data, headers=headers_dict)
+    wallet = r.json()
+    if not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        bod_data = {
+            "wallet_id": user.hapokash,
+            "amount": request.POST.get('amount'),
+            "msisdn": mobile,
+            "narration": "Withdrawal to {}".format(mobile)
+        }
+
+        headers_dict = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        r = requests.post(url=URL, json=bod_data, headers=headers_dict)
+        wallet = r.json()
+    elif not wallet['success']:
+        return HttpResponse(wallet['message'])
+
+    print(wallet)
+    return Response(wallet, status.HTTP_200_OK)

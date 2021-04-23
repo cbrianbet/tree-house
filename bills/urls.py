@@ -24,4 +24,9 @@ urlpatterns = [
     path('property/units/tenant/invoice/add/<uuid:u_uid>', views.invoice_tenant, name='invoice-tenant'),
     path('wallet/transfer', views.wallet_transfer, name='wallet-transfer'),
 
+    #api
+    path('api/wallet/details', views.wallet_transfer, name='wallet-transfer'),
+    path('api/wallet/mpesa/stktopup', views.stkpushtopup_api, name='stk-topup-api'),
+    path('api/wallet/mpesa/withdraw', views.hapowithdraw_api, name='withdraw-api'),
+    path('wallet/transfer', views.wallet_transfer, name='wallet-transfer'),
 ]
