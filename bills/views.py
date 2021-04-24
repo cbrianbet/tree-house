@@ -1118,3 +1118,147 @@ def wall_details_api(request):
         'previous_balance': pre_balance
     }
     return Response(wallet, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def open_rent_bills_api(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
+    r_invoice = RentInvoice.objects.filter(invoice_for=tenant.profile.user, status=False)
+
+    r_inv_item = RentItems.objects.filter(invoice__in=r_invoice)
+    r_inv_tran = RentItemTransaction.objects.filter(invoice_item__in=r_inv_item)
+
+
+    r_bals = 0
+    for due in r_inv_item:
+        r_bals = due.amount + r_bals + due.delay_penalties
+
+    for due in r_inv_tran:
+        r_bals = r_bals - due.amount_paid
+
+    r_bals = '{0:,}'.format(r_bals)
+
+    r = []
+    for inv in r_invoice:
+        total = 0
+        paid = 0
+        pen = 0
+        r_inv_items = RentItems.objects.filter(invoice=inv)
+        for i in r_inv_items:
+            total = total + i.amount + i.delay_penalties
+            trans = RentItemTransaction.objects.filter(invoice_item=i)
+            pen = i.delay_penalties
+            for ab in trans:
+                paid = ab.amount_paid + paid
+
+        r.append({
+            'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+            'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status, "penalties": pen
+        })
+    context = {
+        'success':True,
+        'data': r,
+        'total_due': r_bals
+    }
+    return Response(context, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def closed_rent_bills_api(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
+    r_invoice = RentInvoice.objects.filter(invoice_for=tenant.profile.user, status=True)
+    r = []
+    for inv in r_invoice:
+        total = 0
+        paid = 0
+        r_inv_items = RentItems.objects.filter(invoice=inv)
+        for i in r_inv_items:
+            total = total + i.amount + i.delay_penalties
+            trans = RentItemTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
+
+        r.append({
+            'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+            'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status
+        })
+    context = {
+        'success':True,
+        'data': r,
+    }
+    return Response(context, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def open_invoice_bills_api(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
+    invoice = Invoice.objects.filter(invoice_for=tenant.profile.user, status=False)
+
+    inv_item = InvoiceItems.objects.filter(invoice__in=invoice)
+    inv_tran = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_item)
+
+
+    bals = 0
+    for due in inv_item:
+        bals = due.amount + bals
+
+    for due in inv_tran:
+        bals = bals - due.amount_paid
+
+    bals = '{0:,}'.format(bals)
+
+    a = []
+    for inv in invoice:
+        total = 0
+        paid = 0
+        inv_items = InvoiceItems.objects.filter(invoice=inv)
+        for i in inv_items:
+            total = total + i.amount
+            trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
+
+        a.append({
+            'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+            'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status
+        })
+    context = {
+        "success": True,
+        'data': a,
+        'total_due': bals
+    }
+    return Response(context, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def closed_invoice_bills_api(request):
+    tenant = Tenant.objects.get(profile__user=request.user)
+    invoice = Invoice.objects.filter(invoice_for=tenant.profile.user, status=True)
+    a = []
+    for inv in invoice:
+        total = 0
+        paid = 0
+        inv_items = InvoiceItems.objects.filter(invoice=inv)
+        for i in inv_items:
+            total = total + i.amount
+            trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
+            for ab in trans:
+                paid = ab.amount_paid + paid
+
+        a.append({
+            'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+            'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+            'created_at': inv.created_at, 'paid': paid, "status": inv.status
+        })
+    context = {
+        "success": True,
+        'data': a
+    }
+    return Response(context, status.HTTP_200_OK)
