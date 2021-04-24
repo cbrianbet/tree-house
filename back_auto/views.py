@@ -121,7 +121,7 @@ def apply_penalty(request):
 
             print(r)
             if prop.penalty_type == "percent":
-                pen = int(prop.penalty_value) * int(unit.value) * delta.days / 100
+                pen = (int(unit.value) * (int(prop.penalty_value) / 100)) * delta.days
                 try:
                     p = RentItems.objects.get(invoice=r)
                     p.delay_penalties = pen
@@ -130,7 +130,7 @@ def apply_penalty(request):
                     print(e)
             elif prop.penalty_type == "fixed":
 
-                pen = int(prop.penalty_value) + int(unit.value) * delta.days
+                pen = int(unit.value) + (int(prop.penalty_value) * delta.days)
 
                 try:
                     p = RentItems.objects.get(invoice=r)
