@@ -142,6 +142,8 @@ def apply_penalty(request):
             print(unit)
 
     except RentInvoice.DoesNotExist:
-        raise CommandError('Invoice does not exist')
+        print('Invoice does not exist')
+    except Tenant.DoesNotExist:
+        print('Tenant does not exist')
     return HttpResponse("DONE")
 
