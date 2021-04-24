@@ -131,9 +131,13 @@ def apply_penalty(request):
             elif prop.penalty_type == "fixed":
 
                 pen = int(prop.penalty_value) + int(unit.value) * delta.days
-                p = RentItems.objects.get(invoice=r)
-                p.delay_penalties = pen
-                p.save()
+
+                try:
+                    p = RentItems.objects.get(invoice=r)
+                    p.delay_penalties = pen
+                    p.save()
+                except Exception as e:
+                    print(e)
 
             print(unit)
 
