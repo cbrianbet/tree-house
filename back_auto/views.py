@@ -8,8 +8,8 @@ from django.http import HttpResponse
 
 from bills.models import RentInvoice, RentItems
 from bills.views import increment_rent_invoice_number
-from properties.models import Tenant
-from authapp.models import Users
+from properties.models import Tenant, Unit, Properties
+from authapp.models import Users, Profile
 from tree_house.settings import EMAIL_HOST_USER
 
 
@@ -106,3 +106,38 @@ def send_email(t, date):
     except Exception as e:
         print(e)
         return False
+
+
+def apply_penalty(request):
+    try:
+        rent = RentInvoice.objects.filter(date_due__lt=date.today(), status=False)
+        for r in rent:
+            delta = date.today() - r.date_due
+            print(delta.days)
+
+            tenant = Tenant.objects.get(profile=Profile.objects.get(user=r.invoice_for))
+            unit = Unit.objects.get(id=tenant.unit_id)
+            prop = Properties.objects.get(id=unit.property_id)
+
+            print(r)
+            if prop.penalty_type == "percent":
+                pen = int(prop.penalty_value) * int(unit.value) * delta.days / 100
+                try:
+                    p = RentItems.objects.get(invoice=r)
+                    p.delay_penalties = pen
+                    p.save()
+                except Exception as e:
+                    print(e)
+            elif prop.penalty_type == "fixed":
+
+                pen = int(prop.penalty_value) + int(unit.value) * delta.days
+                p = RentItems.objects.get(invoice=r)
+                p.delay_penalties = pen
+                p.save()
+
+            print(unit)
+
+    except RentInvoice.DoesNotExist:
+        raise CommandError('Invoice does not exist')
+    return HttpResponse("DONE")
+
