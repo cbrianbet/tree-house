@@ -33,4 +33,7 @@ urlpatterns = [
     path('api/rent_invoices/closed', views.closed_rent_bills_api, name='closed-rentinvoices-api'),
     path('api/invoices/open', views.open_invoice_bills_api, name='open-invoices-api'),
     path('api/invoices/closed', views.closed_invoice_bills_api, name='closed-invoices-api'),
+    path('api/inv_pay/mpesa', views.inv_payment_api, name='pay-mpesa-invoices-api'),
+    path('api/inv_conf/mpesa', views.conf_inv_pay_api, name='conf-invoices-api'),
+    path('api/inv_pay/wallet', views.pay_inv_wallet_api, name='pay-wallet-invoices-api'),
 ]

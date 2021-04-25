@@ -1262,3 +1262,243 @@ def closed_invoice_bills_api(request):
         'data': a
     }
     return Response(context, status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def inv_payment_api(request):
+
+    user = Profile.objects.get(user=request.user)
+    prop = Tenant.objects.get(profile=user).unit.property
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    landlord = Profile.objects.get(user=company)
+    mobile = user.msisdn
+
+    if mobile.startswith('0'):
+        mobile = '254' + mobile[1:]
+    elif mobile.startswith('1') or mobile.startswith('7'):
+        mobile = '254' + mobile
+    elif mobile.startswith('+'):
+        mobile = mobile[1:]
+
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
+    print(landlord.hapokash)
+
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.data['amount'], "account_no": landlord.hapokash}, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
+    return Response(wallet)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def conf_inv_pay_api(request):
+    trans = request.data['trans']
+    uuid = request.data['inv_uuid']
+
+    user = Profile.objects.get(user=request.user)
+    prop = Tenant.objects.get(profile=user).unit.property
+    company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2,3]).user
+    landlord = Profile.objects.get(user=company)
+    print(landlord.hapokash)
+
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+
+    URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(landlord.hapokash)
+    r = requests.get(url=URL, headers=headers)
+    past_trx =TransactionCodes.objects.filter(trx=trans)
+    if past_trx.exists():
+        return Response({'success':False, 'message': "Transaction code already used"}, status.HTTP_401_UNAUTHORIZED)
+    wallet = r.json()
+    print(wallet)
+    if wallet['success']:
+        search = wallet['transactions']['data']
+        # print(search)
+        for a in search:
+            print(a)
+            if a['trx_id'] == trans:
+                if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                    past_trx.save()
+                    return Response({'success':True, 'message': "Transaction successfully confirmed"}, status.HTTP_200_OK)
+                else:
+                    return Response({'success':False, 'message': "Try again"}, status.HTTP_400_BAD_REQUEST)
+        if int(wallet['transactions']['last_page']) != 1:
+            for i in range(int(trans['last_page']) - 1):
+                URL = wallet['transactions']['next_page_url']
+                r = requests.get(url=URL, headers=headers)
+                wallet = r.json()
+                if wallet['success']:
+                    search = wallet['transactions']['data']
+                    for a in search:
+                        if a['trx_id'] == trans:
+                            if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                                past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                                past_trx.save()
+                                return Response({'success':True, 'message': "Transaction successfully confirmed"}, status.HTTP_200_OK)
+                            else:
+                                return Response({'success':False, 'message': "Try again"}, status.HTTP_400_BAD_REQUEST)
+    else:
+        refreshToken()
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        URL = "https://portal.hapokash.app/api/wallet/transactions/{}".format(landlord.hapokash)
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+        print(wallet)
+        if wallet['success']:
+            search = wallet['transactions']['data']
+            # print(search)
+            for a in search:
+                print(a)
+                if a['trx_id'] == trans:
+                    if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                        past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                        past_trx.save()
+                        return Response({'success':True, 'message': "Transaction successfully confirmed"}, status.HTTP_200_OK)
+                    else:
+                        return Response({'success':False, 'message': "Try again"}, status.HTTP_400_BAD_REQUEST)
+            if int(wallet['transactions']['last_page']) != 1:
+                for i in range(int(trans['last_page']) - 1):
+                    URL = wallet['transactions']['next_page_url']
+                    r = requests.get(url=URL, headers=headers)
+                    wallet = r.json()
+                    if wallet['success']:
+                        search = wallet['transactions']['data']
+                        for a in search:
+                            if a['trx_id'] == trans:
+                                if add_trans(uuid, a['trx_id'], a['amount'], request.user):
+                                    past_trx = TransactionCodes.objects.create(trx=trans, created_by=request.user)
+                                    past_trx.save()
+                                    return Response({'success':True, 'message': "Transaction successfully confirmed"}, status.HTTP_200_OK)
+                                else:
+                                    return Response({'success':False, 'message': "Try again"}, status.HTTP_400_BAD_REQUEST)
+
+    return Response({'success':False, 'message': "Transaction Not Found"}, status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def pay_inv_wallet_api(request):
+    user = Profile.objects.get(user=request.user)
+    try:
+        invoice = Invoice.objects.get(uuid=request.data['inv_uuid'])
+        prop = Tenant.objects.get(profile=user).unit.property
+        company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2, 3]).user
+        landlord = Profile.objects.get(user=company)
+
+        URL = "https://portal.hapokash.app/api/wallet/transfer"
+        PARAMS = {
+            "debit_wallet_id": user.hapokash,
+            "credit_wallet_id": landlord.hapokash,
+            "amount": request.data['amount'],
+            "narration": "Payment For Invoice From wallet"
+        }
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        r = requests.post(url=URL, json=PARAMS, headers=headers).json()
+
+        if r['success']:
+            pay = InvoiceItemsTransaction.objects.create(
+                invoice_item=InvoiceItems.objects.get(invoice=invoice), amount_paid=request.data['amount'],
+                payment_mode="Wallet Transfer",
+                remarks="Payment For Invoice From wallet", date_paid=date.today(), created_by=request.user
+            )
+            pay.save()
+            return Response({'success':True, 'message': "Transaction successful"}, status.HTTP_200_OK)
+        elif not r['success'] and r['message'] == "Unauthenticated.":
+            URL = "https://portal.hapokash.app/api/wallet/transfer"
+            PARAMS = {
+                "debit_wallet_id": user.hapokash,
+                "credit_wallet_id": landlord.hapokash,
+                "amount": request.data['amount'],
+                "narration": "Payment For Invoice From wallet"
+            }
+            headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+            }
+            r = requests.post(url=URL, json=PARAMS, headers=headers).json()
+
+            if r['success']:
+                pay = InvoiceItemsTransaction.objects.create(
+                    invoice_item=InvoiceItems.objects.get(invoice=invoice), amount_paid=request.data['amount'],
+                    payment_mode="Wallet Transfer",
+                    remarks="Payment For Invoice From wallet", date_paid=date.today(), created_by=request.user
+                )
+                pay.save()
+                return Response({'success':True, 'message': "Transaction successful"}, status.HTTP_200_OK)
+        else:
+            return Response(r)
+
+    except Invoice.DoesNotExist:
+        invoice = RentInvoice.objects.get(uuid=request.data['inv_uuid'])
+
+        prop = Tenant.objects.get(profile=user).unit.property
+        company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2, 3]).user
+        landlord = Profile.objects.get(user=company)
+
+        URL = "https://portal.hapokash.app/api/wallet/transfer"
+        PARAMS = {
+            "debit_wallet_id": user.hapokash,
+            "credit_wallet_id": landlord.hapokash,
+            "amount": request.data['amount'],
+            "narration": "Payment For Invoice From wallet"
+        }
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+        r = requests.post(url=URL, json=PARAMS, headers=headers).json()
+
+        if r['success']:
+            pay = RentItemTransaction.objects.create(
+                invoice_item=RentItems.objects.get(invoice=invoice), amount_paid=request.data['amount'],
+                payment_mode="Wallet Transfer",
+                remarks="Payment For Invoice From wallet", date_paid=date.today(), created_by=request.user
+            )
+            pay.save()
+            return Response({'success':True, 'message': "Transaction successful"}, status.HTTP_200_OK)
+        elif not r['success'] and r['message'] == "Unauthenticated.":
+            URL = "https://portal.hapokash.app/api/wallet/transfer"
+            PARAMS = {
+                "debit_wallet_id": user.hapokash,
+                "credit_wallet_id": landlord.hapokash,
+                "amount": request.data['amount'],
+                "narration": "Payment For Invoice From wallet"
+            }
+            headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+            }
+            r = requests.post(url=URL, json=PARAMS, headers=headers).json()
+
+            if r['success']:
+                pay = RentItemTransaction.objects.create(
+                    invoice_item=RentItems.objects.get(invoice=invoice), amount_paid=request.data['amount'],
+                    payment_mode="Wallet Transfer",
+                    remarks="Payment For Invoice From wallet", date_paid=date.today(), created_by=request.user
+                )
+                pay.save()
+                return Response({'success':True, 'message': "Transaction successful"}, status.HTTP_200_OK)
+        else:
+            return Response(r)
+    except Exception as e:
+        print(e)
+
+    return redirect('dashboard')
