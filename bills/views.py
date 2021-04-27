@@ -1513,7 +1513,10 @@ def inv_trans_api(request):
     invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
     if invrec.exists():
         ser = InvTransSerializer(invrec, many=True)
-        return Response({'success': True, 'data':ser.data}, status.HTTP_200_OK)
-    if rentrec.exists():
+        return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
+    elif rentrec.exists():
         ser = RentTransSerializer(rentrec, many=True)
-        return Response({'success': True, 'data':ser.data}, status.HTTP_200_OK)
+        return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
+    else:
+        return Response({'success': False, 'data': "No transactions found"}, status.HTTP_200_OK)
+
