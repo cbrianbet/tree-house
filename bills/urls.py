@@ -36,4 +36,6 @@ urlpatterns = [
     path('api/inv_pay/mpesa', views.inv_payment_api, name='pay-mpesa-invoices-api'),
     path('api/inv_conf/mpesa', views.conf_inv_pay_api, name='conf-invoices-api'),
     path('api/inv_pay/wallet', views.pay_inv_wallet_api, name='pay-wallet-invoices-api'),
+    path('api/inv_trans', views.inv_trans_api, name='trans-invoices-api'),
+    path('api/inv_pay/wallet', views.pay_inv_wallet_api, name='pay-wallet-invoices-api'),
 ]

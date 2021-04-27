@@ -23,6 +23,7 @@ from authapp.views import refreshToken, hapokashcreate, wallet_trans
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from properties.models import *
+from .serializer import InvTransSerializer, RentTransSerializer
 
 
 @login_required
@@ -1501,4 +1502,33 @@ def pay_inv_wallet_api(request):
     except Exception as e:
         print(e)
 
-    return redirect('dashboard')
+    return Response({'success':False, 'message': "Something went wrong, Try again later"}, status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def inv_trans_api(request):
+    uuid = request.data['uuid']
+    rentrec = []
+    invrec = []
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
+        comp = CompanyProfile.objects.get(user=request.user).company
+        prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
+        rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+        invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+    elif request.user.acc_type.id == 4:
+        rentrec = RentItemTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+        invrec = InvoiceItemsTransaction.objects.filter(invoice_item__invoice__uuid=uuid).order_by('created_by')
+        if invrec.exists():
+            ser = InvTransSerializer(invrec, many=True)
+            return Response({'success': True, 'data':ser.data}, status.HTTP_200_OK)
+        if rentrec.exists():
+            ser = RentTransSerializer(rentrec, many=True)
+            return Response({'success': True, 'data':ser.data}, status.HTTP_200_OK)
+
+    context = {
+        'user': request.user,
+        'req': rentrec,
+        'rreq': invrec,
+    }
+    return render(request, 'bills/trans.html', context)
