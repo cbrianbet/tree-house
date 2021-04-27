@@ -8,7 +8,7 @@ from django.http import HttpResponse
 
 from bills.models import RentInvoice, RentItems
 from bills.views import increment_rent_invoice_number
-from properties.models import Tenant, Unit, Properties
+from properties.models import Tenant, Unit, Properties, TenantHistory
 from authapp.models import Users, Profile
 from tree_house.settings import EMAIL_HOST_USER
 
@@ -129,7 +129,7 @@ def apply_penalty(request):
                     print(e)
             elif prop.penalty_type == "fixed":
 
-                pen = int(unit.value) + (int(prop.penalty_value) * delta.days)
+                pen = int(prop.penalty_value) * delta.days
 
                 try:
                     p = RentItems.objects.get(invoice=r)
