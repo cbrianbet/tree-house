@@ -79,8 +79,7 @@ def apply_invoice(rent, month, user, tenant, date):
         i.save()
         if i.pk:
             inv_item1 = RentItems.objects.create(invoice_id=i.id, invoice_item='RENT FOR {}'.format(month),
-                                             amount=round(int(rent), 2),
-                                             description='RENT')
+                                                 amount=round(int(rent), 2), description='RENT')
             inv_item1.save()
         print("Heree....")
         i.email_inform = send_email(tenant, date)
@@ -113,7 +112,6 @@ def apply_penalty(request):
         rent = RentInvoice.objects.filter(date_due__lt=date.today(), status=False)
         for r in rent:
             delta = date.today() - r.date_due
-            print(delta.days)
 
             tenant = Tenant.objects.get(profile=Profile.objects.get(user=r.invoice_for))
             unit = Unit.objects.get(id=tenant.unit_id)
@@ -126,6 +124,7 @@ def apply_penalty(request):
                     p = RentItems.objects.get(invoice=r)
                     p.delay_penalties = pen
                     p.save()
+                    send_email_delay(Tenant.objects.get(profile__user=r.invoice_for), r, delta.days, pen)
                 except Exception as e:
                     print(e)
             elif prop.penalty_type == "fixed":
@@ -136,6 +135,7 @@ def apply_penalty(request):
                     p = RentItems.objects.get(invoice=r)
                     p.delay_penalties = pen
                     p.save()
+                    send_email_delay(Tenant.objects.get(profile__user=r.invoice_for), r, delta.days, pen)
                 except Exception as e:
                     print(e)
 
@@ -147,3 +147,19 @@ def apply_penalty(request):
         print('Tenant does not exist')
     return HttpResponse("DONE")
 
+
+def send_email_delay(t, r, days, pens):
+    subject = "LATENESS PENALTIES"
+    message = '''
+        Dear {},
+        This email is to let you know that Rent Invoice ({}) for your unit {} at {} was due on {}. The penalties that have acured over {} days are {}.
+        Login to your portal at	mnestafrica.com to view it under bills. 
+        Your username is : {} incase you forgot.'''.format(t.profile.first_name, r.invoice_no, t.unit.unit_name,
+                                                           t.unit.property.property_name, r.date_due, days, pens,
+                                                           t.profile.user.username)
+    try:
+        send_mail(subject, message, EMAIL_HOST_USER, [t.profile.user.email], fail_silently=False)
+        return True
+    except Exception as e:
+        print(e)
+        return False
