@@ -183,6 +183,17 @@ class TransactionCodes(models.Model):
         db_table = "Trans codes"
 
 
+class PendingCodes(models.Model):
+    trx = models.CharField(max_length=20)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="pend_trx_created_by", null=True)
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="pend_trx_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "Pending Trans codes"
+
+
 class PeopleAttached(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
