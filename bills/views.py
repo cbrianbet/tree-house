@@ -12,6 +12,8 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -23,7 +25,8 @@ from authapp.views import refreshToken, hapokashcreate, wallet_trans
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from properties.models import *
-from .serializer import InvTransSerializer, RentTransSerializer
+from .serializer import InvTransSerializer, RentTransSerializer, TransSerializer, WallPaySerializer, \
+    ConfInvPaySerializer, PayInvPaySerializer, WalletWithdrawSerializer, WalletTopupSerializer
 
 
 @login_required
@@ -891,6 +894,7 @@ def wallet_transfer(request):
 
 
 #api
+@swagger_auto_schema(method='post', request_body=WalletTopupSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def stkpushtopup_api(request):
@@ -913,6 +917,7 @@ def stkpushtopup_api(request):
     return Response(wallet, status.HTTP_200_OK)
 
 
+@swagger_auto_schema(method='post', request_body=WalletWithdrawSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def hapowithdraw_api(request):
@@ -1265,6 +1270,7 @@ def closed_invoice_bills_api(request):
     return Response(context, status.HTTP_200_OK)
 
 
+@swagger_auto_schema(method='post', request_body=PayInvPaySerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def inv_payment_api(request):
@@ -1292,6 +1298,7 @@ def inv_payment_api(request):
     return Response(wallet)
 
 
+@swagger_auto_schema(method='post', request_body=ConfInvPaySerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def conf_inv_pay_api(request):
@@ -1387,6 +1394,7 @@ def conf_inv_pay_api(request):
     return Response({'success':False, 'message': "Transaction Not Found"}, status.HTTP_400_BAD_REQUEST)
 
 
+@swagger_auto_schema(method='post', request_body=WallPaySerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def pay_inv_wallet_api(request):
@@ -1505,6 +1513,7 @@ def pay_inv_wallet_api(request):
     return Response({'success':False, 'message': "Something went wrong, Try again later"}, status.HTTP_400_BAD_REQUEST)
 
 
+@swagger_auto_schema(method='post', request_body=TransSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def inv_trans_api(request):

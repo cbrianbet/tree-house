@@ -31,3 +31,13 @@ class VacantUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
         fields = "__all__"
+
+
+class VacantUnitAPISerializer(serializers.ModelSerializer):
+    reason = serializers.CharField()
+    days_notice = serializers.IntegerField(min_value=1)
+    moving_contact = serializers.CharField()
+    date = serializers.DateField()
+    class Meta:
+        model = Unit
+        fields = ['reason', 'days_notice', 'moving_contact', 'date']

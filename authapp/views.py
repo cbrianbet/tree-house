@@ -20,6 +20,7 @@ from django.utils.encoding import force_bytes
 from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
+from drf_yasg.utils import swagger_auto_schema
 from psycopg2._psycopg import IntegrityError
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -28,6 +29,7 @@ from rest_framework.response import Response
 from authapp.decorators import unsubscribed_user, unauthenticated_user
 from authapp.forms import LoginForm
 from authapp.models import *
+from authapp.serializer import PassResetSerializer, UpdateUserSerializer
 from bills.models import *
 from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies, Properties, BankAcc, \
     PaymentPaybill, PaymentTill, TransactionCodes
@@ -1227,6 +1229,7 @@ def signup_api(request):
     return Response({}, status.HTTP_201_CREATED)
 
 
+@swagger_auto_schema(method='post', request_body=PassResetSerializer)
 @api_view(['POST'])
 def password_reset_api(request):
     if request.method == "POST":
@@ -1256,6 +1259,7 @@ def password_reset_api(request):
             return Response({"success": False, "message": "Enter valid email"}, status.HTTP_404_NOT_FOUND)
 
 
+@swagger_auto_schema(method='patch', request_body=UpdateUserSerializer)
 @api_view(['PATCH'])
 def user_update_api(request):
     user = Users.objects.get(id=request.user.id)

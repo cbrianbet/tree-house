@@ -19,6 +19,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -33,7 +34,7 @@ from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from .pdfs import render_to_pdf
-from .serializer import TenantHistorySerializer, VacantUnitSerializer
+from .serializer import TenantHistorySerializer, VacantUnitSerializer, VacantUnitAPISerializer
 
 
 @login_required
@@ -1289,6 +1290,7 @@ def previous_app_api(request):
     return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
 
 
+@swagger_auto_schema(method='post', request_body=VacantUnitAPISerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def generate_vacate_notice_api(request):

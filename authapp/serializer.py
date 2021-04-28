@@ -37,3 +37,21 @@ class MyUserCreateSerializer(UserCreateSerializer):
         model = Users
         fields = ['id', 'password', 'email', 'first_name', 'last_name', 'access_level', 'gender']
 
+
+class PassResetSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+    class Meta:
+        model = Users
+        fields = ['email']
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    id_number = serializers.CharField()
+    msisdn = serializers.CharField()
+
+    class Meta:
+        model = Users
+        fields = ['email', 'first_name', 'last_name', 'id_number', 'msisdn']

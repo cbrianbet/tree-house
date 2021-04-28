@@ -20,13 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # -- Variable that connects our base directory to our temlates folder
-TEMPLATES_DIR = os.path.join(BASE_DIR,"templates")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 # -- Variable that connects our base directory to our static folder
-STATIC_DIR = os.path.join(BASE_DIR,"static")
+STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 # Get secret properties
 with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
     secrets = json.load(secrets_file)
+
 
 def get_secret(setting, secrets=secrets):
     """Get secret setting or fail with ImproperlyConfigured"""
@@ -56,7 +57,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'mnestafrica@gmail.com'
 EMAIL_HOST_PASSWORD = get_secret('E_PASS')
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'crispy_forms',
+    'drf_yasg',
 
     'authapp',
     'properties',
@@ -90,7 +91,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#rest
+# rest
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
@@ -144,7 +145,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tree_house.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -170,7 +170,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -183,7 +182,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
