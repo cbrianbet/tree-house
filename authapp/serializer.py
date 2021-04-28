@@ -27,7 +27,7 @@ class MyUserSerializer(UserSerializer):
             if company.acc_type.id == 2:
                 landlord = landlord.first_name + " " + landlord.last_name
             elif company.acc_type.id == 3:
-                landlord = Companies.objects.get(id=prop.company.id)
+                landlord = Companies.objects.get(id=prop.company.id).name
             data.update({'agent': landlord})
         return data
 
