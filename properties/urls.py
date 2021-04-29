@@ -53,6 +53,6 @@ urlpatterns = [
     path('api/vacant/within', views.vacancy_search_within, name='vacant-w-api'),
     path('api/vacant', views.vacancy_search_api, name='vacant-api'),
     path('api/vacancy/enquire', views.vacancy_enquire_api, name='vacancy-enquire-api'),
-    path('api/ducuments/', views.documents_api, name='documents-api'),
+    path('api/documents/', views.documents_api, name='documents-api'),
 
 ]
