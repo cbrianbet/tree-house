@@ -1398,11 +1398,11 @@ def vacancy_enquire_api(request):
     try:
         company = CompanyProfile.objects.get(company=Unit.objects.get(uuid=u_id).property.company, user__acc_type_id__in=[2, 3]).user
         landlord = Profile.objects.get(user=company)
-        eq = Enquire.objects.create(unit=Unit.objects.get(id=u_id), user=request.user, created_by=request.user)
+        eq = Enquire.objects.create(unit=Unit.objects.get(uuid=u_id), user=request.user, created_by=request.user)
         eq.save()
-        send_email_enq(Unit.objects.get(id=u_id).unit_name, Profile.objects.get(user=request.user), landlord.user.email)
+        send_email_enq(Unit.objects.get(uuid=u_id).unit_name, Profile.objects.get(user=request.user), landlord.user.email)
 
-        return Response({'success': True, 'message': "You will recive a response via email"}, status.HTTP_200_OK)
+        return Response({'success': True, 'message': "You will receive a response via email"}, status.HTTP_200_OK)
     except Unit.DoesNotExist:
         return Response({'success': False, 'message': "unit does not exist"}, status.HTTP_200_OK)
 
