@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="bootstrap admin template">
+    <meta name="author" content="">
+
+    <title>About | MNEST Africa</title>
+
+    <link rel="apple-touch-icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
+    <link rel="shortcut icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'authapp/global/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/css/bootstrap-extend.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/css/site.min.css' %}">
+
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/animsition/animsition.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/asscrollable/asScrollable.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/switchery/switchery.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/intro-js/introjs.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
+
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'authapp/global/fonts/web-icons/web-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/fonts/brand-icons/brand-icons.min.css' %}">
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+
+    <!--[if lt IE 9]>
+    <script src="{% static 'authapp/global/vendor/html5shiv/html5shiv.min.js' %}"></script>
+    <![endif]-->
+
+    <!--[if lt IE 10]>
+    <script src="{% static 'authapp/global/vendor/media-match/media.match.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/respond/respond.min.js' %}"></script>
+    <![endif]-->
+
+    <!-- Scripts -->
+    <script src="{% static 'authapp/global/vendor/breakpoints/breakpoints.js' %}"></script>
+    <script>
+        Breakpoints();
+    </script>
+
+</head>
+<body class="animsition" style="padding: 0">
+<!--[if lt IE 8]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+
+
+<link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
+
+
+<title>Lease Agreement | MNEST Africa</title>
+
+
+<!-- Page -->
+<div class="page" style="margin-left: 0;margin-top: 0;">
+    <div class="page-header">
+        <h1 class="page-title">Lease Agreement</h1>
+    </div>
+
+    <div class="page-content">
+        <!-- Panel -->
+        <div class="panel">
+            <div class="panel-body container-fluid">
+                <div class="row">
+                    <div class="col-lg-3">
+
+                    </div>
+                    <div class="col-lg-3 offset-lg-6 text-right">
+
+                    </div>
+                </div>
+
+                <div class="page-invoice-table table-responsive">
+                    {% if tenant.unit.property.company.logo %}
+                        <img class="text-center" src="{{ tenant.unit.property.company.logo.url }}" alt="...">
+                    {% endif %}
+                    <h3 class="text-center">HOUSE RENTAL AGREEMENT</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><h4>Landlord/Agent Information</h4></th>
+                                <th><h4>Tenant Information</h4></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Name<br>{{ landlord.first_name }} {{ landlord.last_name }}</td>
+                                <td>Name<br>{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Address<br></td>
+                                <td>Address<br></td>
+                            </tr>
+                            <tr>
+                                <td>Phone Number<br>{{ landlord.msisdn }}</td>
+                                <td>Phone Number<br>{{ tenant.profile.msisdn }}</td>
+                            </tr>
+                            <tr>
+                                <td>ID/Company<br>{{ tenant.unit.property.company.name }} <br></td>
+                                <td>ID<br>{{ tenant.profile.id_number }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><h5> Rental Information</h5></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    Property Rental Address<br>
+                                    {{ tenant.unit.property.property_name }}<br>
+                                    {{ tenant.unit.unit_name }}
+                                </td>
+                                <td> Rent Amount<br>{{ tenant.unit.value }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Start Date of Agreement (Date of Occupancy)<br>
+                                    {{ tenant.date_occupied }}<br>
+                                </td>
+                                <td> Security Deposit<br>{{ tenant.unit.security_deposit }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    End Date of Agreement (Date of Vacancy)<br>
+
+                                </td>
+                                <td> Late Charges<br>{% if tenant.unit.property.penalty_type == "percent" %}
+                                    {{ tenant.unit.property.penalty_value }}% per Day{% else %}
+                                    KES. {{ tenant.unit.property.penalty_value }} per Day{% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Date of First Payment<br> .
+                                </td>
+                                <td>
+                                    Payment Details<br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Pay Period<br>
+                                </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <br>
+
+                    <p>This House Rental Agreement made on {{ tenant.created_at }}
+                        between {{ landlord.first_name }} {{ landlord.last_name }} (Landlord) and
+                        {{ tenant.profile.first_name }} {{ tenant.profile.last_name }} (Tenant).</p>
+                    <h6 class="text-center">TERMS AND CONDITIONS</h6>
+                    <p class="-bold">I. ACKNOWLEDGMENT</p>
+                    <p>The Landlord agrees to rent the house to the Tenant under these terms in its present
+                        condition
+                        located at {{ tenant.unit.property.property_name }}, Kenya The Tenant acknowledges the terms
+                        of this Agreement and comply.</p>
+                    <p>II. AGREEMENT TERM</p>
+                    <p>This House Rental Agreement will begin on {{ tenant.created_at }} and end on ____________ .
+                        After this, a renewal agreement will be created for the new term.</p>
+                    <p>III. MONTHLY RENTAL</p>
+                    <p>The monthly rental shall be per month. Payments will be made by the date specified. The
+                        monthly rental shall be collected by every “Date of when on boarded/Number of Days”. If the
+                        tenant fails to pay on the due date, late charges of will be applied.</p>
+                    <p>IV. SECURITY DEPOSIT</p>
+                    <p>The Tenant agrees to pay a security deposit of KES. {{ tenant.unit.security_deposit }}. The
+                        Security Deposit is to be refunded upon leaving the residency, terminating this contract,
+                        and returning the keys to the Landlord/Agent. The Security Deposit will cover for any damage
+                        to the premise. This Security Deposit will also cover in case the Tenant fails to pay the
+                        utility bills.</p>
+                    <p>V. UTILITIES</p>
+                    <p>Tenants will be responsible for paying all utilities like electricity, water, gas, telephone,
+                        cable, internet and service charge.</p>
+                    <p>VI. MAINTENANCE AND DAMAGES</p>
+                    <p>Tenant shall keep the premises in good condition. The Tenant will be responsible for any
+                        damage caused which means the Tenant will bear all the expenses in fixing it. Tenants shall
+                        follow reasonable standards of cleanliness. Written permission from the “landlord/agent” is
+                        needed for any alterations. The Landlord may enter the premises for the purposes of
+                        inspection, repair, maintenance, and emergency.</p>
+                    <p>VII. OCCUPANCY</p>
+                    <p>The number of occupants is limited to “Number of Occupants”. It will only be occupied by the
+                        Tenant and his/her family members.</p>
+                    <p>VIII. RULES and REGULATIONS</p>
+                    <p>The number of guests shall not exceed 3. An overnight guest may not stay for more than two
+                        (2) nights. “Pets are not allowed on the premises” (other amenities). Smoking is prohibited
+                        on the premises.</p>
+                    <p>IX. PEACE AND ORDER</p>
+                    <p>Tenants are not allowed to keep firearms, bows, combat knife and other weapons on the
+                        premises. Tenants agree not to use the premises in a way to disturb the peace in the
+                        neighborhood.</p>
+                    <p>X. ABANDONMENT</p>
+                    <p>If the Tenant abandons the house, the Landlord/Agent has the right to enter the house by any
+                        means without liabilities. The Landlord is allowed to presume that Tenant abandoned the
+                        premise if the furniture and other items were removed. If the house is unoccupied for a
+                        period of 60 consecutive days without written notification to the Landlord, it will be
+                        considered as abandonment.</p>
+                    <p>XI. AMENDMENTS</p>
+                    <p>This Agreement can only be changed or modified through the written consent of both
+                        parties.</p>
+                    <p>XII. GOVERNING LAW</p>
+                    <p>This agreement shall be governed under the laws of the Kenya. We, the undersigned, hereby
+                        agreed that we have read this agreement and bounded by its terms and conditions.</p>
+                    <p class="text-center">Date of Signing</p>
+
+                    <span class="text-left">{{ landlord.first_name }} {{ landlord.last_name }}</span>
+                    <p>Signature {% if sign.pics.url %}
+                        <img id="sig-image" src="{{ sign.pics.url }}" alt="Current signature."/>
+                    {% else %} {% endif %}</p>
+                    <br>
+                    <span class="text-right">{{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</span><br>
+
+                    <p>Signature</p>
+
+
+                </div>
+
+                <div class="text-right clearfix">
+
+                </div>
+                <div class="text-right">
+
+                    <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"
+                            onclick="window.print();">
+                        <span><i class="icon wb-print" aria-hidden="true"></i> Print</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel -->
+    </div>
+</div>
+<!-- End Page -->
+
+<!-- Footer -->
+<footer class="site-footer" style="margin-left: 0">
+    <div class="site-footer-legal">© 2021 <a
+            href=".">MNEST Africa</a></div>
+
+</footer>
+
+<!-- Core  -->
+<script src="{% static 'authapp/global/vendor/babel-external-helpers/babel-external-helpers.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/popper-js/umd/popper.min.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/bootstrap/bootstrap.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/animsition/animsition.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/mousewheel/jquery.mousewheel.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/asscrollbar/jquery-asScrollbar.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/asscrollable/jquery-asScrollable.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/ashoverscroll/jquery-asHoverScroll.js' %}"></script>
+<!-- Plugins -->
+<script src="{% static 'authapp/global/vendor/switchery/switchery.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/intro-js/intro.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/screenfull/screenfull.js' %}"></script>
+{#<script src="{% static 'authapp/global/vendor/slidepanel/jquery-slidePanel.js' %}"></script>#}
+
+<!-- Scripts -->
+<script src="{% static 'authapp/global/js/Component.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin.js' %}"></script>
+<script src="{% static 'authapp/global/js/Base.js' %}"></script>
+<script src="{% static 'authapp/global/js/Config.js' %}"></script>
+
+<script src="{% static 'authapp/assets/js/Section/Menubar.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Section/GridMenu.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Section/Sidebar.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Section/PageAside.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Plugin/menu.js' %}"></script>
+
+<script src="{% static 'authapp/global/js/config/colors.js' %}"></script>
+<script src="{% static 'authapp/assets/js/config/tour.js' %}"></script>
+<script>Config.set('assets', '../../assets');</script>
+
+<!-- Page -->
+<script src="{% static 'authapp/assets/js/Site.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/asscrollable.js' %}"></script>
+{#<script src="{% static 'authapp/global/js/Plugin/slidepanel.js' %}"></script>#}
+<script src="{% static 'authapp/global/js/Plugin/switchery.js' %}"></script>
+
+<script>
+    (function (document, window, $) {
+        'use strict';
+
+        var Site = window.Site;
+        $(document).ready(function () {
+            Site.run();
+        });
+    })(document, window, jQuery);
+</script>
+</body>
+</html>

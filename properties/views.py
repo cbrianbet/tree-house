@@ -18,6 +18,7 @@ from django.db.models import Count, Q
 from django.http import HttpResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.html import strip_tags
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -1226,6 +1227,26 @@ def document_lease(request):
     return render(request, 'properties/lease_agg.html', context)
 
 
+@unsubscribed_user
+def document_lease_api(request):
+    user = request.user
+    tenant = Tenant.objects.get(profile__user=user)
+    company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
+
+    landlord = Profile.objects.get(user=company)
+    try:
+        sign = SignatureLandlord.objects.get(user=company)
+    except SignatureLandlord.DoesNotExist:
+        sign = None
+    context = {
+        'user': user,
+        'tenant': Tenant.objects.get(profile__user=user),
+        'landlord': landlord,
+        'sign': sign
+    }
+    return render(request, 'properties/lease_api.html', context)
+
+
 @login_required
 @unsubscribed_user
 def document_non_comp(request, vid):
@@ -1245,6 +1266,23 @@ def document_non_comp(request, vid):
 
 @login_required
 @unsubscribed_user
+def document_non_comp_api(request, vid):
+    user = request.user
+    tenant = Tenant.objects.get(profile__user=user)
+    non_comp = NonCompliance.objects.get(tenant=tenant, id=vid)
+
+    sign = SignatureLandlord.objects.get(user=non_comp.created_by)
+    context = {
+        'user': user,
+        't': Tenant.objects.get(profile__user=user),
+        'non_comp': non_comp,
+        'sign': sign
+    }
+    return render(request, 'properties/violation_api.html', context)
+
+
+@login_required
+@unsubscribed_user
 def document_vacate(request):
     user = request.user
     tenant = Tenant.objects.get(profile__user=user)
@@ -1260,6 +1298,24 @@ def document_vacate(request):
 
     }
     return render(request, 'properties/vacate_doc.html', context)
+
+
+@unsubscribed_user
+def document_vacate_api(request):
+    user = request.user
+    tenant = Tenant.objects.get(profile__user=user)
+    company = CompanyProfile.objects.get(company=tenant.unit.property.company, user__acc_type_id__in=[2, 3]).user
+
+    landlord = Profile.objects.get(user=company)
+
+    context = {
+        'user': user,
+        'tenant': Tenant.objects.get(profile__user=user),
+        'notice': VacateNotice.objects.get(notice_from=tenant),
+        'landlord': landlord,
+
+    }
+    return render(request, 'properties/vac_doc_api.html', context)
 
 
 @login_required
@@ -1348,5 +1404,31 @@ def vacancy_enquire_api(request):
 
         return Response({'success': True, 'message': "You will recive a response via email"}, status.HTTP_200_OK)
     except Unit.DoesNotExist:
-
         return Response({'success': False, 'message': "unit does not exist"}, status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def documents_api(request):
+    user = request.user
+    try:
+        non_com = NonCompliance.objects.filter(tenant=Tenant.objects.get(profile__user=user))
+    except :
+        non_com = None
+    violations = []
+    for n in non_com:
+        violations.append({
+            'link': request.build_absolute_uri(reverse('document-non-comp-api', kwargs={'vid': n.id} ))
+        })
+
+    data = {
+        'vacate_notice': {
+            'link': request.build_absolute_uri(reverse('document-vacate-api'))
+        },
+        'non_compliance': violations,
+        'lease_agreement': {
+            'unit': TenantHistory.objects.get(tenant__profile__user=user).curr_unit.unit_name,
+            'link': request.build_absolute_uri(reverse('document-lease-api'))
+        }
+    }
+    return Response({'success': True, 'data': data}, status=status.HTTP_200_OK)

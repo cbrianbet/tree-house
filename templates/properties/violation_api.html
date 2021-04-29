@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js css-menubar" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="bootstrap admin template">
+    <meta name="author" content="">
+
+    <title>About | MNEST Africa</title>
+
+    <link rel="apple-touch-icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
+    <link rel="shortcut icon" href="{% static 'authapp/assets/images/mnest-png.png' %}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'authapp/global/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/css/bootstrap-extend.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/css/site.min.css' %}">
+
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/animsition/animsition.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/asscrollable/asScrollable.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/switchery/switchery.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/intro-js/introjs.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/slidepanel/slidePanel.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/flag-icon-css/flag-icon.css' %}">
+
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'authapp/global/fonts/web-icons/web-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/fonts/brand-icons/brand-icons.min.css' %}">
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
+
+    <!--[if lt IE 9]>
+    <script src="{% static 'authapp/global/vendor/html5shiv/html5shiv.min.js' %}"></script>
+    <![endif]-->
+
+    <!--[if lt IE 10]>
+    <script src="{% static 'authapp/global/vendor/media-match/media.match.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/respond/respond.min.js' %}"></script>
+    <![endif]-->
+
+    <!-- Scripts -->
+    <script src="{% static 'authapp/global/vendor/breakpoints/breakpoints.js' %}"></script>
+    <script>
+        Breakpoints();
+    </script>
+
+</head>
+<body class="animsition" style="padding: 0">
+<!--[if lt IE 8]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+
+
+<link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
+
+
+<title>Lease Agreement | MNEST Africa</title>
+
+
+<!-- Page -->
+<div class="page" style="margin-left: 0;margin-top: 0;">
+
+        <div class="page-header">
+            <h1 class="page-title">Non Compliance Notice</h1>
+        </div>
+
+        <div class="page-content">
+            <!-- Panel -->
+            <div class="panel">
+                <div class="panel-body container-fluid">
+                    <div class="page-invoice-table table-responsive">
+                        <h3 class="text-center">NON-COMPLIANCE NOTICE TO QUIT</h3>
+                        <p>
+                            <strong>ATTN:</strong> {{ non_comp.tenant.profile.first_name }} {{ non_comp.tenant.profile.last_name }}
+                            , and all residents in possession:</p>
+                        <p>The premises herein referred to as {{ t.unit.property.property_name }} ,
+                            Unit {{ t.unit.unit_name }}.
+                        <p>
+
+                        <p>In accordance with the lease agreement signed on {{ t.created_at }}, and the laws in the
+                            Republic of Kenya that after service on you of this notice, you are hereby required to
+                            cease:</p>
+
+                        <h4 class="text-center">LEASE VIOLATION</h4>
+
+                        <p class="text-center">{{ non_comp.violation }}</p>
+                        <p class="text-center">(Violation Description and Instruction to Cure (if any))</p>
+
+                        <p>Such acts are in non-compliance with your lease agreement. You shall notify the landlord
+                            within the notice period that the violation has been cured or quit and deliver the
+                            possession of the premises.</p>
+
+                        <p>YOU ARE FURTHER NOTIFIED THAT, the owner/landlord does hereby elect to declare that
+                            forfeiture of your lease or rental agreement under which you hold possession of the above
+                            described premises and if you fail to perform or otherwise comply, will institute legal
+                            proceedings to recover rent and possession of said premises which would result in a judgment
+                            against you including costs and necessary disbursements together with possible statutory
+                            damages as allowed by law for such unlawful detention.</p>
+
+
+                        <p>Landlord/Agent Signature</p>
+
+                        <h4 class="text-center">CERTIFICATE OF SERVICE</h4>
+                        <p>I certify that on the {{ non_comp.created_at.day }} day of {{ non_comp.created_at.month }}
+                            , {{ non_comp.created_at.year }} I served this notice to by: (check one)</p>
+                        <p>☐ - Delivering it personally to the person in possession.</p>
+                        <p>☐ - Delivering electronically as an eNotice to the person in possession.</p>
+                        <p>☐ - Delivering it on the premises to a member of his/her family or household or an employee
+                            of suitable age and discretion with a request that it be delivered to the person in
+                            possession.</p>
+                        <p>☐ - First-class mail addressed to the person in possession.</p>
+                        <p>
+                            Signature:{% if sign.pics.url %} <img id="sig-image" src="{{ sign.pics.url }}" alt="Current signature."/>
+                        {% else %} {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"
+                                onclick="javascript:window.print();">
+                            <span><i class="icon wb-print" aria-hidden="true"></i> Print</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel -->
+        </div>
+</div>
+<!-- End Page -->
+
+<!-- Footer -->
+<footer class="site-footer" style="margin-left: 0">
+    <div class="site-footer-legal">© 2021 <a
+            href=".">MNEST Africa</a></div>
+
+</footer>
+
+<!-- Core  -->
+<script src="{% static 'authapp/global/vendor/babel-external-helpers/babel-external-helpers.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/popper-js/umd/popper.min.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/bootstrap/bootstrap.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/animsition/animsition.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/mousewheel/jquery.mousewheel.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/asscrollbar/jquery-asScrollbar.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/asscrollable/jquery-asScrollable.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/ashoverscroll/jquery-asHoverScroll.js' %}"></script>
+<!-- Plugins -->
+<script src="{% static 'authapp/global/vendor/switchery/switchery.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/intro-js/intro.js' %}"></script>
+<script src="{% static 'authapp/global/vendor/screenfull/screenfull.js' %}"></script>
+{#<script src="{% static 'authapp/global/vendor/slidepanel/jquery-slidePanel.js' %}"></script>#}
+
+<!-- Scripts -->
+<script src="{% static 'authapp/global/js/Component.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin.js' %}"></script>
+<script src="{% static 'authapp/global/js/Base.js' %}"></script>
+<script src="{% static 'authapp/global/js/Config.js' %}"></script>
+
+<script src="{% static 'authapp/assets/js/Section/Menubar.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Section/GridMenu.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Section/Sidebar.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Section/PageAside.js' %}"></script>
+<script src="{% static 'authapp/assets/js/Plugin/menu.js' %}"></script>
+
+<script src="{% static 'authapp/global/js/config/colors.js' %}"></script>
+<script src="{% static 'authapp/assets/js/config/tour.js' %}"></script>
+<script>Config.set('assets', '../../assets');</script>
+
+<!-- Page -->
+<script src="{% static 'authapp/assets/js/Site.js' %}"></script>
+<script src="{% static 'authapp/global/js/Plugin/asscrollable.js' %}"></script>
+{#<script src="{% static 'authapp/global/js/Plugin/slidepanel.js' %}"></script>#}
+<script src="{% static 'authapp/global/js/Plugin/switchery.js' %}"></script>
+
+<script>
+    (function (document, window, $) {
+        'use strict';
+
+        var Site = window.Site;
+        $(document).ready(function () {
+            Site.run();
+        });
+    })(document, window, jQuery);
+</script>
+</body>
+</html>

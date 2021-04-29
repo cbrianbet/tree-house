@@ -39,8 +39,11 @@ urlpatterns = [
     path('vac/approve/<int:id>', views.approve_vac, name='app-vac-req'),
     path('documnets', views.document, name='documents'),
     path('documnet/lease', views.document_lease, name='document-lease'),
+    path('documnet/lease/api', views.document_lease_api, name='document-lease-api'),
     path('documnet/vacate', views.document_vacate, name='document-vacate'),
+    path('documnet/vacate/api', views.document_vacate_api, name='document-vacate-api'),
     path('documnet/non-comp<int:vid>', views.document_non_comp, name='document-non-comp'),
+    path('documnet/non-comp/api<int:vid>', views.document_non_comp_api, name='document-non-comp-api'),
     path('send/non-comp/<int:tenant>', views.non_compliance, name='non-comp'),
 
     #api
@@ -50,5 +53,6 @@ urlpatterns = [
     path('api/vacant/within', views.vacancy_search_within, name='vacant-w-api'),
     path('api/vacant', views.vacancy_search_api, name='vacant-api'),
     path('api/vacancy/enquire', views.vacancy_enquire_api, name='vacancy-enquire-api'),
+    path('api/ducuments/', views.documents_api, name='documents-api'),
 
 ]
