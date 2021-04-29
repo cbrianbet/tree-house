@@ -34,7 +34,7 @@ from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from .pdfs import render_to_pdf
-from .serializer import TenantHistorySerializer, VacantUnitSerializer, VacantUnitAPISerializer
+from .serializer import TenantHistorySerializer, VacantUnitSerializer, VacantUnitAPISerializer, EnquireAPISerializer
 
 
 @login_required
@@ -1330,3 +1330,23 @@ def vacancy_search_api(request):
     units = Unit.objects.filter(unit_status="Vacant").exclude(property=t.unit.property).order_by('property_id')
     ser = VacantUnitSerializer(units, many=True)
     return Response({'success': True, 'data': ser.data}, status.HTTP_200_OK)
+
+
+@swagger_auto_schema(method='post', request_body=EnquireAPISerializer)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def vacancy_enquire_api(request):
+    if request.user.acc_type.id != 4:
+        return PermissionDenied
+    u_id = request.data['uuid']
+    try:
+        company = CompanyProfile.objects.get(company=Unit.objects.get(uuid=u_id).property.company, user__acc_type_id__in=[2, 3]).user
+        landlord = Profile.objects.get(user=company)
+        eq = Enquire.objects.create(unit=Unit.objects.get(id=u_id), user=request.user, created_by=request.user)
+        eq.save()
+        send_email_enq(Unit.objects.get(id=u_id).unit_name, Profile.objects.get(user=request.user), landlord.user.email)
+
+        return Response({'success': True, 'message': "You will recive a response via email"}, status.HTTP_200_OK)
+    except Unit.DoesNotExist:
+
+        return Response({'success': False, 'message': "unit does not exist"}, status.HTTP_200_OK)

@@ -41,3 +41,10 @@ class VacantUnitAPISerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
         fields = ['reason', 'days_notice', 'moving_contact', 'date']
+
+
+class EnquireAPISerializer(serializers.ModelSerializer):
+    uuid = serializers.UUIDField()
+    class Meta:
+        model = Unit
+        fields = ['uuid']

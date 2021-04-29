@@ -49,5 +49,6 @@ urlpatterns = [
     path('api/tenant/vacate', views.generate_vacate_notice_api, name='vacate-api'),
     path('api/vacant/within', views.vacancy_search_within, name='vacant-w-api'),
     path('api/vacant', views.vacancy_search_api, name='vacant-api'),
+    path('api/vacancy/enquire', views.vacancy_enquire_api, name='vacancy-enquire-api'),
 
 ]
