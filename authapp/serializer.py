@@ -24,11 +24,13 @@ class MyUserSerializer(UserSerializer):
             prop = Tenant.objects.get(profile=Profile.objects.get(user=data['id'])).unit.property
             company = CompanyProfile.objects.get(company=prop.company, user__acc_type_id__in=[2, 3]).user
             landlord = Profile.objects.get(user=company)
+            agent = ""
             if company.acc_type.id == 2:
-                landlord = landlord.first_name + " " + landlord.last_name
+                agent = landlord.first_name + " " + landlord.last_name
             elif company.acc_type.id == 3:
-                landlord = Companies.objects.get(id=prop.company.id).name
-            data.update({'agent': landlord})
+                agent = Companies.objects.get(id=prop.company.id).name
+            data.update({'agent': agent})
+            data.update({'agent_contact': {'mobile': landlord.msisdn, 'email_address': landlord.user.email}})
         return data
 
 
