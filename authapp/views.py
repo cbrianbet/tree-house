@@ -1,7 +1,6 @@
 import calendar
 import datetime
 import os
-import uuid
 
 import requests
 from django.contrib import messages
@@ -21,7 +20,6 @@ from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from drf_yasg.utils import swagger_auto_schema
-from psycopg2._psycopg import IntegrityError
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response

@@ -1227,6 +1227,7 @@ def document_lease(request):
     return render(request, 'properties/lease_agg.html', context)
 
 
+@login_required
 @unsubscribed_user
 def document_lease_api(request):
     user = request.user
@@ -1300,6 +1301,7 @@ def document_vacate(request):
     return render(request, 'properties/vacate_doc.html', context)
 
 
+@login_required
 @unsubscribed_user
 def document_vacate_api(request):
     user = request.user

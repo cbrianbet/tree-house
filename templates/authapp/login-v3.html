@@ -197,7 +197,7 @@
                         type: "error",
                         showConfirmButton: true,
                     });
-                }else if (data === "Account is Disabled") {
+                } else if (data === "Account is Disabled") {
                     swal({
                         title: 'Error!!',
                         text: 'Account has been Disabled!!',
@@ -217,8 +217,12 @@
                         type: "success",
                         showConfirmButton: true,
                     });
+                    if (window.location.href.split("=").length > 1) {
+                        window.location.href = window.location.href.split("=")[window.location.href.split("=").length - 1]
+                    } else {
+                        window.location.href = data;
+                    }
                     loginForm[0].reset();
-                    window.location.href = data;
                 }
             },
             error: function (er) {
