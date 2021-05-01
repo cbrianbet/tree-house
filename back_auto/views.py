@@ -79,12 +79,11 @@ def apply_invoice(rent, month, user, tenant, date):
         i = RentInvoice.objects.create(created_by=user, invoice_no=inv_no, invoice_for=tenant.profile.user,
                                        unit=tenant.unit, date_due=datetime.datetime.now() + datetime.timedelta(days=3))
         i.save()
-        if i.pk:
-            inv_item1 = RentItems.objects.create(invoice_id=i.id, invoice_item='RENT FOR {}'.format(month),
-                                                 amount=round(int(rent), 2), description='RENT')
-            inv_item1.save()
+        inv_item1 = RentItems.objects.create(invoice_id=i.id, invoice_item='RENT FOR {}'.format(month),
+                                             amount=round(int(rent), 2), description='RENT')
+        inv_item1.save()
         print("Heree....")
-        i.email_inform = send_email(tenant, date)
+        i.email_inform = send_email(tenant, date, i, inv_item1)
         i.save()
         return True
     except Exception as e:
@@ -92,9 +91,9 @@ def apply_invoice(rent, month, user, tenant, date):
         return False
 
 
-def send_email(t, date):
+def send_email(t, date, inv, inv_item):
     subject = "Invoice for {}".format(t.unit.property.property_name)
-    html_message = render_to_string('reports/email_temp_rent1.html', {'t': t, 'date': date})
+    html_message = render_to_string('reports/email_temp_rent1.html', {'t': t, 'date': date, 'inv': inv, 'inv_item': inv_item})
     plain_message = strip_tags(html_message)
 
     message = '''
