@@ -5,6 +5,8 @@ from datetime import date
 from django.core.mail import send_mail
 from django.core.management.base import BaseCommand, CommandError
 from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from bills.models import RentInvoice, RentItems
 from bills.views import increment_rent_invoice_number
@@ -92,6 +94,9 @@ def apply_invoice(rent, month, user, tenant, date):
 
 def send_email(t, date):
     subject = "Invoice for {}".format(t.unit.property.property_name)
+    html_message = render_to_string('reports/email_temp_rent1.html', {'t': t, 'date': date})
+    plain_message = strip_tags(html_message)
+
     message = '''
         Dear {},
         This email is to let you know that a Rent Invoice has been created for your unit {} at {}.
@@ -100,7 +105,7 @@ def send_email(t, date):
                                                            t.unit.property.property_name, date,
                                                            t.profile.user.username)
     try:
-        send_mail(subject, message, EMAIL_HOST_USER, [t.profile.user.email], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [t.profile.user.email], fail_silently=False)
         return True
     except Exception as e:
         print(e)
@@ -150,6 +155,9 @@ def apply_penalty(request):
 
 def send_email_delay(t, r, days, pens):
     subject = "LATENESS PENALTIES"
+    html_message = render_to_string('reports/email_temp_rent2.html', {'t': t, 'r': r, 'days': days, 'pens': pens})
+    plain_message = strip_tags(html_message)
+
     message = '''
         Dear {},
         This email is to let you know that Rent Invoice ({}) for your unit {} at {} was due on {}. The penalties that have acured over {} days are {}.
@@ -158,7 +166,7 @@ def send_email_delay(t, r, days, pens):
                                                            t.unit.property.property_name, r.date_due, days, pens,
                                                            t.profile.user.username)
     try:
-        send_mail(subject, message, EMAIL_HOST_USER, [t.profile.user.email], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [t.profile.user.email], html_message=html_message, fail_silently=False)
         return True
     except Exception as e:
         print(e)
