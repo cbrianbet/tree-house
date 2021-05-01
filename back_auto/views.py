@@ -17,7 +17,7 @@ from tree_house.settings import EMAIL_HOST_USER
 
 def send_invoice(request):
     try:
-        tenant = Tenant.objects.filter(id__in=TenantHistory.objects.get(end_date=None).values_list('tenant_id', flat=True))
+        tenant = Tenant.objects.filter(id__in=TenantHistory.objects.filter(end_date=None).values_list('tenant_id', flat=True))
         today = date.today().day
         ttoday = date.today()
         last_day = calendar.monthrange(ttoday.year, ttoday.month)[1]
