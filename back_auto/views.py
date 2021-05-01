@@ -105,7 +105,7 @@ def send_email(t, date):
                                                            t.unit.property.property_name, date,
                                                            t.profile.user.username)
     try:
-        send_mail(subject, plain_message, EMAIL_HOST_USER, [t.profile.user.email], fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [t.profile.user.email], html_message=html_message, fail_silently=False)
         return True
     except Exception as e:
         print(e)
@@ -117,39 +117,38 @@ def apply_penalty(request):
         rent = RentInvoice.objects.filter(date_due__lt=date.today(), status=False)
         for r in rent:
             delta = date.today() - r.date_due
+            try:
+                tenant = Tenant.objects.get(profile=Profile.objects.get(user=r.invoice_for))
+                unit = Unit.objects.get(id=tenant.unit_id)
+                prop = Properties.objects.get(id=unit.property_id)
 
-            tenant = Tenant.objects.get(profile=Profile.objects.get(user=r.invoice_for))
-            unit = Unit.objects.get(id=tenant.unit_id)
-            prop = Properties.objects.get(id=unit.property_id)
+                print(r)
+                if prop.penalty_type == "percent":
+                    pen = (int(unit.value) * (int(prop.penalty_value) / 100)) * delta.days
+                    try:
+                        p = RentItems.objects.get(invoice=r)
+                        p.delay_penalties = pen
+                        p.save()
+                        send_email_delay(Tenant.objects.get(profile__user=r.invoice_for), r, delta.days, pen)
+                    except Exception as e:
+                        print(e)
+                elif prop.penalty_type == "fixed":
 
-            print(r)
-            if prop.penalty_type == "percent":
-                pen = (int(unit.value) * (int(prop.penalty_value) / 100)) * delta.days
-                try:
-                    p = RentItems.objects.get(invoice=r)
-                    p.delay_penalties = pen
-                    p.save()
-                    send_email_delay(Tenant.objects.get(profile__user=r.invoice_for), r, delta.days, pen)
-                except Exception as e:
-                    print(e)
-            elif prop.penalty_type == "fixed":
+                    pen = int(prop.penalty_value) * delta.days
 
-                pen = int(prop.penalty_value) * delta.days
+                    try:
+                        p = RentItems.objects.get(invoice=r)
+                        p.delay_penalties = pen
+                        p.save()
+                        send_email_delay(Tenant.objects.get(profile__user=r.invoice_for), r, delta.days, pen)
+                    except Exception as e:
+                        print(e)
 
-                try:
-                    p = RentItems.objects.get(invoice=r)
-                    p.delay_penalties = pen
-                    p.save()
-                    send_email_delay(Tenant.objects.get(profile__user=r.invoice_for), r, delta.days, pen)
-                except Exception as e:
-                    print(e)
-
-            print(unit)
-
+                print(unit)
+            except Tenant.DoesNotExist:
+                print('Tenant does not exist')
     except RentInvoice.DoesNotExist:
         print('Invoice does not exist')
-    except Tenant.DoesNotExist:
-        print('Tenant does not exist')
     return HttpResponse("DONE")
 
 
