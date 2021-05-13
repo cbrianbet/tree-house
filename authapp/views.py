@@ -30,7 +30,7 @@ from authapp.models import *
 from authapp.serializer import PassResetSerializer, UpdateUserSerializer
 from bills.models import *
 from properties.models import Companies, CompanyProfile, Tenant, SubscriptionsCompanies, Properties, BankAcc, \
-    PaymentPaybill, PaymentTill, TransactionCodes
+    PaymentPaybill, PaymentTill, TransactionCodes, PendingCodes
 from tree_house import settings
 from tree_house.settings import EMAIL_HOST_USER
 
@@ -1219,6 +1219,19 @@ def password_reset_request(request):
                 messages.error(request, 'An invalid email has been entered.')
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="password/password_reset.html", context={"password_reset_form": password_reset_form})
+
+
+@login_required
+def get_pending(request):
+    if not request.user.acc_type.id == 1:
+        raise PermissionDenied
+    pending = PendingCodes.objects.all()
+    context = {
+        'pending': pending,
+        'u': request.user
+    }
+
+    return render(request, 'authapp/sort_pending.html', context)
 
 
 #apis

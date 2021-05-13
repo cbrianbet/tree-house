@@ -82,7 +82,6 @@ def apply_invoice(rent, month, user, tenant, date):
         inv_item1 = RentItems.objects.create(invoice_id=i.id, invoice_item='RENT FOR {}'.format(month),
                                              amount=round(int(rent), 2), description='RENT')
         inv_item1.save()
-        print("Heree....")
         i.email_inform = send_email(tenant, date, i, inv_item1)
         i.save()
         return True
