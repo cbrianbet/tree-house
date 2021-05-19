@@ -149,15 +149,21 @@ def invoice_info(request, i_id):
 
         for i in range(len(uuid)):
             if amount[i] != '':
+                print(uuid)
+                w = 0
+                if waiver[i] == '':
+                    w = 0
+                else:
+                    w = waiver[i]
                 try:
                     pay_item = InvoiceItemsTransaction.objects.create(
                         created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
-                        transaction_code=trans[i], waiver=waiver, amount_paid=float(amount[i]), payment_mode=payment[i],
+                        transaction_code=trans[i], waiver=w, amount_paid=float(amount[i]), payment_mode=payment[i],
                         remarks=remar[i], date_paid=datepaid[i]
                     )
 
                     pay_item.save()
-                except:
+                except InvoiceItems.DoesNotExist:
                     pay_item = RentItemTransaction.objects.create(
                         created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]),
                         transaction_code=trans[i], waiver=waiver, amount_paid=float(amount[i]), payment_mode=payment[i],
@@ -177,6 +183,7 @@ def invoice_info(request, i_id):
                 invoice.status = close
                 invoice.save()
                 return redirect('all-invoices')
+        return redirect('all-invoices')
 
     context = {
         'user': request.user,
