@@ -767,7 +767,7 @@ def confirm_inv_payment(request):
     r = requests.get(url=URL, headers=headers)
     past_trx =TransactionCodes.objects.filter(trx=trans)
     if past_trx.exists():
-        return HttpResponse("Exists")
+        return HttpResponse("exists")
     wallet = r.json()
     print(wallet)
     if wallet['success']:
@@ -781,7 +781,7 @@ def confirm_inv_payment(request):
                     past_trx.save()
                     return HttpResponse("invoice added")
                 else:
-                    return HttpResponse("Cant save")
+                    return HttpResponse("wrong")
         if int(wallet['transactions']['last_page']) != 1:
             for i in range(int(trans['last_page']) - 1):
                 URL = wallet['transactions']['next_page_url']
@@ -835,7 +835,7 @@ def confirm_inv_payment(request):
                                     past_trx.save()
                                     return HttpResponse("invoice added")
                                 else:
-                                    return HttpResponse("Cant save")
+                                    return HttpResponse("wrong")
 
     return "Not Found"
 
