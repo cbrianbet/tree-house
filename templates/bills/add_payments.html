@@ -86,9 +86,8 @@
                                     <td>{{ foo.description }}</td>
                                     <td>
                                         <div class="form-group">
-                                            <input class="form-control full" type="number" name="amount" min="0"
-                                                   id="pay"
-                                                   onkeyup="calculateColumn()">
+                                            <input class="form-control total" type="number" name="amount" min="0"
+                                                   id="pay" onkeyup="calcTotal()">
                                         </div>
                                     </td>
                                     <td>
@@ -114,11 +113,14 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="form-group"><input class="form-control" name="waiver" type="number">
+                                        <div class="form-group">
+                                            <input class="form-control full" name="waiver" type="number" min="0"
+                                                   onkeyup="calculateColumn()">
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="form-group"><input class="form-control" name="datepaid" type="date">
+                                        <div class="form-group"><input class="form-control full" name="datepaid"
+                                                                       type="date">
                                         </div>
                                     </td>
                                 </tr>
@@ -138,8 +140,14 @@
 
                         <div class="text-right clearfix">
                             <div class="float-right">
+                                <p>Sub - Total waiver amount:
+                                    <span id="sum3"></span>
+                                </p>
+                                <p>Sub - Total amount paid:
+                                    <span id="sum1"></span>
+                                </p>
                                 <p class="page-invoice-amount">Grand Total:
-                                    <span id="sum1">Kshs. </span>
+                                    <span id="sum4">Kshs. </span>
                                 </p>
                             </div>
                         </div>
@@ -182,15 +190,18 @@
     <script>
         $(document).ready(function () {
             calculateColumn();
+            calcTotal();
         });
         var sum1 = 0;
         var sum2 = 0;
+        var sum3 = 0;
+        var sum4 = 0;
 
         function calculateColumn() {
 
             $("#invoiceItems tr").not(':first').each(function () {
-                sum2 += getnum($(this).find("td:eq(3)").val());
-                console.log($(this).find("td:eq(3)"))
+                sum2 += getnum($(this).find("td:eq(7)").val());
+                console.log($(this).find("td:eq(7)"))
 
                 function getnum(t) {
                     if (isNumeric(t)) {
@@ -206,10 +217,35 @@
             $("#sum2").text(sum2);
             $("#sum1").text('KSHS. ' + sum2);
         }
+
+        function calcTotal() {
+
+            $("#invoiceItems tr").not(':first').each(function () {
+                sum3 += getnum($(this).find("td:eq(3)").val());
+                console.log($(this).find("td:eq(3)"))
+
+                function getnum(t) {
+                    if (isNumeric(t)) {
+                        return parseInt(t, 10);
+                    }
+                    return 0;
+
+                    function isNumeric(n) {
+                        return !isNaN(parseFloat(n)) && isFinite(n);
+                    }
+                }
+            });
+            {#$("#sum3").text(sum3);#}
+            $("#sum3").text('KSHS. ' + sum3);
+        }
     </script>
 
     <script>
         $(document).ready(function () {
+            var trial = 0;
+            var waiver = 0;
+            var total = 0;
+
             $(".full").keyup(function () {
                 console.log($("#pay"))
                 var l = $('.full').length;
@@ -220,16 +256,43 @@
                     //Push each element to the array
                     let a = 0
                     result.push(parseFloat($('.full').eq(i).val()));
-                    if (!Number.isNaN(parseFloat($('.full').eq(i).val()))){
+                    if (!Number.isNaN(parseFloat($('.full').eq(i).val()))) {
                         a = parseFloat($('.full').eq(i).val());
                     }
                     sum2 += a;
                 }
                 console.log(result)
 
-            $("#sum1").text('KSHS. ' + sum2);
+                $("#sum1").text('KSHS. ' + sum2);
+                waiver = sum2;
+                trial = total + waiver
+                $("#sum4").text('KSHS. ' + trial);
 
             });
+            $(".total").keyup(function () {
+                {#console.log($("#pay"))#}
+                var l = $('.total').length;
+                var sum2 = 0;
+//Initialize default array
+                var result = [];
+                for (i = 0; i < l; i++) {
+                    //Push each element to the array
+                    let a = 0
+                    result.push(parseFloat($('.total').eq(i).val()));
+                    if (!Number.isNaN(parseFloat($('.total').eq(i).val()))) {
+                        a = parseFloat($('.total').eq(i).val());
+                    }
+                    sum2 += a;
+                }
+                console.log(result)
+
+                $("#sum3").text('KSHS. ' + sum2);
+                total = sum2;
+                trial = total + waiver
+                $("#sum4").text('KSHS. ' + trial);
+
+            });
+
             console.log($('#resp'))
 
         });
