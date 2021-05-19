@@ -220,11 +220,15 @@ def record_payment_request(request, i_id):
         a = []
         try:
             for i in range(len(uuid)):
+                if not receipt[i] == '':
+                    r = receipt[i]
+                else:
+                    r = None
                 if amount[i] != '':
                     pay_item = InvoiceItemsRequest.objects.create(
                         created_by=request.user, invoice_item=InvoiceItems.objects.get(uuid=uuid[i]),
                         transaction_code=trans[i], amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i],
-                        date_paid=datepaid[i], receipt=receipt[i]
+                        date_paid=datepaid[i], receipt=r
                     )
 
                     pay_item.save()
@@ -240,12 +244,16 @@ def record_payment_request(request, i_id):
             return redirect('invoice', i_id=i_id)
         except InvoiceItems.DoesNotExist:
             for i in range(len(uuid)):
+                if not receipt[i] == '':
+                    r = receipt[i]
+                else:
+                    r = None
                 if amount[i] != '':
                     pay_item = RentInvItemsRequest.objects.create(
                         created_by=request.user, invoice_item=RentItems.objects.get(uuid=uuid[i]),
                         transaction_code=trans[i],
                         amount_paid=amount[i], payment_mode=payment[i], remarks=remar[i], date_paid=datepaid[i],
-                        receipt=receipt[i]
+                        receipt=r
                     )
 
                     pay_item.save()
