@@ -1,9 +1,12 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import render, redirect
 
 from authapp.models import Users, Profile, Subscriptions
+from bills.models import *
 from properties.models import *
 
 
@@ -111,4 +114,61 @@ def tenant_listing(request):
 
 
 def invoice_report(request):
-    return render(request, '')
+
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
+        comp = CompanyProfile.objects.get(user=request.user).company
+        prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
+        rent_inv =  RentInvoice.objects.filter(unit__property__in=prop)
+        invoices =  Invoice.objects.filter(unit__property__in=prop)
+        inv_items = InvoiceItems.objects.filter(invoice__in=invoices)
+        rent_inv_items = RentItems.objects.filter(invoice__in=rent_inv)
+        rent_inv_trans = RentItemTransaction.objects.filter(invoice_item__in=rent_inv_items)
+        inv_trans = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_items)
+        a = []
+        for inv in invoices:
+            total = 0
+            paid = 0
+            inv_items = InvoiceItems.objects.filter(invoice=inv)
+            for i in inv_items:
+                total = total + i.amount
+                trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
+                for ab in trans:
+                    paid = ab.amount_paid + paid
+
+            a.append({
+                'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+                'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+                'created_at': inv.created_at, 'paid': paid, "status": inv.status
+            })
+
+
+        r = []
+        for inv in rent_inv:
+            total = 0
+            paid = 0
+            inv_items = RentItems.objects.filter(invoice=inv)
+            for i in inv_items:
+                total = total + i.amount
+                trans = RentItemTransaction.objects.filter(invoice_item=i)
+                for ab in trans:
+                    paid = ab.amount_paid + paid
+
+            r.append({
+                'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+                'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+                'created_at': inv.created_at, 'paid': paid, "status": inv.status
+            })
+
+
+    else:
+        raise PermissionDenied
+    print(invoices.count())
+
+    context = {
+        'user': request.user,
+        'invoice_number': rent_inv.count() + invoices.count(),
+        'open_inv': rent_inv.filter(status=False).count() + invoices.filter(status=False).count(),
+        'closed_inv': rent_inv.filter(status=True).count() + invoices.filter(status=True).count(),
+        'inv':a + r,
+    }
+    return render(request, 'reports/invoice_listings.html', context)

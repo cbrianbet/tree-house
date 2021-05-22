@@ -11,4 +11,5 @@ urlpatterns = [
     path('subs/delete/<uuid:uuid>', views.delete_subs, name='del-subs'),
     path('report/tenant/list/<int:id>', views.tenant_list, name='tenant-list'),
     path('report/tenant/listings', views.tenant_listing, name='tenant-listing'),
+    path('report/invoices/listings', views.invoice_report, name='invoice-report'),
 ]

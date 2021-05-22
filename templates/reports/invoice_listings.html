@@ -1,0 +1,423 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block headscripts %}
+    <link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
+
+{% endblock %}
+
+{% block title %}
+
+    <title>Invoice Report | MNEST Africa</title>
+{% endblock %}
+
+{% block page %}
+
+    <!-- Page -->
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Invoice Report</h1>
+        </div>
+
+        <div class="page-content">
+            <!-- Panel -->
+            <div class="panel">
+                <div class="panel-body container-fluid">
+
+
+                    <div class="col-xl-12 col-lg-12">
+                        <!-- Card -->
+                        <div class="card-group">
+                            <div class="card card-block p-30">
+                                <div class="counter counter-lg text-left pl-20">
+                                    <span class="counter-number">{{ invoice_number }}</span>
+                                    <div class="counter-label text-uppercase">Number Of Invoices</div>
+                                </div>
+                            </div>
+                            <div class="card card-block p-30">
+                                <div class="counter counter-lg text-left pl-20">
+                                    <span class="counter-number">{{ closed_inv }}</span>
+                                    <div class="counter-label text-uppercase">Closed Invoices</div>
+                                </div>
+                            </div>
+                            <div class="card card-block p-30">
+                                <div class="counter counter-lg text-left pl-20">
+                                    <span class="counter-number">{{ open_inv }}</span>
+                                    <div class="counter-label text-uppercase">Open Invoices</div>
+                                </div>
+                            </div>
+                            <div class="card card-block p-30">
+                                <div class="counter counter-lg text-left pl-20">
+
+                                    <br>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Card -->
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                        </div>
+                        <div class="col-lg-3 offset-lg-6 text-right">
+
+                        </div>
+                    </div>
+
+                    <div class="page-invoice-table table-responsive">
+
+                        <!-- End Example Tabs -->
+                        <table class="table table-hover dataTable table-striped w-full"
+                               id="exampleTableTools2">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Invoice</th>
+                                <th>Property</th>
+                                <th>Unit</th>
+                                <th>Amount</th>
+                                <th>Amount paid</th>
+                                <th>Status</th>
+                                <th>Created by</th>
+                                <th>Created at</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Invoice</th>
+                                <th>Property</th>
+                                <th>Unit</th>
+                                <th>Amount</th>
+                                <th>Amount paid</th>
+                                <th>Status</th>
+                                <th>Created by</th>
+                                <th>Created at</th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            {% for b in inv %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+
+                                    <td>{{ b.invoice_no }}</td>
+                                    <td>{{ b.property_name }}</td>
+                                    <td>{{ b.unit_name }}</td>
+                                    <td>{{ b.amount }}</td>
+                                    <td>{{ b.paid }}</td>
+                                    <td>{% if b.status %}
+                                        Closed
+                                    {% else %}
+                                        Open
+                                    {% endif %}</td>
+                                    <td>{{ b.username }}</td>
+                                    <td>{{ b.created_at }}</td>
+
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-right">
+
+                    </div>
+                </div>
+            </div>
+            <!-- End Panel -->
+        </div>
+    </div>
+    <!-- End Page -->
+
+{% endblock %}
+{% block footscripts %}
+    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
+    <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
+
+    <script>
+        var CardForm = $("#card-form");
+        CardForm.submit(function (e) {
+            e.preventDefault();
+            FlutterwaveCheckout({
+                //public_key: "FLWPUBK_TEST-14d251e0b448f6c8a22134084b798a20-X", //test
+                public_key: "FLWPUBK-e96eebe004986246294db7041123a73b-X", //live
+                tx_ref: "{{profile.hapokash}}",
+                amount: $('#amountc').val(),
+                currency: "KES",
+                country: "KE",
+                payment_options: "card",
+                customer: {
+                    email: $('#emailc').val(),
+                    phone_number: $('#phone_noc').val(),
+                    name: $('#namec').val(),
+                },
+                customizations: {
+                    title: "HapoKash",
+                    description: "Wallet Top Up",
+                    logo: "https://portal.hapokash.app/assets/img/logo.png",
+                },
+            });
+        })
+    </script>
+    <script>
+        var loginForm = $("#hkpay");
+        loginForm.submit(function (e) {
+            e.preventDefault();
+            var sub = $('#sub').val()
+            $('#transF').append('<input type="input" name="uuid" placeholder="name" id="name" value="' + sub + '" hidden>');
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait, Topping up!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "error") {
+                        swal({
+                            title: 'Error!!',
+                            text: 'Fill all fields correctly!!',
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+                    } else {
+                        swal({
+                            title: 'Mpesa Transaction!!',
+                            text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
+                            type: "info",
+                            showConfirmButton: true,
+                        });
+                        $('#examplePositionCenter').modal('hide');
+                        {#$('#examplePositionCenter3').modal('show');#}
+                        window.reload();
+                    }
+                },
+                error: function (er) {
+                    console.log("error");
+                    // console.log(er.responseText);
+                    swal('Top up error!!', 'Something went wrong!!', 'error');
+                }
+            });
+
+        });
+
+        var transForm = $("#transF");
+        transForm.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "Not Found") {
+                        swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+
+                    } else {
+                        console.log(data)
+                        swal({
+                            title: 'Transaction Successful!!',
+                            text: 'Top up Complete, Proceed to Wallet',
+                            type: "success",
+                            showConfirmButton: true,
+                        });
+                        $('#examplePositionCenter').modal('hide');
+                    }
+                },
+                error: function (er) {
+                    swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+                }
+            });
+
+        });
+
+        var withdraw = $("#hkwith");
+        withdraw.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "success") {
+                        swal({
+                            title: 'Transaction Successful!!',
+                            text: 'Withdrawal is being processed',
+                            type: "success",
+                            showConfirmButton: true,
+                        });
+
+                    } else {
+                        console.log(data)
+                        swal({
+                            title: 'Something went wrong!!',
+                            text: data,
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+                    }
+                },
+                error: function (er) {
+                    swal('Does not exist!!', 'Try again, Transaction code given does NOT exist!!', 'error');
+                }
+            });
+
+        });
+    </script>
+    <script>
+        var Trans = $("#walltrans");
+        Trans.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "success") {
+                        swal({
+                            title: 'Success',
+                            text: 'Transfer successfull',
+                            type: "info",
+                            showConfirmButton: true,
+                        });
+                        $('#transfer').modal('hide');
+                        window.reload();
+
+                    } else {
+                        swal({
+                            title: 'Error!!',
+                            text: data,
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+                    }
+                },
+                error: function (er) {
+                    console.log("error");
+                    swal('Error!!', 'Something went wrong!!', 'error');
+                }
+            });
+
+        });
+    </script>
+    <script>
+        var sum1 = 0;
+        var sum2 = 0;
+        $("#category tr").not(':first').each(function () {
+            sum2 += getnum($(this).find("td:eq(3)").text());
+
+            function getnum(t) {
+                if (isNumeric(t)) {
+                    return parseInt(t, 10);
+                }
+                return 0;
+
+                function isNumeric(n) {
+                    return !isNaN(parseFloat(n)) && isFinite(n);
+                }
+            }
+        });
+        $("#sum2").text(sum2);
+        $("#sum1").text('KSHS. ' + sum2);
+    </script>
+    <script>
+        (function (document, window, $) {
+            'use strict';
+
+            var Site = window.Site;
+            $(document).ready(function () {
+                Site.run();
+            });
+        })(document, window, jQuery);
+    </script>
+
+{% endblock %}
