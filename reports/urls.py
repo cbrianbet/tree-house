@@ -10,4 +10,5 @@ urlpatterns = [
     path('subs', views.all_subs, name='all-subs'),
     path('subs/delete/<uuid:uuid>', views.delete_subs, name='del-subs'),
     path('report/tenant/list/<int:id>', views.tenant_list, name='tenant-list'),
+    path('report/tenant/listings', views.tenant_listing, name='tenant-listing'),
 ]

@@ -88,3 +88,27 @@ def tenant_list(request, id):
             'list': t,
         }
         return render(request, 'reports/tenant_list.html', context)
+
+
+def tenant_listing(request):
+    if request.user == 4:
+        raise PermissionDenied
+    comp = CompanyProfile.objects.get(user=request.user).company
+    units = Unit.objects.filter(property__company=comp, unit_status="Occupied")
+    unit_total = Unit.objects.filter(property__company=comp)
+    ten_his = TenantHistory.objects.filter(end_date=None, curr_unit__in=units)
+    active_tenant = Tenant.objects.filter(id__in=ten_his.values_list('tenant_id', flat=True))
+    occ = (active_tenant.count() / unit_total.count()) * 100
+
+    context = {
+        'user': request.user,
+        'active': active_tenant,
+        'units': unit_total.count(),
+        'tenant': active_tenant.count(),
+        'occ': occ
+    }
+    return render(request, 'reports/tenant_listings.html', context)
+
+
+def invoice_report(request):
+    return render(request, '')
