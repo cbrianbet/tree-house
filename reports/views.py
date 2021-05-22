@@ -108,7 +108,7 @@ def tenant_listing(request):
         'active': active_tenant,
         'units': unit_total.count(),
         'tenant': active_tenant.count(),
-        'occ': occ
+        'occ': "{:.2f}".format(occ)
     }
     return render(request, 'reports/tenant_listings.html', context)
 
