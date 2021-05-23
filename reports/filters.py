@@ -26,8 +26,11 @@ def unit(request):
 
     comp = CompanyProfile.objects.get(user=request.user).company
     print(request.GET)
-    if request.GET['unit__property']:
-        return Unit.objects.filter(property__company=comp, property_id=request.GET['unit__property']).order_by('unit_name')
+    try:
+        if request.GET['unit__property']:
+            return Unit.objects.filter(property__company=comp, property_id=request.GET['unit__property']).order_by('unit_name')
+    except :
+        Unit.objects.filter(property__company=comp).order_by('unit_name')
     return Unit.objects.filter(property__company=comp).order_by('unit_name')
 
 

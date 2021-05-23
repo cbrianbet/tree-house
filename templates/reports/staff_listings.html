@@ -25,7 +25,7 @@
 
 {% block title %}
 
-    <title>Invoice Report | MNEST Africa</title>
+    <title>Staff List | MNEST Africa</title>
 {% endblock %}
 
 {% block page %}
@@ -33,7 +33,7 @@
     <!-- Page -->
     <div class="page">
         <div class="page-header">
-            <h1 class="page-title">Invoice Report</h1>
+            <h1 class="page-title">Staff List</h1>
         </div>
 
         <div class="page-content">
@@ -44,64 +44,38 @@
 
                     <div class="col-xl-12 col-lg-12">
                         <!-- Card -->
-                        <div class="card-group">
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-                                    <span class="counter-number">{{ invoice_number }}</span>
-                                    <div class="counter-label text-uppercase">Number Of Invoices</div>
-                                </div>
-                            </div>
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-                                    <span class="counter-number">{{ closed_inv }}</span>
-                                    <div class="counter-label text-uppercase">Closed Invoices</div>
-                                </div>
-                            </div>
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-                                    <span class="counter-number">{{ open_inv }}</span>
-                                    <div class="counter-label text-uppercase">Open Invoices</div>
-                                </div>
-                            </div>
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-
-                                    <br>
-                                    <br>
-                                </div>
-                            </div>
-                        </div>
+{#                        <div class="card-group">#}
+{#                            <div class="card card-block p-30">#}
+{#                                <div class="counter counter-lg text-left pl-20">#}
+{#                                    <span class="counter-number">{{ invoice_number }}</span>#}
+{#                                    <div class="counter-label text-uppercase">Number Of Invoices</div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="card card-block p-30">#}
+{#                                <div class="counter counter-lg text-left pl-20">#}
+{#                                    <span class="counter-number">{{ closed_inv }}</span>#}
+{#                                    <div class="counter-label text-uppercase">Closed Invoices</div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="card card-block p-30">#}
+{#                                <div class="counter counter-lg text-left pl-20">#}
+{#                                    <span class="counter-number">{{ open_inv }}</span>#}
+{#                                    <div class="counter-label text-uppercase">Open Invoices</div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="card card-block p-30">#}
+{#                                <div class="counter counter-lg text-left pl-20">#}
+{##}
+{#                                    <br>#}
+{#                                    <br>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
                         <!-- End Card -->
                     </div>
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <form method="get">
-                                <div class="well">
-                                    <h4 style="margin-top: 0">Filter</h4>
-                                    <div class="row">
-                                        <div class="form-group col-sm-8 col-md-3">
-                                            {{ InvFilter.form.tenant_list.html.label_tag }}
-                                            {{ InvFilter.form.unit__property }}
-                                        </div>
-                                        <div class="form-group col-sm-8 col-md-3">
-                                            Unit:
-                                            {{ InvFilter.form.unit }}
-                                        </div>
-                                        <div class="form-group col-sm-8 col-md-3">
-                                            {{ InvFilter.form.status.label_tag }}
-                                            {{ InvFilter.form.status }}
-                                        </div>
-{#                                        <div class="form-group col-sm-8 col-md-3">#}
-{#                                            Tenant:#}
-{#                                            {{ InvFilter.form.invoice_for }}#}
-{#                                        </div>#}
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">
-                                        <span class="wb wb-search"></span> Search
-                                    </button>
-                                </div>
-                            </form>
                         </div>
                         <div class="col-lg-3 offset-lg-6 text-right">
 
@@ -116,49 +90,30 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Invoice</th>
-                                <th>Tenant</th>
-                                <th>Property</th>
-                                <th>Unit</th>
-                                <th>Amount</th>
-                                <th>Amount paid</th>
-                                <th>Status</th>
-                                <th>Created by</th>
+                                <th>Name</th>
+                                <th>Mobile Number</th>
+                                <th>Email</th>
                                 <th>Created at</th>
                             </tr>
                             </thead>
                             <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Invoice</th>
-                                <th>Tenant</th>
-                                <th>Property</th>
-                                <th>Unit</th>
-                                <th>Amount</th>
-                                <th>Amount paid</th>
-                                <th>Status</th>
-                                <th>Created by</th>
+                                <th>Name</th>
+                                <th>Mobile Number</th>
+                                <th>Email</th>
                                 <th>Created at</th>
                             </tr>
                             </tfoot>
                             <tbody>
-                            {% for b in inv %}
+                            {% for b in staff %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
 
-                                    <td>{{ b.invoice_no }}</td>
-                                    <td>{{ b.tenant.first_name }} {{ b.tenant.last_name }}</td>
-                                    <td>{{ b.property_name }}</td>
-                                    <td>{{ b.unit_name }}</td>
-                                    <td>{{ b.amount }}</td>
-                                    <td>{{ b.paid }}</td>
-                                    <td>{% if b.status %}
-                                        Closed
-                                    {% else %}
-                                        Open
-                                    {% endif %}</td>
-                                    <td>{{ b.username }}</td>
-                                    <td>{{ b.created_at }}</td>
+                                    <td>{{ b.first_name }} {{ b.last_name }}</td>
+                                    <td>{{ b.msisdn }}</td>
+                                    <td>{{ b.user.email }}</td>
+                                    <td>{{ b.user.date_joined }}</td>
 
                                 </tr>
                             {% endfor %}

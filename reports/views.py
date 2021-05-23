@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import render, redirect
 
+from authapp.decorators import unsubscribed_user
 from authapp.models import Users, Profile, Subscriptions
 from bills.models import *
 from properties.models import *
@@ -94,6 +95,8 @@ def tenant_list(request, id):
         return render(request, 'reports/tenant_list.html', context)
 
 
+@login_required
+@unsubscribed_user
 def tenant_listing(request):
     if request.user == 4:
         raise PermissionDenied
@@ -102,8 +105,11 @@ def tenant_listing(request):
     unit_total = Unit.objects.filter(property__company=comp)
     ten_his = TenantHistory.objects.filter(end_date=None, curr_unit__in=units)
     active_tenant = Tenant.objects.filter(id__in=ten_his.values_list('tenant_id', flat=True))
-    if request.GET['unit__property']:
-        unit_total = Unit.objects.filter(property__company=comp, property_id__in=request.GET['unit__property'])
+    try:
+        if request.GET['unit__property']:
+            unit_total = Unit.objects.filter(property__company=comp, property_id__in=request.GET['unit__property'])
+    except:
+        unit_total = Unit.objects.filter(property__company=comp)
 
     filter = TenantFilter(request.GET, request=request, queryset=active_tenant)
     active_tenant = filter.qs
@@ -122,8 +128,9 @@ def tenant_listing(request):
     return render(request, 'reports/tenant_listings.html', context)
 
 
+@login_required
+@unsubscribed_user
 def invoice_report(request):
-
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         comp = CompanyProfile.objects.get(user=request.user).company
         prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
@@ -155,7 +162,6 @@ def invoice_report(request):
                 'created_at': inv.created_at, 'paid': paid, "status": inv.status, 'tenant': Profile.objects.get(user=inv.invoice_for)
             })
 
-
         r = []
         for inv in rent_inv:
             total = 0
@@ -173,7 +179,6 @@ def invoice_report(request):
                 'created_at': inv.created_at, 'paid': paid, "status": inv.status, 'tenant': Profile.objects.get(user=inv.invoice_for)
             })
 
-
     else:
         raise PermissionDenied
     print(invoices.count())
@@ -187,3 +192,24 @@ def invoice_report(request):
         'InvFilter': filter
     }
     return render(request, 'reports/invoice_listings.html', context)
+
+
+@login_required
+@unsubscribed_user
+def staffList(request):
+    if request.user.acc_type.id == 4:
+        raise PermissionDenied
+    if request.user.acc_type.id == 5:
+        raise PermissionDenied
+    comp = CompanyProfile.objects.filter(company=CompanyProfile.objects.get(user=request.user).company).values_list(
+        'user', flat=True)
+    staff = Profile.objects.filter(user__in=comp, user__acc_type_id=5)
+    print(staff)
+
+    context = {
+        'user': request.user,
+        'staff': staff,
+        'props': Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company),
+    }
+    return render(request, 'reports/staff_listings.html', context)
+
