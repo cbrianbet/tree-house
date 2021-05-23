@@ -102,10 +102,16 @@ def tenant_listing(request):
     unit_total = Unit.objects.filter(property__company=comp)
     ten_his = TenantHistory.objects.filter(end_date=None, curr_unit__in=units)
     active_tenant = Tenant.objects.filter(id__in=ten_his.values_list('tenant_id', flat=True))
-    occ = (active_tenant.count() / unit_total.count()) * 100
-    filter = TenantFilter(request.GET, request=request, queryset=active_tenant)
-    active_tenant = filter.qs
+    if request.GET:
+        unit_total = Unit.objects.filter(property__company=comp, property_id__in=request.GET['unit__property'])
 
+    filter = TenantFilter(request.GET, request=request, queryset=active_tenant)
+    print(request.GET)
+    active_tenant = filter.qs
+    try:
+        occ = (active_tenant.count() / unit_total.count()) * 100
+    except ZeroDivisionError:
+        occ = 0
     context = {
         'user': request.user,
         'active': active_tenant,

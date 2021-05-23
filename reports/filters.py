@@ -9,9 +9,7 @@ def departments(request):
         return Properties.objects.none()
 
     comp = CompanyProfile.objects.get(user=request.user).company
-    units = Unit.objects.filter(property__company=comp, unit_status="Occupied")
-    ten_his = TenantHistory.objects.filter(end_date=None, curr_unit__in=units).values('curr_unit__property__property_name').distinct()
-    return Properties.objects.filter(company=comp)
+    return Properties.objects.filter(company=comp).order_by('property_name')
 
 
 class TenantFilter(django_filters.FilterSet):
