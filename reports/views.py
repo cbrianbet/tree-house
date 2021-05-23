@@ -102,7 +102,7 @@ def tenant_listing(request):
     unit_total = Unit.objects.filter(property__company=comp)
     ten_his = TenantHistory.objects.filter(end_date=None, curr_unit__in=units)
     active_tenant = Tenant.objects.filter(id__in=ten_his.values_list('tenant_id', flat=True))
-    if request.GET:
+    if request.GET['unit__property']:
         unit_total = Unit.objects.filter(property__company=comp, property_id__in=request.GET['unit__property'])
 
     filter = TenantFilter(request.GET, request=request, queryset=active_tenant)
