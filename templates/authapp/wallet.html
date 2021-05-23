@@ -2,8 +2,24 @@
 {% load static %}
 
 {% block headscripts %}
-    <link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/invoice.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
 
 {% endblock %}
 
@@ -49,7 +65,8 @@
                             </div>
                             <div class="card card-block p-30">
                                 <div class="counter counter-lg text-left pl-20">
-                                    <button class="btn block btn-animate btn-animate-side" style="background: rgba(212,165,55 ,1); color:whitesmoke;"
+                                    <button class="btn block btn-animate btn-animate-side"
+                                            style="background: rgba(212,165,55 ,1); color:whitesmoke;"
                                             data-target="#examplePositionCenter2" data-toggle="modal">
                                         <span><i class="icon wb-arrow-down"
                                                  aria-hidden="true"></i> Withdraw from Wallet</span>
@@ -65,7 +82,8 @@
                                         <span><i class="icon wb-arrow-up" aria-hidden="true"></i> Top up Wallet Via Card</span>
                                     </button>
                                     <br>
-                                    <button class="btn btn-animate btn-animate-side block" style="background: rgba(218,165,32, 1); color:white;"
+                                    <button class="btn btn-animate btn-animate-side block"
+                                            style="background: rgba(218,165,32, 1); color:white;"
                                             data-target="#transfer" data-toggle="modal">
                                         <span><i class="icon wb-chevron-right" aria-hidden="true"></i>Transfer to other wallet</span>
                                     </button>
@@ -84,7 +102,8 @@
                     </div>
 
                     <div class="page-invoice-table table-responsive">
-                        <table id="category" class="table table-hover text-right">
+                        <table class="table table-hover text-right dataTable table-striped w-full"
+                               id="exampleTableTools2">
                             <thead>
                             <tr>
                                 <th class="text-center">#</th>
@@ -217,8 +236,10 @@
                                     <div class="form-group">
                                         <label class="form-control-label" for="amount">Amount*</label>
                                         <small>Your wallet balance is {{ cur_balance }}</small>
-                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control" id="amount" name="amount"
-                                               required="required" placeholder="Ksh. 10 is the least amount you can withdraw">
+                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control"
+                                               id="amount" name="amount"
+                                               required="required"
+                                               placeholder="Ksh. 10 is the least amount you can withdraw">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-control-label" for="amount">Mobile*</label>
@@ -255,7 +276,8 @@
                                     {% csrf_token %}
                                     <div class="form-group">
                                         <label class="form-control-label" for="amount">Amount*</label>
-                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control" id="amount" name="amount"
+                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control"
+                                               id="amount" name="amount"
                                                required="required" placeholder="Amount">
                                     </div>
                                     <div class="form-group">
@@ -265,6 +287,38 @@
                                     </div>
 
                                     <button type="submit" class="btn btn-success">Transfer</button>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Modal -->
+                <!-- Modal -->
+                <div class="modal fade example-modal-lg" id="Password" aria-hidden="true"
+                     aria-labelledby="examplePositionCenter"
+                     role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-simple modal-center">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">Provide your password to access Wallet</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form id="passwrdForm" method="post" action="{% url 'hapo_wallet' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="psswrd">Password*</label>
+                                        <input type="password" class="form-control" id="psswrd" name="psswrd"
+                                               required="required" placeholder="Password">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Submit</button>
                                 </form>
 
                             </div>
@@ -329,7 +383,23 @@
     <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
     <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
 
+    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
     <script>
         var CardForm = $("#card-form");
         CardForm.submit(function (e) {
@@ -547,26 +617,57 @@
             });
 
         });
-    </script>
-    <script>
-        var sum1 = 0;
-        var sum2 = 0;
-        $("#category tr").not(':first').each(function () {
-            sum2 += getnum($(this).find("td:eq(3)").text());
 
-            function getnum(t) {
-                if (isNumeric(t)) {
-                    return parseInt(t, 10);
-                }
-                return 0;
-
-                function isNumeric(n) {
-                    return !isNaN(parseFloat(n)) && isFinite(n);
-                }
+        $(document).ready(function () {
+            if ("{{ show }}" == "Yes") {
+                $('#Password').modal('show');
             }
         });
-        $("#sum2").text(sum2);
-        $("#sum1").text('KSHS. ' + sum2);
+        var Passwrd = $("#passwrdForm");
+        Passwrd.submit(function (e) {
+            e.preventDefault();
+            var thisForm = $(this);
+            var endPoint = thisForm.attr("action") || window.location.href;
+            var method = thisForm.attr("method");
+            var formData = thisForm.serialize();
+
+            console.log(endPoint);
+            console.log(method);
+            swal({
+                title: "Please wait!",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            $.ajax({
+                type: method,
+                url: endPoint,
+                data: formData,
+                success: function (data) {
+                    console.log(data)
+                    if (data === "wrong") {
+                        swal({
+                            title: 'Error',
+                            text: 'Wrong Password',
+                            type: "error",
+                            showConfirmButton: true,
+                        });
+
+                    } else {
+                        document.open();
+                        document.write(data);
+                        document.close();
+                        swal('Success!!', 'Success!!', 'success');
+                        $('#Password').modal('hide');
+                    }
+                },
+                error: function (er) {
+                    console.log("error");
+                    swal('Error!!', 'Something went wrong!!', 'error');
+                }
+            });
+
+        });
     </script>
     <script>
         (function (document, window, $) {

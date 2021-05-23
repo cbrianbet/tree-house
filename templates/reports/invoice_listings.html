@@ -195,36 +195,9 @@
     <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
-    <script src="https://checkout.flutterwave.com/v3.js"></script>
 
     <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
     <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
-
-    <script>
-        var CardForm = $("#card-form");
-        CardForm.submit(function (e) {
-            e.preventDefault();
-            FlutterwaveCheckout({
-                //public_key: "FLWPUBK_TEST-14d251e0b448f6c8a22134084b798a20-X", //test
-                public_key: "FLWPUBK-e96eebe004986246294db7041123a73b-X", //live
-                tx_ref: "{{profile.hapokash}}",
-                amount: $('#amountc').val(),
-                currency: "KES",
-                country: "KE",
-                payment_options: "card",
-                customer: {
-                    email: $('#emailc').val(),
-                    phone_number: $('#phone_noc').val(),
-                    name: $('#namec').val(),
-                },
-                customizations: {
-                    title: "HapoKash",
-                    description: "Wallet Top Up",
-                    logo: "https://portal.hapokash.app/assets/img/logo.png",
-                },
-            });
-        })
-    </script>
     <script>
         var loginForm = $("#hkpay");
         loginForm.submit(function (e) {
