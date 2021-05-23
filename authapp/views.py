@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login as log_in, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail, BadHeaderError
@@ -813,48 +814,9 @@ def wall_bal(request):
         except:
             print(wal_id)
 
-    URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
-    headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
-    }
-
-    r = requests.get(url=URL, headers=headers)
-    print(r.json())
-    wallet = r.json()
-
-    if wallet['success']:
-        cur_balance = wallet['wallet']['current_balance']
-        pre_balance = wallet['wallet']['previous_balance']
-    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
-        refreshToken()
-        URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
-        headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
-        }
-
-        r = requests.get(url=URL, headers=headers)
-        wallet = r.json()
-
-        if wallet['success']:
-            cur_balance = wallet['wallet']['current_balance']
-            pre_balance = wallet['wallet']['previous_balance']
-        else:
-            cur_balance = 0
-            pre_balance = 0
-    else:
-        cur_balance = 0
-        pre_balance = 0
-
-    trans = wallet_trans(prof.hapokash)
-    print(trans)
-    if trans['last_page'] != 1:
-        URL = trans['next_page_url']
-        for i in range(trans['last_page'] - 1):
-            print(trans['next_page_url'])
+    if request.method == "POST":
+        if check_password(request.POST.get('psswrd'), Users.objects.get(id=request.user.id).password):
+            URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
             headers = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -862,12 +824,15 @@ def wall_bal(request):
             }
 
             r = requests.get(url=URL, headers=headers)
+            print(r.json())
             wallet = r.json()
-            print(wallet)
+
             if wallet['success']:
-                trans['data'] = trans['data'] + wallet['transactions']['data']
+                cur_balance = wallet['wallet']['current_balance']
+                pre_balance = wallet['wallet']['previous_balance']
             elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
                 refreshToken()
+                URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
                 headers = {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -876,21 +841,68 @@ def wall_bal(request):
 
                 r = requests.get(url=URL, headers=headers)
                 wallet = r.json()
-                print(wallet)
-                if wallet['success']:
-                    trans['data'] = trans['data'] + wallet['transactions']['data']
-            URL = wallet['transactions']['next_page_url']
 
-    for d in trans['data']:
-        d.update((k, datetime.datetime.strptime(
-            '{} {}'.format(v.split('T')[0], v.split('T')[1].split('.')[0]), '%Y-%m-%d %H:%M:%S'
-        ).strftime('%d/%B/%Y, %H:%M:%S')) for k, v in d.items() if k == "created_at")
+                if wallet['success']:
+                    cur_balance = wallet['wallet']['current_balance']
+                    pre_balance = wallet['wallet']['previous_balance']
+                else:
+                    cur_balance = 0
+                    pre_balance = 0
+            else:
+                cur_balance = 0
+                pre_balance = 0
+
+            trans = wallet_trans(prof.hapokash)
+            print(trans)
+            if trans['last_page'] != 1:
+                URL = trans['next_page_url']
+                for i in range(trans['last_page'] - 1):
+                    print(trans['next_page_url'])
+                    headers = {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+                    }
+
+                    r = requests.get(url=URL, headers=headers)
+                    wallet = r.json()
+                    print(wallet)
+                    if wallet['success']:
+                        trans['data'] = trans['data'] + wallet['transactions']['data']
+                    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+                        refreshToken()
+                        headers = {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+                        }
+
+                        r = requests.get(url=URL, headers=headers)
+                        wallet = r.json()
+                        print(wallet)
+                        if wallet['success']:
+                            trans['data'] = trans['data'] + wallet['transactions']['data']
+                    URL = wallet['transactions']['next_page_url']
+
+            for d in trans['data']:
+                d.update((k, datetime.datetime.strptime(
+                    '{} {}'.format(v.split('T')[0], v.split('T')[1].split('.')[0]), '%Y-%m-%d %H:%M:%S'
+                ).strftime('%d/%B/%Y, %H:%M:%S')) for k, v in d.items() if k == "created_at")
+
+            context = {
+                'user': request.user,
+                'cur_balance': cur_balance,
+                'previous_balance': pre_balance,
+                'trans': trans,
+                'show': 'No',
+                'profile': Profile.objects.get(user=request.user)
+            }
+            return render(request, 'authapp/wallet.html', context)
+        return HttpResponse('wrong')
 
     context = {
         'user': request.user,
-        'cur_balance': cur_balance,
-        'previous_balance': pre_balance,
-        'trans': trans,
+        'show': 'Yes',
         'profile': Profile.objects.get(user=request.user)
     }
     return render(request, 'authapp/wallet.html', context)
@@ -1243,7 +1255,7 @@ def signup_api(request):
 @swagger_auto_schema(method='post', request_body=PassResetSerializer)
 @api_view(['POST'])
 def password_reset_api(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         associated_users = Users.objects.filter(Q(email=request.data['email'], is_active=True))
         if associated_users.exists():
             for user in associated_users:
