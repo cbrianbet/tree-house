@@ -59,6 +59,9 @@ class Properties(models.Model):
         self.pics.delete()
         super().delete(*args, **kwargs)
 
+    def __str__(self):
+        return self.property_name
+
 
 class PaymentAccount(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)

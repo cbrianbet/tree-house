@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'djoser',
     'crispy_forms',
     'drf_yasg',
+    'django_filters',
 
     'authapp',
     'properties',

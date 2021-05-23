@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from authapp.models import Users, Profile, Subscriptions
 from bills.models import *
 from properties.models import *
+from reports.filters import TenantFilter
 
 
 @login_required
@@ -102,13 +103,16 @@ def tenant_listing(request):
     ten_his = TenantHistory.objects.filter(end_date=None, curr_unit__in=units)
     active_tenant = Tenant.objects.filter(id__in=ten_his.values_list('tenant_id', flat=True))
     occ = (active_tenant.count() / unit_total.count()) * 100
+    filter = TenantFilter(request.GET, request=request, queryset=active_tenant)
+    active_tenant = filter.qs
 
     context = {
         'user': request.user,
         'active': active_tenant,
         'units': unit_total.count(),
         'tenant': active_tenant.count(),
-        'occ': "{:.2f}".format(occ)
+        'occ': "{:.2f}".format(occ),
+        'TenantFilter': filter
     }
     return render(request, 'reports/tenant_listings.html', context)
 

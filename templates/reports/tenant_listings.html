@@ -1,6 +1,7 @@
 {% extends 'authapp/base.html' %}
 {% load static %}
 
+
 {% block headscripts %}
     <link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
@@ -75,7 +76,28 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-3">
+                        <div class="col-lg-12">
+                            <form method="get">
+                                <div class="well">
+                                    <h4 style="margin-top: 0">Filter</h4>
+                                    <div class="row">
+                                        <div class="form-group col-sm-8 col-md-6">
+                                        {{ TenantFilter.form }}
+{#                                            {{ TenantFilter.form.unit__property.label_tag }}#}
+{#                                            <div>#}
+{#                                                {% for choice in TenantFilter.form.unit__property %}#}
+{#                                                    <label class="checkbox-inline">#}
+{#                                                        {{ choice.tag }} {{ choice.choice_label }}#}
+{#                                                    </label>#}
+{#                                                {% endfor %}#}
+{#                                            </div>#}
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <span class="wb wb-search"></span> Search
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                         <div class="col-lg-3 offset-lg-6 text-right">
 
@@ -91,6 +113,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>Tenant Name</th>
+                                <th>Mobile Number</th>
+                                <th>Secondary Contact</th>
+                                <th>ID Number</th>
                                 <th>Unit</th>
                                 <th>Property</th>
                                 <th>Tenant Since</th>
@@ -100,6 +125,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>Tenant Name</th>
+                                <th>Mobile Number</th>
+                                <th>Secondary Contact</th>
+                                <th>ID Number</th>
                                 <th>Unit</th>
                                 <th>Property</th>
                                 <th>Tenant Since</th>
@@ -110,6 +138,9 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{ b.profile.first_name }} {{ b.profile.last_name }} </td>
+                                    <td>{{ b.profile.msisdn }}</td>
+                                    <td>{{ b.secondary_msisdn }}</td>
+                                    <td>{{ b.profile.id_number }}</td>
                                     <td>{{ b.unit.unit_name }}</td>
                                     <td>{{ b.unit.property.property_name }}</td>
                                     <td>{{ b.created_at }}</td>
