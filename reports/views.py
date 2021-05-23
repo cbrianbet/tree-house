@@ -155,6 +155,7 @@ def invoice_report(request):
                 trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
                 for ab in trans:
                     paid = ab.amount_paid + paid
+            print(inv)
 
             a.append({
                 'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
