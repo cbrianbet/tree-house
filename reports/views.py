@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from authapp.models import Users, Profile, Subscriptions
 from bills.models import *
 from properties.models import *
-from reports.filters import TenantFilter
+from reports.filters import TenantFilter, InvoiceFilter
 
 
 @login_required
@@ -106,7 +106,6 @@ def tenant_listing(request):
         unit_total = Unit.objects.filter(property__company=comp, property_id__in=request.GET['unit__property'])
 
     filter = TenantFilter(request.GET, request=request, queryset=active_tenant)
-    print(request.GET)
     active_tenant = filter.qs
     try:
         occ = (active_tenant.count() / unit_total.count()) * 100
@@ -134,6 +133,11 @@ def invoice_report(request):
         rent_inv_items = RentItems.objects.filter(invoice__in=rent_inv)
         rent_inv_trans = RentItemTransaction.objects.filter(invoice_item__in=rent_inv_items)
         inv_trans = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_items)
+
+        filter = InvoiceFilter(request.GET, request=request, queryset=rent_inv)
+        rent_inv = filter.qs
+        filter = InvoiceFilter(request.GET, request=request, queryset=invoices)
+        invoices = filter.qs
         a = []
         for inv in invoices:
             total = 0
@@ -148,7 +152,7 @@ def invoice_report(request):
             a.append({
                 'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
                 'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
-                'created_at': inv.created_at, 'paid': paid, "status": inv.status
+                'created_at': inv.created_at, 'paid': paid, "status": inv.status, 'tenant': Profile.objects.get(user=inv.invoice_for)
             })
 
 
@@ -166,7 +170,7 @@ def invoice_report(request):
             r.append({
                 'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
                 'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
-                'created_at': inv.created_at, 'paid': paid, "status": inv.status
+                'created_at': inv.created_at, 'paid': paid, "status": inv.status, 'tenant': Profile.objects.get(user=inv.invoice_for)
             })
 
 
@@ -180,5 +184,6 @@ def invoice_report(request):
         'open_inv': rent_inv.filter(status=False).count() + invoices.filter(status=False).count(),
         'closed_inv': rent_inv.filter(status=True).count() + invoices.filter(status=True).count(),
         'inv':a + r,
+        'InvFilter': filter
     }
     return render(request, 'reports/invoice_listings.html', context)

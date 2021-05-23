@@ -12,9 +12,48 @@ def departments(request):
     return Properties.objects.filter(company=comp).order_by('property_name')
 
 
+def tenant(request):
+    if request is None:
+        return Users.objects.none()
+
+    comp = CompanyProfile.objects.get(user=request.user).company
+    return Users.objects.filter(unit__property__company=comp).order_by('unit')
+
+
+def unit(request):
+    if request is None:
+        return Unit.objects.none()
+
+    comp = CompanyProfile.objects.get(user=request.user).company
+    print(request.GET)
+    if request.GET['unit__property']:
+        return Unit.objects.filter(property__company=comp, property_id=request.GET['unit__property']).order_by('unit_name')
+    return Unit.objects.filter(property__company=comp).order_by('unit_name')
+
+
 class TenantFilter(django_filters.FilterSet):
     unit__property = django_filters.filters.ModelChoiceFilter(queryset=departments)
+
     # unit__property = django_filters.ChoiceFilter()
+
+    class Meta:
+        model = Tenant
+        fields = []
+        exclude = ['id_card']
+
+
+FILTER_CHOICES = (
+    (False, 'Open'),
+    (True, 'Closed'),
+)
+
+
+class InvoiceFilter(django_filters.FilterSet):
+    unit__property = django_filters.filters.ModelChoiceFilter(queryset=departments)
+    # invoice_for = django_filters.filters.ModelChoiceFilter(queryset=tenant)
+    # id = django_filters.filters.ModelChoiceFilter(queryset=tenant)
+    unit = django_filters.filters.ModelChoiceFilter(queryset=unit)
+    status = django_filters.ChoiceFilter(choices=FILTER_CHOICES)
 
     class Meta:
         model = Tenant

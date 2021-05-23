@@ -136,6 +136,9 @@ class Unit(models.Model):
     class Meta:
         db_table = "Units"
 
+    def __str__(self):
+        return self.unit_name
+
 
 class Tenant(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
@@ -154,6 +157,9 @@ class Tenant(models.Model):
 
     class Meta:
         db_table = "Tenant"
+
+    def __str__(self):
+        return self.profile.first_name + ' ' + self.profile.last_name
 
 
 class PropertyStaff(models.Model):
