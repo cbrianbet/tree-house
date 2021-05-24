@@ -34,6 +34,35 @@
     <link rel="stylesheet" href="{% static 'authapp/global/fonts/brand-icons/brand-icons.min.css' %}">
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic'>
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YK1LVGHRPH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-YK1LVGHRPH');
+    </script>
+    <script src="https://cdn.websitepolicies.net/lib/cookieconsent/1.0.3/cookieconsent.min.js" defer></script>
+    <script>
+        window.addEventListener("load", function () {
+            window.wpcc.init({
+                "corners": "large",
+                "colors": {
+                    "popup": {"background": "#5c4812", "text": "#ffffff", "border": "#fde296"},
+                    "button": {"background": "#fde296", "text": "#000000"}
+                },
+                "border": "thin",
+                "transparency": "10",
+                "content": {"href": "https://www.websitepolicies.com/policies/view/8MjwlmZW"}
+            })
+        });
+    </script>
+
     <!--[if lt IE 9]>
     <script src="{% static 'authapp/global/vendor/html5shiv/html5shiv.min.js' %}"></script>
     <![endif]-->
