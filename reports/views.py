@@ -1,8 +1,10 @@
+import calendar
 from itertools import chain
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.db.models.functions import ExtractMonth, ExtractYear
 from django.shortcuts import render, redirect
 
 from authapp.decorators import unsubscribed_user
@@ -14,7 +16,7 @@ from reports.filters import TenantFilter, InvoiceFilter
 
 @login_required
 def all_users(request):
-    all_users = Profile.objects.filter(Q(user__acc_type_id=2) | Q(user__acc_type_id=3) | Q(user__acc_type_id=5) )
+    all_users = Profile.objects.filter(Q(user__acc_type_id=2) | Q(user__acc_type_id=3) | Q(user__acc_type_id=5))
 
     context = {
         'user': request.user,
@@ -56,7 +58,8 @@ def all_subs(request):
         duration = request.POST.get('duration')
         desc = request.POST.get('desc')
 
-        sub = Subscriptions.objects.create(created_by=request.user, value=val, name=name, duration=duration, description=desc)
+        sub = Subscriptions.objects.create(created_by=request.user, value=val, name=name, duration=duration,
+                                           description=desc)
         sub.save()
 
     context = {
@@ -134,8 +137,8 @@ def invoice_report(request):
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         comp = CompanyProfile.objects.get(user=request.user).company
         prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
-        rent_inv =  RentInvoice.objects.filter(unit__property__in=prop)
-        invoices =  Invoice.objects.filter(unit__property__in=prop)
+        rent_inv = RentInvoice.objects.filter(unit__property__in=prop)
+        invoices = Invoice.objects.filter(unit__property__in=prop)
         inv_items = InvoiceItems.objects.filter(invoice__in=invoices)
         rent_inv_items = RentItems.objects.filter(invoice__in=rent_inv)
         rent_inv_trans = RentItemTransaction.objects.filter(invoice_item__in=rent_inv_items)
@@ -160,7 +163,8 @@ def invoice_report(request):
             a.append({
                 'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
                 'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
-                'created_at': inv.created_at, 'paid': paid, "status": inv.status, 'tenant': Profile.objects.get(user=inv.invoice_for)
+                'created_at': inv.created_at, 'paid': paid, "status": inv.status,
+                'tenant': Profile.objects.get(user=inv.invoice_for)
             })
 
         r = []
@@ -168,16 +172,19 @@ def invoice_report(request):
             total = 0
             paid = 0
             inv_items = RentItems.objects.filter(invoice=inv)
+            delay = 0
             for i in inv_items:
                 total = total + i.amount
+                delay = delay + i.delay_penalties
                 trans = RentItemTransaction.objects.filter(invoice_item=i)
                 for ab in trans:
                     paid = ab.amount_paid + paid
 
             r.append({
                 'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
-                'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
-                'created_at': inv.created_at, 'paid': paid, "status": inv.status, 'tenant': Profile.objects.get(user=inv.invoice_for)
+                'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username, 'delay': delay,
+                'created_at': inv.created_at, 'paid': paid, "status": inv.status,
+                'tenant': Profile.objects.get(user=inv.invoice_for)
             })
 
     else:
@@ -189,10 +196,117 @@ def invoice_report(request):
         'invoice_number': rent_inv.count() + invoices.count(),
         'open_inv': rent_inv.filter(status=False).count() + invoices.filter(status=False).count(),
         'closed_inv': rent_inv.filter(status=True).count() + invoices.filter(status=True).count(),
-        'inv':a + r,
+        'inv': a + r,
         'InvFilter': filter
     }
     return render(request, 'reports/invoice_listings.html', context)
+
+
+@login_required
+@unsubscribed_user
+def tenants_ledge_listing(request):
+    if request.user == 4:
+        raise PermissionDenied
+    comp = CompanyProfile.objects.get(user=request.user).company
+    units = Unit.objects.filter(property__company=comp, unit_status="Occupied")
+    unit_total = Unit.objects.filter(property__company=comp)
+    ten_his = TenantHistory.objects.filter(end_date=None, curr_unit__in=units)
+    active_tenant = Tenant.objects.filter(id__in=ten_his.values_list('tenant_id', flat=True))
+
+    filter = TenantFilter(request.GET, request=request, queryset=active_tenant)
+    active_tenant = filter.qs
+
+    context = {
+        'user': request.user,
+        'active': active_tenant,
+    }
+    return render(request, 'reports/tenants.html', context)
+
+
+@login_required
+@unsubscribed_user
+def tenant_ledger(request, uuid):
+    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
+        comp = CompanyProfile.objects.get(user=request.user).company
+        prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
+        rent_inv = RentInvoice.objects.filter(unit__property__in=prop,
+                                              invoice_for_id=Tenant.objects.get(uuid=uuid).profile.user.id)
+        rent_ann = rent_inv.annotate(month=ExtractMonth('date_due'),
+                                     year=ExtractYear('date_due'), ).order_by('date_due').values('month',
+                                                                                                 'year').annotate(
+            total=Count('*')).values('month', 'year', 'total', 'uuid', 'status')
+        print(rent_ann)
+        invoices = Invoice.objects.filter(unit__property__in=prop,
+                                          invoice_for=Tenant.objects.get(uuid=uuid).profile.user)
+        inv_items = InvoiceItems.objects.filter(invoice__in=invoices)
+        rent_inv_items = RentItems.objects.filter(invoice__in=rent_inv)
+        rent_inv_trans = RentItemTransaction.objects.filter(invoice_item__in=rent_inv_items)
+        inv_trans = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_items)
+
+        filter = InvoiceFilter(request.GET, request=request, queryset=rent_inv)
+        rent_inv = filter.qs
+        filter = InvoiceFilter(request.GET, request=request, queryset=invoices)
+        invoices = filter.qs
+        a = []
+        for inv in invoices:
+            total = 0
+            paid = 0
+            inv_items = InvoiceItems.objects.filter(invoice=inv)
+            for i in inv_items:
+                total = total + i.amount
+                trans = InvoiceItemsTransaction.objects.filter(invoice_item=i)
+                for ab in trans:
+                    paid = ab.amount_paid + paid
+
+            a.append({
+                'invoice_no': inv.invoice_no, 'property_name': inv.unit.property.property_name, 'amount': total,
+                'uuid': inv.uuid, 'unit_name': inv.unit.unit_name, 'username': inv.created_by.username,
+                'created_at': inv.created_at, 'paid': paid, "status": inv.status,
+                'tenant': Profile.objects.get(user=inv.invoice_for)
+            })
+
+        r = []
+        for inv in rent_ann:
+            balance = 0
+            delay = 0
+            other = 0
+            date_paid = None
+            rent_due = 0
+            waiver = 0
+            total = 0
+            paid = 0
+            inv_items = RentItems.objects.filter(invoice__uuid=inv['uuid'])
+            for i in inv_items:
+                total = total + i.amount
+                delay = delay + i.delay_penalties
+                trans = RentItemTransaction.objects.filter(invoice_item=i).order_by('date_paid')
+                for ab in trans:
+                    paid = ab.amount_paid + paid
+                    waiver = ab.waiver + waiver
+                    date_paid = ab.date_paid
+            credit = total + delay + other
+            debit = paid + waiver
+            balance = credit - debit
+            rent_due = total
+
+            r.append({
+                'amount': total, 'uuid': inv['uuid'], 'paid': paid, "status": inv['status'], 'waiver': "{:.2f}".format(waiver),
+                'other': "{:.2f}".format(other), 'date_paid': date_paid, 'balance': "{:.2f}".format(balance), 'delay': delay, 'rent': rent_due,
+                'month': calendar.month_name[inv['month']], 'year': inv['year'],
+            })
+
+
+    else:
+        raise PermissionDenied
+
+    context = {
+        'user': request.user,
+        'invoice_number': rent_inv.count() + invoices.count(),
+        'tenant': Tenant.objects.get(uuid=uuid),
+        'inv': r,
+        'InvFilter': filter
+    }
+    return render(request, 'reports/tenant_ledger.html', context)
 
 
 @login_required
@@ -213,4 +327,3 @@ def staffList(request):
         'props': Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company),
     }
     return render(request, 'reports/staff_listings.html', context)
-

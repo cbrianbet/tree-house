@@ -1,6 +1,7 @@
 {% extends 'authapp/base.html' %}
 {% load static %}
 
+
 {% block headscripts %}
     <link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
@@ -25,7 +26,7 @@
 
 {% block title %}
 
-    <title>Invoice Report | MNEST Africa</title>
+    <title>Tenant Listings | MNEST Africa</title>
 {% endblock %}
 
 {% block page %}
@@ -33,7 +34,7 @@
     <!-- Page -->
     <div class="page">
         <div class="page-header">
-            <h1 class="page-title">Invoice Report</h1>
+            <h1 class="page-title">Active Tenant Listings</h1>
         </div>
 
         <div class="page-content">
@@ -45,31 +46,6 @@
                     <div class="col-xl-12 col-lg-12">
                         <!-- Card -->
                         <div class="card-group">
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-                                    <span class="counter-number">{{ invoice_number }}</span>
-                                    <div class="counter-label text-uppercase">Number Of Invoices</div>
-                                </div>
-                            </div>
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-                                    <span class="counter-number">{{ closed_inv }}</span>
-                                    <div class="counter-label text-uppercase">Closed Invoices</div>
-                                </div>
-                            </div>
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-                                    <span class="counter-number">{{ open_inv }}</span>
-                                    <div class="counter-label text-uppercase">Open Invoices</div>
-                                </div>
-                            </div>
-                            <div class="card card-block p-30">
-                                <div class="counter counter-lg text-left pl-20">
-
-                                    <br>
-                                    <br>
-                                </div>
-                            </div>
                         </div>
                         <!-- End Card -->
                     </div>
@@ -80,22 +56,10 @@
                                 <div class="well">
                                     <h4 style="margin-top: 0">Filter</h4>
                                     <div class="row">
-                                        <div class="form-group col-sm-8 col-md-3">
-                                            Property: 
-                                            {{ InvFilter.form.unit__property }}
+                                        <div class="form-group col-sm-8 col-md-6">
+                                            {{ TenantFilter.form.unit__property.label_tag }}
+                                            {{ TenantFilter.form.unit__property }}
                                         </div>
-                                        <div class="form-group col-sm-8 col-md-3">
-                                            Unit:
-                                            {{ InvFilter.form.unit }}
-                                        </div>
-                                        <div class="form-group col-sm-8 col-md-3">
-                                            {{ InvFilter.form.status.label_tag }}
-                                            {{ InvFilter.form.status }}
-                                        </div>
-{#                                        <div class="form-group col-sm-8 col-md-3">#}
-{#                                            Tenant:#}
-{#                                            {{ InvFilter.form.invoice_for }}#}
-{#                                        </div>#}
                                     </div>
                                     <button type="submit" class="btn btn-primary">
                                         <span class="wb wb-search"></span> Search
@@ -111,58 +75,41 @@
                     <div class="page-invoice-table table-responsive">
 
                         <!-- End Example Tabs -->
-                        <table class="table table-hover dataTable table-striped w-full"
+                        <table class="table table-hover text-right"
                                id="exampleTableTools2">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Invoice</th>
-                                <th>Tenant</th>
-                                <th>Property</th>
+                                <th>Tenant Name</th>
                                 <th>Unit</th>
-                                <th>Amount</th>
-                                <th>Delay Penalties</th>
-                                <th>Amount paid</th>
-                                <th>Status</th>
-                                <th>Created by</th>
-                                <th>Created at</th>
+                                <th>Property</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Invoice</th>
-                                <th>Tenant</th>
-                                <th>Property</th>
+                                <th>Tenant Name</th>
                                 <th>Unit</th>
-                                <th>Amount</th>
-                                <th>Delay Penalties</th>
-                                <th>Amount paid</th>
-                                <th>Status</th>
-                                <th>Created by</th>
-                                <th>Created at</th>
+                                <th>Property</th>
+                                <th></th>
                             </tr>
                             </tfoot>
                             <tbody>
-                            {% for b in inv %}
+                            {% for b in active %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-
-                                    <td>{{ b.invoice_no }}</td>
-                                    <td>{{ b.tenant.first_name }} {{ b.tenant.last_name }}</td>
-                                    <td>{{ b.property_name }}</td>
-                                    <td>{{ b.unit_name }}</td>
-                                    <td>{{ b.amount }}</td>
-                                    <td>{{ b.delay }}</td>
-                                    <td>{{ b.paid }}</td>
-                                    <td>{% if b.status %}
-                                        Closed
-                                    {% else %}
-                                        Open
-                                    {% endif %}</td>
-                                    <td>{{ b.username }}</td>
-                                    <td>{{ b.created_at }}</td>
-
+                                    <td>{{ b.profile.first_name }} {{ b.profile.last_name }} </td>
+                                    <td>{{ b.unit.unit_name }}</td>
+                                    <td>{{ b.unit.property.property_name }}</td>
+                                    <td>
+                                        <a class="btn btn-animate btn-animate-side block btn-primary"
+                                           style="color:white;" href="{% url 'tenant-ledger' uuid=b.uuid %}">
+                                            <span>
+                                                <i class="icon wb-folder" aria-hidden="true"></i>Tenant Ledger
+                                            </span>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
 
@@ -198,9 +145,6 @@
     <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
-
-    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
-    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
     <script>
         (function (document, window, $) {
             'use strict';

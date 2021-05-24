@@ -13,4 +13,6 @@ urlpatterns = [
     path('report/tenant/listings', views.tenant_listing, name='tenant-listing'),
     path('report/invoices/listings', views.invoice_report, name='invoice-report'),
     path('report/staff/listings', views.staffList, name='staff-report'),
+    path('report/tenant/ledger/<uuid:uuid>', views.tenant_ledger, name='tenant-ledger'),
+    path('report/tenants/ledger', views.tenants_ledge_listing, name='tenants-ledge-list'),
 ]
