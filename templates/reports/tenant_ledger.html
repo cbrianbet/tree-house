@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block headscripts %}
-    <link rel="stylesheet" href="../../assets/examples/css/pages/invoice.css">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/invoice.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
     <link rel="stylesheet"
@@ -25,7 +25,7 @@
 
 {% block title %}
 
-    <title>Tenant Ledger | MNEST Africa</title>
+    <title>Payment Ledger | MNEST Africa</title>
 {% endblock %}
 
 {% block page %}
@@ -33,7 +33,7 @@
     <!-- Page -->
     <div class="page">
         <div class="page-header">
-            <h1 class="page-title">Tenant Ledger</h1>
+            <h1 class="page-title">Payment Ledger</h1>
         </div>
 
         <div class="page-content">
