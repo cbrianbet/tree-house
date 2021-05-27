@@ -111,7 +111,7 @@
     FooTable.MyFiltering = FooTable.Filtering.extend({
       construct: function construct(instance) {
         this._super(instance);
-        this.statuses = ['Active', 'Disabled', 'Suspended'];
+        this.statuses = ['Open', 'Closed'];
         this.def = 'Any Status';
         this.$status = null;
       },
