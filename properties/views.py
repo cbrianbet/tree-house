@@ -1117,8 +1117,6 @@ def respond_no(request, u_id):
     if request.user.acc_type.id == 4:
         return PermissionDenied
 
-    company = CompanyProfile.objects.get(company=Unit.objects.get(id=u_id).property.company, user__acc_type_id__in=[2, 3]).user
-    landlord = Profile.objects.get(user=company)
     eq = Enquire.objects.get(uuid=u_id)
     eq.response = False
     eq.save()
