@@ -77,6 +77,11 @@
                     </div>
 
                     <div class="page-invoice-table table-responsive">
+                        <button type="button" class="btn btn-animate btn-animate-side btn-default btn-outline"
+                                onclick="javascript:window.print();">
+                            <span><i class="icon wb-print" aria-hidden="true"></i> Print</span>
+                        </button>
+
 
                         <!-- End Example Tabs -->
                         <table class="table table-bordered table-hover toggle-circle" id="ledger"
@@ -102,7 +107,7 @@
                                 <th>KES. {{ other_total }}</th>
                                 <th>KES. {{ waiver_total }}</th>
                                 <th colspan="2">KES. {{ paid_total }}</th>
-                                <th  colspan="2">KES. {{ bal_total }}</th>
+                                <th colspan="2">KES. {{ bal_total }}</th>
 
                             </tr>
                             </tfoot>
@@ -146,97 +151,97 @@
     <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
-    <script src="{% static 'authapp/assets/examples/js/tables/footable.js' %}"></script>
-<script>
-(function (global, factory) {
-  if (typeof define === "function" && define.amd) {
-    define('/tables/footable', ['jquery', 'Site'], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(require('jquery'), require('Site'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(global.jQuery, global.Site);
-    global.tablesFootable = mod.exports;
-  }
-})(this, function (_jquery, _Site) {
-    'use strict';
-
-    var _jquery2 = babelHelpers.interopRequireDefault(_jquery);
-
-    (0, _jquery2.default)(document).ready(function ($$$1) {
-        (0, _Site.run)();
-    });
-
-    // Filtering
-    // ---------
-    (function () {
-        FooTable.MyFiltering = FooTable.Filtering.extend({
-            construct: function construct(instance) {
-                this._super(instance);
-                this.statuses = ['Open', 'Closed'];
-                this.def = 'Any Status';
-                this.$status = null;
-            },
-            $create: function $create() {
-                this._super();
-                var self = this,
-                    $form_grp = (0, _jquery2.default)('<div/>', {
-                        'class': 'form-group'
-                    }).append((0, _jquery2.default)('<label/>', {
-                        'class': 'sr-only',
-                        text: 'Status'
-                    })).prependTo(self.$form);
-
-                self.$status = (0, _jquery2.default)('<select/>', {
-                    'class': 'form-control'
-                }).on('change', {
-                    self: self
-                }, self._onStatusDropdownChanged).append((0, _jquery2.default)('<option/>', {
-                    text: self.def
-                })).appendTo($form_grp);
-
-                _jquery2.default.each(self.statuses, function (i, status) {
-                    self.$status.append((0, _jquery2.default)('<option/>').text(status));
-                });
-            },
-            _onStatusDropdownChanged: function _onStatusDropdownChanged(e) {
-                var self = e.data.self,
-                    selected = (0, _jquery2.default)(this).val();
-                if (selected !== self.def) {
-                    self.addFilter('status', selected, ['status']);
-                } else {
-                    self.removeFilter('status');
-                }
-                self.filter();
-            },
-            draw: function draw() {
-                this._super();
-                var status = this.find('status');
-                if (status instanceof FooTable.Filter) {
-                    this.$status.val(status.query.val());
-                } else {
-                    this.$status.val(this.def);
-                }
+{#    <script src="{% static 'authapp/assets/examples/js/tables/footable.js' %}"></script>#}
+    <script>
+        (function (global, factory) {
+            if (typeof define === "function" && define.amd) {
+                define('/tables/footable', ['jquery', 'Site'], factory);
+            } else if (typeof exports !== "undefined") {
+                factory(require('jquery'), require('Site'));
+            } else {
+                var mod = {
+                    exports: {}
+                };
+                factory(global.jQuery, global.Site);
+                global.tablesFootable = mod.exports;
             }
-        });
+        })(this, function (_jquery, _Site) {
+            'use strict';
 
-        FooTable.components.register('filtering', FooTable.MyFiltering);
-        var filtering = (0, _jquery2.default)('#ledger');
-        filtering.footable();
-    })();
-});
-</script>
-{#    <script>#}
-{#        (function (document, window, $) {#}
-{#            'use strict';#}
-{##}
-{#            var Site = window.Site;#}
-{#            $(document).ready(function () {#}
-{#                Site.run();#}
-{#            });#}
-{#        })(document, window, jQuery);#}
-{#    </script>#}
+            var _jquery2 = babelHelpers.interopRequireDefault(_jquery);
+
+            (0, _jquery2.default)(document).ready(function ($$$1) {
+                (0, _Site.run)();
+            });
+
+            // Filtering
+            // ---------
+            (function () {
+                FooTable.MyFiltering = FooTable.Filtering.extend({
+                    construct: function construct(instance) {
+                        this._super(instance);
+                        this.statuses = ['Open', 'Closed'];
+                        this.def = 'Any Status';
+                        this.$status = null;
+                    },
+                    $create: function $create() {
+                        this._super();
+                        var self = this,
+                            $form_grp = (0, _jquery2.default)('<div/>', {
+                                'class': 'form-group'
+                            }).append((0, _jquery2.default)('<label/>', {
+                                'class': 'sr-only',
+                                text: 'Status'
+                            })).prependTo(self.$form);
+
+                        self.$status = (0, _jquery2.default)('<select/>', {
+                            'class': 'form-control'
+                        }).on('change', {
+                            self: self
+                        }, self._onStatusDropdownChanged).append((0, _jquery2.default)('<option/>', {
+                            text: self.def
+                        })).appendTo($form_grp);
+
+                        _jquery2.default.each(self.statuses, function (i, status) {
+                            self.$status.append((0, _jquery2.default)('<option/>').text(status));
+                        });
+                    },
+                    _onStatusDropdownChanged: function _onStatusDropdownChanged(e) {
+                        var self = e.data.self,
+                            selected = (0, _jquery2.default)(this).val();
+                        if (selected !== self.def) {
+                            self.addFilter('status', selected, ['status']);
+                        } else {
+                            self.removeFilter('status');
+                        }
+                        self.filter();
+                    },
+                    draw: function draw() {
+                        this._super();
+                        var status = this.find('status');
+                        if (status instanceof FooTable.Filter) {
+                            this.$status.val(status.query.val());
+                        } else {
+                            this.$status.val(this.def);
+                        }
+                    }
+                });
+
+                FooTable.components.register('filtering', FooTable.MyFiltering);
+                var filtering = (0, _jquery2.default)('#ledger');
+                filtering.footable();
+            })();
+        });
+    </script>
+    {#    <script>#}
+    {#        (function (document, window, $) {#}
+    {#            'use strict';#}
+    {##}
+    {#            var Site = window.Site;#}
+    {#            $(document).ready(function () {#}
+    {#                Site.run();#}
+    {#            });#}
+    {#        })(document, window, jQuery);#}
+    {#    </script>#}
 
 {% endblock %}
