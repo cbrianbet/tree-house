@@ -266,6 +266,12 @@ def tenant_ledger(request, uuid):
             })
 
         r = []
+        rent_total = 0
+        late_total = 0
+        other_total = 0
+        waiver_total = 0
+        paid_total = 0
+        bal_total = 0
         for inv in rent_ann:
             balance = 0
             delay = 0
@@ -288,7 +294,14 @@ def tenant_ledger(request, uuid):
             debit = paid + waiver
             balance = credit - debit
             rent_due = total
-
+            #totals
+            waiver_total= waiver_total + waiver
+            rent_total= rent_total + rent_due
+            late_total= late_total + delay
+            other_total= other_total + other
+            paid_total= paid_total + paid
+            bal_total= bal_total + balance
+            
             r.append({
                 'amount': total, 'uuid': inv['uuid'], 'paid': paid, "status": inv['status'], 'waiver': "{:.2f}".format(waiver),
                 'other': "{:.2f}".format(other), 'date_paid': date_paid, 'balance': "{:.2f}".format(balance), 'delay': delay, 'rent': rent_due,
@@ -304,7 +317,13 @@ def tenant_ledger(request, uuid):
         'invoice_number': rent_inv.count() + invoices.count(),
         'tenant': Tenant.objects.get(uuid=uuid),
         'inv': r,
-        'InvFilter': filter
+        'InvFilter': filter,
+        'rent_total': "{:.2f}".format(rent_total),
+        "late_total": "{:.2f}".format(late_total),
+        'other_total': "{:.2f}".format(other_total),
+        'waiver_total': "{:.2f}".format(waiver_total),
+        'paid_total': "{:.2f}".format(paid_total),
+        'bal_total': "{:.2f}".format(bal_total)
     }
     return render(request, 'reports/tenant_ledger.html', context)
 

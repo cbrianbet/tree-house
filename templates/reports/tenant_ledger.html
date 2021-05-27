@@ -4,22 +4,8 @@
 {% block headscripts %}
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/invoice.css' %}">
     <link rel="stylesheet" href="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.css' %}">
-    <link rel="stylesheet" href="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'authapp/global/vendor/datatables.net-fixedheader-bs4/dataTables.fixedheader.bootstrap4.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'authapp/global/vendor/datatables.net-fixedcolumns-bs4/dataTables.fixedcolumns.bootstrap4.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'authapp/global/vendor/datatables.net-rowgroup-bs4/dataTables.rowgroup.bootstrap4.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'authapp/global/vendor/datatables.net-scroller-bs4/dataTables.scroller.bootstrap4.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'authapp/global/vendor/datatables.net-select-bs4/dataTables.select.bootstrap4.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/dataTables.responsive.bootstrap4.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/dataTables.buttons.bootstrap4.css' %}">
-    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/datatable.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/global/vendor/footable/footable.core.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/tables/footable.css' %}">
 
 {% endblock %}
 
@@ -48,9 +34,12 @@
                             <div class="card card-block p-20">
                                 <div class="counter counter-lg text-left pl-20">
                                     <span class="counter-number"></span>
-                                    <div class="counter-label text-uppercase">Premises: {{ tenant.unit.unit_name }} {{ tenant.unit.property.property_name }}</div>
-                                    <div class="counter-label text-uppercase">Tenant: {{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</div>
-                                    <div class="counter-label text-uppercase">Landlord: {{ tenant.unit.property.company.name }}</div>
+                                    <div class="counter-label text-uppercase">
+                                        Premises: {{ tenant.unit.unit_name }} {{ tenant.unit.property.property_name }}</div>
+                                    <div class="counter-label text-uppercase">
+                                        Tenant: {{ tenant.profile.first_name }} {{ tenant.profile.last_name }}</div>
+                                    <div class="counter-label text-uppercase">
+                                        Landlord: {{ tenant.unit.property.company.name }}</div>
                                 </div>
                             </div>
                         </div>
@@ -59,28 +48,28 @@
 
                     <div class="row">
                         <div class="col-lg-12">
-{#                            <form method="get">#}
-{#                                <div class="well">#}
-{#                                    <h4 style="margin-top: 0">Filter</h4>#}
-{#                                    <div class="row">#}
-{#                                        <div class="form-group col-sm-8 col-md-3">#}
-{#                                            Property:#}
-{#                                            {{ InvFilter.form.unit__property }}#}
-{#                                        </div>#}
-{#                                        <div class="form-group col-sm-8 col-md-3">#}
-{#                                            Unit:#}
-{#                                            {{ InvFilter.form.unit }}#}
-{#                                        </div>#}
-{#                                        <div class="form-group col-sm-8 col-md-3">#}
-{#                                            {{ InvFilter.form.status.label_tag }}#}
-{#                                            {{ InvFilter.form.status }}#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                    <button type="submit" class="btn btn-primary">#}
-{#                                        <span class="wb wb-search"></span> Search#}
-{#                                    </button>#}
-{#                                </div>#}
-{#                            </form>#}
+                            {#                            <form method="get">#}
+                            {#                                <div class="well">#}
+                            {#                                    <h4 style="margin-top: 0">Filter</h4>#}
+                            {#                                    <div class="row">#}
+                            {#                                        <div class="form-group col-sm-8 col-md-3">#}
+                            {#                                            Property:#}
+                            {#                                            {{ InvFilter.form.unit__property }}#}
+                            {#                                        </div>#}
+                            {#                                        <div class="form-group col-sm-8 col-md-3">#}
+                            {#                                            Unit:#}
+                            {#                                            {{ InvFilter.form.unit }}#}
+                            {#                                        </div>#}
+                            {#                                        <div class="form-group col-sm-8 col-md-3">#}
+                            {#                                            {{ InvFilter.form.status.label_tag }}#}
+                            {#                                            {{ InvFilter.form.status }}#}
+                            {#                                 exampleTableTools       </div>#}
+                            {#                                    </div>#}
+                            {#                                    <button type="submit" class="btn btn-primary">#}
+                            {#                                        <span class="wb wb-search"></span> Search#}
+                            {#                                    </button>#}
+                            {#                                </div>#}
+                            {#                            </form>#}
                         </div>
                         <div class="col-lg-3 offset-lg-6 text-right">
 
@@ -90,8 +79,8 @@
                     <div class="page-invoice-table table-responsive">
 
                         <!-- End Example Tabs -->
-                        <table class="table table-hover dataTable table-striped w-full"
-                               id="exampleTableTools">
+                        <table class="table table-bordered table-hover toggle-circle" id="exampleFootableFiltering"
+                               data-sorting="true" data-filtering="true">
                             <thead>
                             <tr>
                                 <th>Month</th>
@@ -108,14 +97,13 @@
                             <tfoot>
                             <tr>
                                 <th>Total</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
+                                <th>KES. {{ rent_total }}</th>
+                                <th>KES. {{ late_total }}</th>
+                                <th>KES. {{ other_total }}</th>
+                                <th>KES. {{ waiver_total }}</th>
+                                <th colspan="2">KES. {{ paid_total }}</th>
+                                <th  colspan="2">KES. {{ bal_total }}</th>
+
                             </tr>
                             </tfoot>
                             <tbody>
@@ -154,26 +142,12 @@
 
 {% endblock %}
 {% block footscripts %}
-    <script src="{% static 'authapp/global/vendor/datatables.net/jquery.dataTables.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-fixedcolumns/dataTables.fixedColumns.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-fixedheader/dataTables.fixedHeader.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-scroller/dataTables.scroller.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-rowgroup/dataTables.rowGroup.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-responsive/dataTables.responsive.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-responsive-bs4/responsive.bootstrap4.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/dataTables.buttons.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.html5.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.flash.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.print.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-buttons/buttons.colVis.js' %}"></script>
-    <script src="{% static 'authapp/global/vendor/datatables.net-buttons-bs4/buttons.bootstrap4.js' %}"></script>
+    <script src="{% static 'authapp/global/vendor/footable/footable.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/asrange/jquery-asRange.min.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/bootstrap-sweetalert/sweetalert.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/bootstrap-sweetalert.js' %}"></script>
+    <script src="{% static 'authapp/assets/examples/js/tables/footable.js' %}"></script>
 
-    <script src="{% static 'authapp/global/js/Plugin/datatables.js' %}"></script>
-    <script src="{% static 'authapp/assets/examples/js/tables/datatable.js' %}"></script>
     <script>
         (function (document, window, $) {
             'use strict';
