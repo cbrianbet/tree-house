@@ -58,10 +58,13 @@ def properties_list(request):
     for entry in th:
         tenants.update({entry['curr_unit__property__uuid']: entry['count']})
     print(tenants)
+    sub = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count()
+    print(sub)
     context = {
         'prop': p,
         'tenant': tenants,
         'user': request.user,
+        'can_add': True if sub > 0 else False
     }
     return render(request, 'properties/properties_list.html', context)
 
