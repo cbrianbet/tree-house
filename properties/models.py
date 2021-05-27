@@ -174,6 +174,7 @@ class PropertyStaff(models.Model):
 class SubscriptionsCompanies(models.Model):
     company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     subs = models.ForeignKey(Subscriptions, on_delete=models.CASCADE, null=True)
+    property_limit = models.PositiveIntegerField(default=10)
     date_started = models.DateField(null=True)
     date_end = models.DateField(null=True)
 

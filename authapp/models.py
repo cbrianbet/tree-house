@@ -52,6 +52,7 @@ class Subscriptions(models.Model):
     uuid = models.UUIDField(default=u_id.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=150)
     description = models.CharField(max_length=350)
+    property_limit = models.PositiveIntegerField(default=0)
     duration = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
     value = models.DecimalField(max_digits=16, decimal_places=2, default=0.00)

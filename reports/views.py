@@ -57,9 +57,10 @@ def all_subs(request):
         name = request.POST.get('name')
         duration = request.POST.get('duration')
         desc = request.POST.get('desc')
+        prop = request.POST.get('prop')
 
         sub = Subscriptions.objects.create(created_by=request.user, value=val, name=name, duration=duration,
-                                           description=desc)
+                                           description=desc, property_limit=prop)
         sub.save()
 
     context = {
@@ -83,6 +84,35 @@ def delete_subs(request, uuid):
         return redirect('all-subs')
     except Subscriptions.DoesNotExist():
         raise PermissionDenied
+
+
+@login_required
+def edit_subs(request, uuid):
+    if request.user.acc_type.id != 1:
+        raise PermissionDenied
+
+    sub = Subscriptions.objects.get(uuid=uuid)
+    if request.method == "POST":
+        val = request.POST.get('val')
+        name = request.POST.get('name')
+        duration = request.POST.get('duration')
+        desc = request.POST.get('desc')
+        prop = request.POST.get('prop')
+
+        sub.updated_by=request.user
+        sub.value=val
+        sub.name=name
+        sub.duration=duration
+        sub.description=desc
+        sub.property_limit=prop
+        sub.save()
+        return redirect('all-subs')
+
+    context = {
+        'user': request.user,
+        'sub': sub,
+    }
+    return render(request, 'reports/editsubs.html', context)
 
 
 @login_required
@@ -294,6 +324,7 @@ def tenant_ledger(request, uuid):
             debit = paid + waiver
             balance = credit - debit
             rent_due = total
+
             #totals
             waiver_total= waiver_total + waiver
             rent_total= rent_total + rent_due
