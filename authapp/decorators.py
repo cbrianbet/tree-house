@@ -26,7 +26,7 @@ def unsubscribed_user(view_func):
                     except:
                         return redirect('subs-pick')
 
-                print(company, check)
+                # print(company, check)
             except SubscriptionsCompanies.DoesNotExist:
                 SubscriptionsCompanies.objects.create(company=company)
                 return redirect('subs-pick')
