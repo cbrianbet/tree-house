@@ -69,54 +69,6 @@
                     <div class="tab-content pt-15">
                         <div class="tab-pane active" id="exampleTabsIconOne" role="tabpanel">
                             <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
-                                {% for i in prop %}
-                                    <li class="masonry-item">
-                                        <div class="card card-shadow">
-                                            <div class="card-header cover">
-                                                {% if i.pics %}
-                                                    <img class="cover-image" src="{{ i.pics.url }}"
-                                                         alt="{{ i.property_name }}">
-                                                {% else %}
-
-                                                {% endif %}
-                                            </div>
-                                            <div class="card-block">
-                                                <h3 class="card-title">{{ i.property_name }}</h3>
-                                                <p class="card-text type-link">
-                                                    <small>
-
-                                                        <a href="javascript:void(0)">{{ i.property_type }}</a>
-                                                        <a href="javascript:void(0)"></a>
-                                                        {#                                        <a href="javascript:void(0)">#}
-                                                        {#                                            <span>3</span> Comments</a>#}
-                                                    </small>
-                                                </p>
-                                                <p class="card-text">{{ i.location_desc }}</p>
-                                            </div>
-                                            <div class="card-block">
-                                                <div class="card-actions float-right">
-                                                    {% for key, value in tenant.items %}
-                                                        {% if key == i.uuid %}
-                                                            <a href="javascript:void(0)">
-                                                                <i class="icon wb-users" aria-hidden="true"></i>
-                                                                <span>{{ value }}</span>
-                                                            </a>
-
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                <a href="{% url 'view-prop' p_id=i.uuid %}"
-                                                   class="btn btn-outline btn-primary card-link">
-                                                    View
-                                                </a>
-                                                <a href="{% url 'unit-list' u_uid=i.uuid %}"
-                                                   class="btn btn-outline btn-warning card-link">Units</a>
-                                                <a href="{% url 'payment-list' u_id=i.uuid %}"
-                                                   class="btn btn-outline btn-dark card-link">Payment Accounts</a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                {% endfor %}
                                 {% if not user.acc_type.id == 5 %}
                                     {% if can_add %}
                                         <li class="masonry-item">
@@ -165,6 +117,54 @@
                                         </li>
                                     {% endif %}
                                 {% endif %}
+                                {% for i in prop %}
+                                    <li class="masonry-item">
+                                        <div class="card card-shadow">
+                                            <div class="card-header cover">
+                                                {% if i.pics %}
+                                                    <img class="cover-image" src="{{ i.pics.url }}"
+                                                         alt="{{ i.property_name }}">
+                                                {% else %}
+
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-block">
+                                                <h3 class="card-title">{{ i.property_name }}</h3>
+                                                <p class="card-text type-link">
+                                                    <small>
+
+                                                        <a href="javascript:void(0)">{{ i.property_type }}</a>
+                                                        <a href="javascript:void(0)"></a>
+                                                        {#                                        <a href="javascript:void(0)">#}
+                                                        {#                                            <span>3</span> Comments</a>#}
+                                                    </small>
+                                                </p>
+                                                <p class="card-text">{{ i.location_desc }}</p>
+                                            </div>
+                                            <div class="card-block">
+                                                <div class="card-actions float-right">
+                                                    {% for key, value in tenant.items %}
+                                                        {% if key == i.uuid %}
+                                                            <a href="javascript:void(0)">
+                                                                <i class="icon wb-users" aria-hidden="true"></i>
+                                                                <span>{{ value }}</span>
+                                                            </a>
+
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <a href="{% url 'view-prop' p_id=i.uuid %}"
+                                                   class="btn btn-outline btn-primary card-link">
+                                                    View
+                                                </a>
+                                                <a href="{% url 'unit-list' u_uid=i.uuid %}"
+                                                   class="btn btn-outline btn-warning card-link">Units</a>
+                                                <a href="{% url 'payment-list' u_id=i.uuid %}"
+                                                   class="btn btn-outline btn-dark card-link">Payment Accounts</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
                             </ul>
 
                         </div>
