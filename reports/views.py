@@ -13,7 +13,7 @@ from authapp.decorators import unsubscribed_user
 from authapp.models import Users, Profile, Subscriptions
 from bills.models import *
 from properties.models import *
-from reports.filters import TenantFilter, InvoiceFilter
+from reports.filters import TenantFilter, InvoiceFilter, LedgerFilter
 
 
 @login_required
@@ -275,8 +275,8 @@ def tenant_ledger(request, uuid):
         rent_inv_trans = RentItemTransaction.objects.filter(invoice_item__in=rent_inv_items)
         inv_trans = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_items)
 
-        filter = InvoiceFilter(request.GET, request=request, queryset=rent_inv)
-        rent_inv = filter.qs
+        filter = LedgerFilter(request.GET, request=request, queryset=rent_ann)
+        rent_ann = filter.qs
 
         r = []
         rent_total = 0
@@ -341,79 +341,6 @@ def tenant_ledger(request, uuid):
         'uuid': uuid
     }
     return render(request, 'reports/tenant_ledger.html', context)
-
-
-@csrf_exempt
-def pay_ledger_list(request, uuid):
-    if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
-        comp = CompanyProfile.objects.get(user=request.user).company
-        prop = Properties.objects.filter(company=comp).values_list('id', flat=True)
-        rent_inv = RentInvoice.objects.filter(unit__property__in=prop,
-                                              invoice_for_id=Tenant.objects.get(uuid=uuid).profile.user.id)
-        rent_ann = rent_inv.annotate(month=ExtractMonth('date_due'),
-                                     year=ExtractYear('date_due'), ).order_by('date_due').values('month',
-                                                                                                 'year').annotate(
-            total=Count('*')).values('month', 'year', 'total', 'uuid', 'status')
-        print(rent_ann)
-        invoices = Invoice.objects.filter(unit__property__in=prop,
-                                          invoice_for=Tenant.objects.get(uuid=uuid).profile.user)
-        inv_items = InvoiceItems.objects.filter(invoice__in=invoices)
-        rent_inv_items = RentItems.objects.filter(invoice__in=rent_inv)
-        rent_inv_trans = RentItemTransaction.objects.filter(invoice_item__in=rent_inv_items)
-        inv_trans = InvoiceItemsTransaction.objects.filter(invoice_item__in=inv_items)
-
-        filter = InvoiceFilter(request.GET, request=request, queryset=rent_inv)
-        rent_inv = filter.qs
-
-        r = []
-        rent_total = 0
-        late_total = 0
-        other_total = 0
-        waiver_total = 0
-        paid_total = 0
-        bal_total = 0
-        for inv in rent_ann:
-            balance = 0
-            delay = 0
-            other = 0
-            date_paid = None
-            rent_due = 0
-            waiver = 0
-            total = 0
-            paid = 0
-            inv_items = RentItems.objects.filter(invoice__uuid=inv['uuid'])
-            for i in inv_items:
-                total = total + i.amount
-                delay = delay + i.delay_penalties
-                trans = RentItemTransaction.objects.filter(invoice_item=i).order_by('date_paid')
-                for ab in trans:
-                    paid = ab.amount_paid + paid
-                    waiver = ab.waiver + waiver
-                    date_paid = ab.date_paid
-            credit = total + delay + other
-            debit = paid + waiver
-            balance = credit - debit
-            rent_due = total
-
-            #totals
-            waiver_total= waiver_total + waiver
-            rent_total= rent_total + rent_due
-            late_total= late_total + delay
-            other_total= other_total + other
-            paid_total= paid_total + paid
-            bal_total= bal_total + balance
-
-            r.append({
-                'amount': total, 'uuid': inv['uuid'], 'paid': "{:.2f}".format(paid), "status": 'Closed' if inv['status'] else 'Open', 'waiver': "{:.2f}".format(waiver),
-                'other': "{:.2f}".format(other), 'date_paid': date_paid, 'balance': "{:.2f}".format(balance), 'delay': delay, 'rent': rent_due,
-                'month': "{} {}".format(calendar.month_name[inv['month']], inv['year']),
-            })
-
-
-    else:
-        raise PermissionDenied
-
-    return JsonResponse(r, safe=False)
 
 
 @login_required

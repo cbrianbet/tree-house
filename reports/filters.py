@@ -62,3 +62,12 @@ class InvoiceFilter(django_filters.FilterSet):
         model = Tenant
         fields = []
         exclude = ['id_card']
+
+
+class LedgerFilter(django_filters.FilterSet):
+    status = django_filters.ChoiceFilter(choices=FILTER_CHOICES)
+    date_due = django_filters.DateFromToRangeFilter()
+
+    class Meta:
+        model = RentInvoice
+        fields = []
