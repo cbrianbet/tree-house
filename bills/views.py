@@ -3,6 +3,7 @@ from itertools import chain
 
 import requests
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -26,7 +27,7 @@ from tree_house.settings import EMAIL_HOST_USER
 from .models import *
 from properties.models import *
 from .serializer import InvTransSerializer, RentTransSerializer, TransSerializer, WallPaySerializer, \
-    ConfInvPaySerializer, PayInvPaySerializer, WalletWithdrawSerializer, WalletTopupSerializer
+    ConfInvPaySerializer, PayInvPaySerializer, WalletWithdrawSerializer, WalletTopupSerializer, WalletBalanceSerializer
 
 
 @login_required
@@ -1086,6 +1087,69 @@ def wall_trans_api(request):
 @permission_classes([IsAuthenticated])
 def wall_details_api(request):
     prof = Profile.objects.get(user=request.user)
+
+    if prof.hapokash is None:
+        wal_id = hapokashcreate()
+        try:
+            if wal_id['success']:
+                prof.hapokash = wal_id['wallet']['id']
+                prof.save()
+            else:
+                print('false')
+        except:
+            print(wal_id)
+
+    URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+    }
+
+    r = requests.get(url=URL, headers=headers)
+    print(r.json())
+    wallet = r.json()
+
+    if wallet['success']:
+        cur_balance = wallet['wallet']['current_balance']
+        pre_balance = wallet['wallet']['previous_balance']
+    elif not wallet['success'] and wallet['message'] == "Unauthenticated.":
+        refreshToken()
+        URL = "https://portal.hapokash.app/api/wallet/details/{}".format(prof.hapokash)
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer {}'.format(AuthTokens.objects.get(id=1).auth)
+        }
+
+        r = requests.get(url=URL, headers=headers)
+        wallet = r.json()
+
+        if wallet['success']:
+            cur_balance = wallet['wallet']['current_balance']
+            pre_balance = wallet['wallet']['previous_balance']
+        else:
+            cur_balance = 0
+            pre_balance = 0
+    else:
+        cur_balance = 0
+        pre_balance = 0
+
+    context = {
+        'cur_balance': cur_balance,
+        'previous_balance': pre_balance
+    }
+    return Response(wallet, status.HTTP_200_OK)
+
+
+@swagger_auto_schema(method='post', request_body=WalletBalanceSerializer)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def wall_details_api_test(request):
+    prof = Profile.objects.get(user=request.user)
+
+    if not check_password(request.data.get('password'), Users.objects.get(id=request.user.id).password):
+        raise PermissionDenied
 
     if prof.hapokash is None:
         wal_id = hapokashcreate()

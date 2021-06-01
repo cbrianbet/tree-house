@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/wallet/mpesa/withdraw', views.hapowithdraw_api, name='withdraw-api'),
     path('api/wallet/trans', views.wall_trans_api, name='wallet-trans-api'),
     path('api/wallet/details', views.wall_details_api, name='wallet-details-api'),
+    path('api/wallet/details/test', views.wall_details_api_test, name='wallet-details-api-test'),
     path('api/rent_invoices/open', views.open_rent_bills_api, name='open-rentinvoices-api'),
     path('api/rent_invoices/closed', views.closed_rent_bills_api, name='closed-rentinvoices-api'),
     path('api/invoices/open', views.open_invoice_bills_api, name='open-invoices-api'),

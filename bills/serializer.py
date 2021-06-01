@@ -72,3 +72,10 @@ class WalletWithdrawSerializer(serializers.ModelSerializer):
         model = TransactionCodes
         fields = ['amount', 'mobile']
 
+
+class WalletBalanceSerializer(serializers.ModelSerializer):
+    password = serializers.CharField()
+    class Meta:
+        model = Users
+        fields = ['password']
+
