@@ -170,12 +170,14 @@
                                 <div class="feature-icon">
                                     <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
                                         <g fill="none" fill-rule="evenodd">
-                                            <path fill="#0EB3CE" d="M0 0h32v32H0z"/>
-                                            <path fill="rgba(212,165,55 ,1)" d="M16 16h32L16 48z"/>
+                                            <path d="M32 40H0c0-8.837 7.163-16 16-16s16 7.163 16 16z"
+                                                  fill="rgba(212,165,55 ,1)" style="mix-blend-mode:multiply"/>
+                                            <path fill="#03C5A4" d="M12 8h8v8h-8z"/>
+                                            <path fill="#0EB3CE" d="M32 0h16v48H32z"/>
                                         </g>
                                     </svg>
                                 </div>
-                                <h4 class="feature-title h3-mobile">Inergratd payment gateways</h4>
+                                <h4 class="feature-title h3-mobile">Integrated payment gateways</h4>
                                 <p class="text-sm">...</p>
                             </div>
                         </div>
@@ -278,6 +280,75 @@
                 </div>
             </div>
         </section>
+        <section class="pricing section">
+            <div class="container">
+                <div class="pricing-inner section-inner has-top-divider">
+                    <h2 class="section-title mt-0 text-center">Contact Us</h2>
+                    <div class="pricing-tables-wrap">
+                        <div class="pricing-table is-revealing">
+                            <div class="pricing-table-inner">
+                                <div class="pricing-table-main">
+                                    <div class="pricing-table-header">
+                                        {#                                        <div class="pricing-table-title mt-12 mb-16 text-primary">Email us at:</div>#}
+                                        {#                                        <div class="pricing-table-price mb-24 pb-32"><span#}
+                                        {#                                                class="pricing-table-price-currency h3">$</span><span#}
+                                        {#                                                class="pricing-table-price-amount h1">129</span></div>#}
+                                    </div>
+                                    <ul class="pricing-table-features list-reset text-xs mb-56">
+
+                                        <div class="pricing-table-header">
+                                            <div class="pricing-table-title mt-12 mb-16 text-primary">Email us at:</div>
+                                            {#                                        <div class="pricing-table-price mb-24 pb-32"><span#}
+                                            {#                                                class="pricing-table-price-currency h3">$</span><span#}
+                                            {#                                                class="pricing-table-price-amount h1">129</span></div>#}
+                                        </div>
+                                        <li>
+                                                <span class="list-icon">
+                                                    <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.3.3L5 9.6 1.7 6.3c-.4-.4-1-.4-1.4 0-.4.4-.4 1 0 1.4l4 4c.2.2.4.3.7.3.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0z"
+                                                              fill="#00A2B8" fill-rule="nonzero"/>
+                                                    </svg>
+                                                </span>
+                                            <span>mnestafrica@gmail.com</span>
+                                        </li>
+
+                                        <div class="pricing-table-header">
+                                            <div class="pricing-table-title mt-12 mb-16 text-primary">Or call us at:
+                                            </div>
+                                            {#                                        <div class="pricing-table-price mb-24 pb-32"><span#}
+                                            {#                                                class="pricing-table-price-currency h3">$</span><span#}
+                                            {#                                                class="pricing-table-price-amount h1">129</span></div>#}
+                                        </div>
+                                        <li>
+                                                <span class="list-icon">
+                                                    <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.3.3L5 9.6 1.7 6.3c-.4-.4-1-.4-1.4 0-.4.4-.4 1 0 1.4l4 4c.2.2.4.3.7.3.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0z"
+                                                              fill="#00A2B8" fill-rule="nonzero"/>
+                                                    </svg>
+                                                </span>
+                                            <span>+254 798 849 832</span>
+                                        </li>
+                                        <li>
+                                                <span class="list-icon">
+                                                    <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.3.3L5 9.6 1.7 6.3c-.4-.4-1-.4-1.4 0-.4.4-.4 1 0 1.4l4 4c.2.2.4.3.7.3.3 0 .5-.1.7-.3l10-10c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0z"
+                                                              fill="#00A2B8" fill-rule="nonzero"/>
+                                                    </svg>
+                                                </span>
+                                            <span>+254 705 447 701</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="pricing-table-cta">
+                                    <a class="button button-primary button-block" href="{% url 'register' %}">Get
+                                        started now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
 
@@ -293,7 +364,7 @@
                 </div>
                 <ul class="footer-links list-reset">
                     <li>
-                        <a href="#">Contact</a>
+                        {#                        <a href="#">Contact</a>#}
                     </li>
                     <li>
                         <a href=".">FAQ's</a>
