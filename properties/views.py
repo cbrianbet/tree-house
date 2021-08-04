@@ -631,6 +631,8 @@ def prop_file_upload(request):
     next(io_string)
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
         print(column)
+
+        p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
         created = Properties.objects.create(
             property_name=column[0],
             no_of_floors=column[1],
@@ -650,7 +652,8 @@ def prop_file_upload(request):
             created_by=request.user,
             company=CompanyProfile.objects.get(user=request.user).company
         )
-        created.save()
+        if SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count() > 0:
+            created.save()
     return redirect('prop-list')
 
 
