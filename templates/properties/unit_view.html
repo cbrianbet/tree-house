@@ -5,6 +5,13 @@
 {% endblock %}
 {% block headscripts %}
     <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/pages/invoice.css' %}">
+    <link rel="stylesheet" href="{% static 'authapp/assets/examples/css/uikit/modals.css' %}">
+    <style>
+        canvas {
+            height: 100% !important;
+            width: 100%  !important;
+        }
+    </style>
 
 {% endblock %}
 {% block page %}
@@ -22,13 +29,14 @@
             </div>
 
         </div>
+        <!-- End Modal -->
 
         <div class="page-content">
             <!-- Panel -->
             <div class="panel">
                 <div class="panel-body container-fluid">
                     <div class="row">
-                    <div class="col-md-3"></div>
+                        <div class="col-md-3"></div>
                         <div class="col-lg-3">
                             <h3>
                                 {% if t.pics %}
@@ -38,7 +46,40 @@
                             </h3>
                         </div>
                     </div>
+                    <div style=" height: 220px; width: 70%; background-color: powderblue;">
+                        <a-scene>
+                            <a-assets>
+                                <img id="panorama"
+                                     src="https://thumbs.dreamstime.com/z/panorama-view-modern-white-empty-loft-apartment-interior-living-room-hall-full-seamless-degrees-angle-equirectangular-143527018.jpg"
+                                />
+                            </a-assets>
+                            <a-sky src="#panorama" rotation="0 -90 0"></a-sky>
+                        </a-scene>
+                    </div>
+{#                    <a data-target="#examplePositionCenter" data-toggle="modal"#}
+{#                       class="text-primary">Terms</a>#}
 
+                    <!-- Modal -->
+{#                    <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"#}
+{#                         aria-labelledby="examplePositionCenter"#}
+{#                         role="dialog" tabindex="-1">#}
+{#                        <div class="modal-dialog modal-simple modal-center">#}
+{#                            <div class="modal-content">#}
+{#                                <div class="modal-header">#}
+{#                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+{#                                        <span aria-hidden="true">×</span>#}
+{#                                    </button>#}
+{#                                    <h4 class="modal-title"></h4>#}
+{#                                </div>#}
+{#                                <div class="modal-body">#}
+{#                                </div>#}
+{#                                <div class="modal-footer">#}
+{#                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close#}
+{#                                    </button>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
                     <div class="page-invoice-table table-responsive">
                         <table class="table table-hover text-right">
                             <tbody>
@@ -63,7 +104,7 @@
                                     Unit Type
                                 </td>
                                 <td class="text-left">
-                                    {{t.type_of_unit}}
+                                    {{ t.type_of_unit }}
                                 </td>
                             </tr>
                             <tr>
@@ -71,10 +112,10 @@
                                     Floor Number
                                 </td>
                                 <td class="text-left">
-                                    {% if t.floor == 0  %}
+                                    {% if t.floor == 0 %}
                                         Ground Floor
                                     {% else %}
-                                    {{ t.floor }}
+                                        {{ t.floor }}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -97,7 +138,8 @@
                     </div>
 
                     <div class="text-right">
-                        <a href="{% url 'unit-edit' u_uid=t.uuid %}" class="btn btn-animate btn-animate-side btn-primary">
+                        <a href="{% url 'unit-edit' u_uid=t.uuid %}"
+                           class="btn btn-animate btn-animate-side btn-primary">
                             <span><i class="icon wb-graph-up" aria-hidden="true"></i> Edit Unit</span>
                         </a>
                     </div>
@@ -112,6 +154,7 @@
     <script src="{% static 'authapp/global/vendor/imagesloaded/imagesloaded.pkgd.js' %}"></script>
     <script src="{% static 'authapp/global/vendor/masonry/masonry.pkgd.js' %}"></script>
     <script src="{% static 'authapp/global/js/Plugin/masonry.js' %}"></script>
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script>
         (function (document, window, $) {
             'use strict';
