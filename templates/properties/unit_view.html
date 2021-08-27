@@ -9,7 +9,15 @@
     <style>
         canvas {
             height: 100% !important;
-            width: 100%  !important;
+            width: 100% !important;
+        }
+
+        html {
+            overflow-y: scroll !important;
+        }
+
+        body {
+            position: absolute !important;
         }
     </style>
 
@@ -46,40 +54,38 @@
                             </h3>
                         </div>
                     </div>
-                    <div style=" height: 220px; width: 70%; background-color: powderblue;">
-                        <a-scene>
-                            <a-assets>
-                                <img id="panorama"
-                                     src="https://thumbs.dreamstime.com/z/panorama-view-modern-white-empty-loft-apartment-interior-living-room-hall-full-seamless-degrees-angle-equirectangular-143527018.jpg"
-                                />
-                            </a-assets>
-                            <a-sky src="#panorama" rotation="0 -90 0"></a-sky>
-                        </a-scene>
-                    </div>
-{#                    <a data-target="#examplePositionCenter" data-toggle="modal"#}
-{#                       class="text-primary">Terms</a>#}
 
                     <!-- Modal -->
-{#                    <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"#}
-{#                         aria-labelledby="examplePositionCenter"#}
-{#                         role="dialog" tabindex="-1">#}
-{#                        <div class="modal-dialog modal-simple modal-center">#}
-{#                            <div class="modal-content">#}
-{#                                <div class="modal-header">#}
-{#                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
-{#                                        <span aria-hidden="true">×</span>#}
-{#                                    </button>#}
-{#                                    <h4 class="modal-title"></h4>#}
-{#                                </div>#}
-{#                                <div class="modal-body">#}
-{#                                </div>#}
-{#                                <div class="modal-footer">#}
-{#                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close#}
-{#                                    </button>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
+                    <div class="modal fade example-modal-lg" id="examplePositionCenter" aria-hidden="true"
+                         aria-labelledby="examplePositionCenter"
+                         role="dialog" tabindex="-1">
+                        <div class="modal-dialog modal-simple modal-center">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title"></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div style=" height: 220px; width: 70%; background-color: powderblue;">
+                                        <a-scene>
+                                            <a-assets>
+                                                <img id="panorama"
+                                                     src="https://thumbs.dreamstime.com/z/panorama-view-modern-white-empty-loft-apartment-interior-living-room-hall-full-seamless-degrees-angle-equirectangular-143527018.jpg"
+                                                />
+                                            </a-assets>
+                                            <a-sky src="#panorama" rotation="0 -90 0"></a-sky>
+                                        </a-scene>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="page-invoice-table table-responsive">
                         <table class="table table-hover text-right">
                             <tbody>
@@ -138,6 +144,9 @@
                     </div>
 
                     <div class="text-right">
+                        <a data-target="#examplePositionCenter" data-toggle="modal"
+                           class="btn btn-animate btn-animate-side btn-primary text-white">
+                            <span><i class="icon wb-camera" aria-hidden="true"></i> View the apartment</span></a>
                         <a href="{% url 'unit-edit' u_uid=t.uuid %}"
                            class="btn btn-animate btn-animate-side btn-primary">
                             <span><i class="icon wb-graph-up" aria-hidden="true"></i> Edit Unit</span>
