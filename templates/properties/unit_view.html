@@ -11,14 +11,6 @@
             height: 100% !important;
             width: 100% !important;
         }
-
-        html {
-            overflow-y: scroll !important;
-        }
-
-        body {
-            position: absolute !important;
-        }
     </style>
 
 {% endblock %}
@@ -71,8 +63,8 @@
                                     <div style=" height: 220px; width: 70%; background-color: powderblue;">
                                         <a-scene>
                                             <a-assets>
-                                                <img id="panorama"
-                                                     src="https://thumbs.dreamstime.com/z/panorama-view-modern-white-empty-loft-apartment-interior-living-room-hall-full-seamless-degrees-angle-equirectangular-143527018.jpg"
+                                                <img id="panorama" crossorigin
+                                                     src="https://image.shutterstock.com/image-photo/360-degree-full-sphere-panoramic-260nw-1792694083.jpg"
                                                 />
                                             </a-assets>
                                             <a-sky src="#panorama" rotation="0 -90 0"></a-sky>
@@ -146,7 +138,7 @@
                     <div class="text-right">
                         <a data-target="#examplePositionCenter" data-toggle="modal"
                            class="btn btn-animate btn-animate-side btn-primary text-white">
-                            <span><i class="icon wb-camera" aria-hidden="true"></i> View the apartment</span></a>
+                            <span><i class="icon wb-camera" aria-hidden="true"></i> View the Unit</span></a>
                         <a href="{% url 'unit-edit' u_uid=t.uuid %}"
                            class="btn btn-animate btn-animate-side btn-primary">
                             <span><i class="icon wb-graph-up" aria-hidden="true"></i> Edit Unit</span>
