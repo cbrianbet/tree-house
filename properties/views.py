@@ -1335,6 +1335,88 @@ def non_compliance(request, tenant):
     return redirect('view-tenant', u_uid=t.unit.uuid)
 
 
+@login_required
+@unsubscribed_user
+def vr_tours(request):
+    user = request.user
+    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
+    unit = Unit.objects.filter(property__in=p)
+    vr = UnitVR.objects.filter(unit__in=unit)
+    context = {
+        'unit': unit,
+        'vr': vr
+    }
+
+    return render(request, 'properties/vr-units-list.html', context)
+
+
+@login_required
+@unsubscribed_user
+def vr_list(request, id):
+    user = request.user
+    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
+    unit = Unit.objects.filter(id=id, property__in=p)
+
+    if not unit.exists():
+        raise PermissionDenied
+
+    vr = UnitVR.objects.filter(unit_id=id)
+    context = {
+        'vr': vr,
+        'id': id
+    }
+
+    return render(request, 'properties/vr-list.html', context)
+
+
+@login_required
+@unsubscribed_user
+def vr_add(request, id):
+    user = request.user
+    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
+    unit = Unit.objects.filter(id=id, property__in=p)
+
+    if not unit.exists():
+        raise PermissionDenied
+    if request.method == 'POST':
+        tag = request.POST.get('tag')
+
+        if request.FILES:
+            picture = request.FILES['pano']
+        else:
+            picture = ''
+
+        addvr = UnitVR.objects.create(tag=tag, unit=unit[0], created_by=user, pano=picture)
+        addvr.save()
+
+    vr = UnitVR.objects.filter(unit_id=id)
+    context = {
+        'vr': vr,
+        'id': id
+    }
+
+    return redirect('vr-list', id=id)
+
+
+@login_required
+@unsubscribed_user
+def vr_view(request, id):
+    user = request.user
+    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
+    vr = UnitVR.objects.get(id=id)
+    unit = Unit.objects.filter(id=vr.unit.id, property__in=p)
+
+    if not unit.exists():
+        raise PermissionDenied
+
+    context = {
+        'vr': vr,
+        'id': id
+    }
+
+    return render(request, 'properties/vr.html', context)
+
+
 #api
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

@@ -285,3 +285,20 @@ class Enquire(models.Model):
 
     class Meta:
         db_table = "Enquire Units"
+
+
+class UnitVR(models.Model):
+    pano = models.ImageField(upload_to='unitVR/%Y/%m/', null=True, blank=True)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    tag = models.CharField(max_length=50, null=True, blank=True)
+    created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="vr_created_by")
+    updated_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="vr_updated_by", null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def delete(self, *args, **kwargs):
+        self.pano.delete()
+        super().delete(*args, **kwargs)
+
+    class Meta:
+        db_table = "Unit VR"
