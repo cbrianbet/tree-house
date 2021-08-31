@@ -57,37 +57,43 @@
             <div class="example-wrap">
 
                 <div class="tab-content pt-15">
+                    {% if vr.count == 0 and user.acc_type.id == 4 %}
+                        <label>No VR Images found</label>
+                    {% endif %}
                     <ul class="blocks blocks-100 blocks-xxl-4 blocks-lg-3 blocks-md-2" data-plugin="masonry">
-                        <li class="masonry-item">
-                            <div class="card card-shadow">
-                                <div class="card-header cover">
-                                </div>
-                                <div class="card-block">
-                                    <h3 class="card-title">Got a new VR image?</h3>
-                                    <form method="post" action="{% url 'vr-add' id=id %}" enctype="multipart/form-data">
-                                        {% csrf_token %}
-                                        <div class="form-group row">
-                                            <label class="col-xl-12 col-md-3 form-control-label">Tag
-                                            </label>
-                                            <div class=" col-xl-12 col-md-9">
-                                                <input type="text" class="form-control" name="tag"
-                                                       placeholder="Bedroom, Living room, kitchen, e.t.c">
+                        {% if user.acc_type.id != 4 %}
+                            <li class="masonry-item">
+                                <div class="card card-shadow">
+                                    <div class="card-header cover">
+                                    </div>
+                                    <div class="card-block">
+                                        <h3 class="card-title">Got a new VR image?</h3>
+                                        <form method="post" action="{% url 'vr-add' id=id %}"
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="form-group row">
+                                                <label class="col-xl-12 col-md-3 form-control-label">Tag
+                                                </label>
+                                                <div class=" col-xl-12 col-md-9">
+                                                    <input type="text" class="form-control" name="tag"
+                                                           placeholder="Bedroom, Living room, kitchen, e.t.c">
+                                                </div>
+                                                <br>
+                                                <label class="form-control-label" for="pic">Panorama</label>
+                                                <input type="file" id="pic" name="pano" data-plugin="dropify"
+                                                       data-default-file="" accept="image/*"/>
                                             </div>
-                                            <br>
-                                            <label class="form-control-label" for="pic">Panorama</label>
-                                            <input type="file" id="pic" name="pano" data-plugin="dropify"
-                                                   data-default-file="" accept="image/*"/>
-                                        </div>
-                                        <div>
-                                            <button type="submit" class="btn btn-outline btn-primary">
-                                                <i class="icon wb-plus" ></i>
-                                                <span>Add</span>
-                                            </button>
-                                        </div>
-                                    </form>
+                                            <div>
+                                                <button type="submit" class="btn btn-outline btn-primary">
+                                                    <i class="icon wb-plus"></i>
+                                                    <span>Add</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        {% endif %}
                         {% for i in vr %}
                             <li class="masonry-item">
                                 <div class="card card-shadow">
@@ -109,7 +115,7 @@
                                     <div class="card-block">
                                         <div class="card-actions float-right">
                                         </div>
-                                        <a href="{% url 'vr-view' id=i.id  %}" target="_blank"
+                                        <a href="{% url 'vr-view' id=i.id %}" target="_blank"
                                            class="btn btn-outline btn-primary card-link">
                                             View
                                         </a>

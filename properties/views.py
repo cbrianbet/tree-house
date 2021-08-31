@@ -1174,6 +1174,7 @@ def search_vacant(request):
     if request.method == "POST":
         units = Unit.objects.filter(unit_status="Vacant", property_id=request.POST.get('prop')).order_by('floor')
         data =  list(units.values())
+        print(units)
         return JsonResponse(data, safe=False)
 
     context = {
@@ -1354,8 +1355,11 @@ def vr_tours(request):
 @unsubscribed_user
 def vr_list(request, id):
     user = request.user
-    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
-    unit = Unit.objects.filter(id=id, property__in=p)
+    if user.acc_type.id == 4:
+        unit = Unit.objects.filter(id=id)
+    else:
+        p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
+        unit = Unit.objects.filter(id=id, property__in=p)
 
     if not unit.exists():
         raise PermissionDenied
@@ -1363,7 +1367,8 @@ def vr_list(request, id):
     vr = UnitVR.objects.filter(unit_id=id)
     context = {
         'vr': vr,
-        'id': id
+        'id': id,
+        'vr_count': vr.count()
     }
 
     return render(request, 'properties/vr-list.html', context)
