@@ -626,7 +626,7 @@ def hapokashcreate():
 def refreshToken():
     url = "https://portal.hapokash.app/oauth/token"
 
-    payload = "{\"grant_type\":\"client_credentials\",\"client_id\":\"3\",\"client_secret\":\"MpZsUna0SwG23iZS4dVVXQLdBcb1Y8KVplVz5Wri\"}"
+    payload = "{\"grant_type\":\"client_credentials\",\"client_id\":\"3\",\"client_secret\":\"5kpWBSLWbISjmpdNyjPhyeRgj7yJqJB8K0kIaJ33\"}"
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
