@@ -1407,9 +1407,9 @@ def vr_add(request, id):
 @unsubscribed_user
 def vr_view(request, id):
     user = request.user
-    p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
+    # p = Properties.objects.filter(company=CompanyProfile.objects.get(user=user).company)
     vr = UnitVR.objects.get(id=id)
-    unit = Unit.objects.filter(id=vr.unit.id, property__in=p)
+    unit = Unit.objects.filter(id=vr.unit.id)
 
     if not unit.exists():
         raise PermissionDenied
