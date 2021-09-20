@@ -251,6 +251,7 @@ def tenants_ledge_listing(request):
     context = {
         'user': request.user,
         'active': active_tenant,
+        'TenantFilter': filter
     }
     return render(request, 'reports/tenants.html', context)
 
