@@ -302,3 +302,11 @@ class UnitVR(models.Model):
 
     class Meta:
         db_table = "Unit VR"
+
+
+class SMSWallet(models.Model):
+    company_id = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    balance = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = "SMS Wallet"

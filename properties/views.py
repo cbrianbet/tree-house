@@ -1,17 +1,20 @@
 import csv
 import datetime
 import io
+import json
 import os
 import random
 import string
 import calendar
+from pathlib import Path
 
+import requests
 from dateutil import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
 from django.core import serializers
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ImproperlyConfigured
 from django.core.files import File
 from django.core.mail import send_mail
 from django.db.models import Count, Q
@@ -46,19 +49,22 @@ def properties_list(request):
             raise PermissionDenied
         prop = PropertyStaff.objects.filter(user=request.user).values_list('property__uuid', flat=True)
         p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company, uuid__in=prop)
-        th = TenantHistory.objects.filter(curr_unit__property__in=p, end_date=None).values('curr_unit__property__uuid').annotate(
+        th = TenantHistory.objects.filter(curr_unit__property__in=p, end_date=None).values(
+            'curr_unit__property__uuid').annotate(
             count=Count('curr_unit__property__uuid')).order_by('curr_unit__property__uuid')
 
     if request.user.acc_type.id == 2 or request.user.acc_type.id == 3:
         p = Properties.objects.filter(company=CompanyProfile.objects.get(user=request.user).company)
-        th = TenantHistory.objects.filter(curr_unit__property__in=p, end_date=None).values('curr_unit__property__uuid').annotate(
+        th = TenantHistory.objects.filter(curr_unit__property__in=p, end_date=None).values(
+            'curr_unit__property__uuid').annotate(
             count=Count('curr_unit__property__uuid')).order_by('curr_unit__property__uuid')
 
     tenants = {}
     for entry in th:
         tenants.update({entry['curr_unit__property__uuid']: entry['count']})
     print(tenants)
-    sub = SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count()
+    sub = SubscriptionsCompanies.objects.get(
+        company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count()
     print(sub)
     context = {
         'prop': p,
@@ -336,15 +342,15 @@ def edit_units(request, u_uid):
         specify = request.POST.get('other')
         deposit = request.POST.get('deposit')
 
-        unit.unit_name=unit_name
-        unit.security_deposit=deposit
-        unit.size=size
-        unit.other_specify=specify
-        unit.value=value
-        unit.parking_assigned=no_of_parking
-        unit.service_charge=service_charge
-        unit.area=area
-        unit.updated_by=request.user
+        unit.unit_name = unit_name
+        unit.security_deposit = deposit
+        unit.size = size
+        unit.other_specify = specify
+        unit.value = value
+        unit.parking_assigned = no_of_parking
+        unit.service_charge = service_charge
+        unit.area = area
+        unit.updated_by = request.user
 
         unit.save()
 
@@ -413,7 +419,7 @@ def add_tenant(request, u_uid):
         )
         t.save()
 
-        inform(username, pwrd, email, f_name, Properties.objects.get(id=unit.property.id).property_name)
+        inform(username, pwrd, email, f_name, Properties.objects.get(id=unit.property.id).property_name, unit)
 
         unit.unit_status = "Occupied"
         unit.save()
@@ -431,7 +437,7 @@ def add_tenant(request, u_uid):
                 print(rent)
             inv = apply_invoice(float(rent), float(unit.security_deposit), request.user, t)
             email_inform = inform_invoice(username, unit, email, f_name,
-                                              Properties.objects.get(id=unit.property.id).property_name)
+                                          Properties.objects.get(id=unit.property.id).property_name)
             # inv.save()
 
     if TenantHistory.objects.filter(curr_unit=unit, end_date=None).exists():
@@ -446,9 +452,9 @@ def add_tenant(request, u_uid):
     return render(request, 'properties/add_tenant.html', context)
 
 
-def inform(u, p, e, n, prop):
+def inform(u, p, e, n, prop, unit):
     subject = "Welcome to {}".format(prop)
-    html_message = render_to_string('properties/email_temp_04.html', {'n': n,'u':u, 'p':p})
+    html_message = render_to_string('properties/email_temp_04.html', {'n': n, 'u': u, 'p': p})
     plain_message = strip_tags(html_message)
     message = '''
     Dear {}, 
@@ -460,8 +466,12 @@ def inform(u, p, e, n, prop):
     Password:	{}
     It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
         n, u, p)
+    text = '''Dear {}, Welcome to mNest Africa! You have been successfully registered into the mNest Africa platform by your Agent/Landlord. Your apartment is ({}, {}), Your monthly rent is KES {}. Download the tenant app here (link)'''.format(
+        n, unit.unit_name, unit.property.property_name, unit.value
+    )
     try:
-        send_mail(subject, plain_message, EMAIL_HOST_USER, [e], html_message=html_message,  fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [e], html_message=html_message, fail_silently=False)
+        sendsms(Profile.objects.get(user__username=u).msisdn, text)
     except:
         print('failed')
 
@@ -473,6 +483,7 @@ def inform_invoice(u, unit, e, n, prop):
     This email is to let you know that an Invoice has been created for your unit {} at {}.
     login to your portal at	mnestafrica.com to view it under bills. 
     Your username is : {} incase you forgot.'''.format(n, unit.unit_name, prop, u)
+
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
         return True
@@ -652,7 +663,8 @@ def prop_file_upload(request):
             created_by=request.user,
             company=CompanyProfile.objects.get(user=request.user).company
         )
-        if SubscriptionsCompanies.objects.get(company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count() > 0:
+        if SubscriptionsCompanies.objects.get(
+                company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count() > 0:
             created.save()
     return redirect('prop-list')
 
@@ -899,7 +911,7 @@ def get_random_username_staff():
 
 def inform_staff(u, p, e, n, prop):
     subject = "Welcome to {}".format(prop)
-    html_message = render_to_string('properties/email_temp_03.html', {'u':u, 'p':p})
+    html_message = render_to_string('properties/email_temp_03.html', {'u': u, 'p': p})
     plain_message = strip_tags(html_message)
     message = '''
     Dear {}, 
@@ -956,7 +968,8 @@ def vacate_tenant_request(request):
         date = request.POST.get('date')
 
         req = VacateNotice.objects.create(reason=reason, new_contacts=moving_contact, days_notice=days_notice,
-                                          vacate_date=date, notice_from=tenant, created_by=request.user, unit=tenant.unit)
+                                          vacate_date=date, notice_from=tenant, created_by=request.user,
+                                          unit=tenant.unit)
         req.save()
         return redirect('generate-vacate-request')
     context = {
@@ -1012,7 +1025,7 @@ def generate_vacate_notice(request):
 @login_required
 @unsubscribed_user
 def inspection_report(request, id):
-    if  request.user.acc_type.id == 4:
+    if request.user.acc_type.id == 4:
         raise PermissionDenied
     user = request.user
     vac = VacateNotice.objects.get(id=id)
@@ -1043,11 +1056,11 @@ def inspection_report(request, id):
 @login_required
 @unsubscribed_user
 def approve_vac(request, id):
-    if  request.user.acc_type.id == 4:
+    if request.user.acc_type.id == 4:
         raise PermissionDenied
 
     vac = VacateNotice.objects.get(id=id)
-    vac.status =True
+    vac.status = True
     vac.save()
 
     return redirect('vacate-list')
@@ -1096,19 +1109,20 @@ def respond_yes(request, u_id):
     eq = Enquire.objects.get(uuid=u_id)
     eq.response = True
     eq.save()
-    unit =Unit.objects.get(id=eq.unit_id)
+    unit = Unit.objects.get(id=eq.unit_id)
 
     company = CompanyProfile.objects.get(company=unit.property.company, user__acc_type_id__in=[2, 3]).user
     landlord = Profile.objects.get(user=company)
 
     subject = "Enquiry for {}".format(eq.unit.unit_name)
-    html_message = render_to_string('properties/email_temp_07.html',  {'unit': unit, 'landlord': landlord} )
+    html_message = render_to_string('properties/email_temp_07.html', {'unit': unit, 'landlord': landlord})
     plain_message = strip_tags(html_message)
     message = '''
             This is a notice that your request for the unit has been approved. The contact details will be sent
             '''
     try:
-        send_mail(subject, plain_message, EMAIL_HOST_USER, [eq.user.email], html_message=html_message,fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [eq.user.email], html_message=html_message,
+                  fail_silently=False)
     except:
         print('failed')
     return redirect('enquire-list')
@@ -1131,7 +1145,8 @@ def respond_no(request, u_id):
     html_message = render_to_string('properties/email_temp_06.html')
     plain_message = strip_tags(html_message)
     try:
-        send_mail(subject, plain_message, EMAIL_HOST_USER, [eq.user.email], html_message=html_message, fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [eq.user.email], html_message=html_message,
+                  fail_silently=False)
     except:
         print('failed')
     return redirect('enquire-list')
@@ -1143,7 +1158,8 @@ def enquire_unit(request, u_id):
     if request.user.acc_type.id != 4:
         return PermissionDenied
 
-    company = CompanyProfile.objects.get(company=Unit.objects.get(id=u_id).property.company, user__acc_type_id__in=[2, 3]).user
+    company = CompanyProfile.objects.get(company=Unit.objects.get(id=u_id).property.company,
+                                         user__acc_type_id__in=[2, 3]).user
     landlord = Profile.objects.get(user=company)
     eq = Enquire.objects.create(unit=Unit.objects.get(id=u_id), user=request.user, created_by=request.user)
     eq.save()
@@ -1160,7 +1176,7 @@ def send_email_enq(t, prof, l):
     html_message = render_to_string('properties/email_temp_05.html', {"prof": prof, "t": t})
     plain_message = strip_tags(html_message)
     try:
-        send_mail(subject, plain_message, EMAIL_HOST_USER, [l], html_message=html_message,fail_silently=False)
+        send_mail(subject, plain_message, EMAIL_HOST_USER, [l], html_message=html_message, fail_silently=False)
     except:
         print('failed')
 
@@ -1173,7 +1189,7 @@ def search_vacant(request):
     property = Properties.objects.all()
     if request.method == "POST":
         units = Unit.objects.filter(unit_status="Vacant", property_id=request.POST.get('prop')).order_by('floor')
-        data =  list(units.values())
+        data = list(units.values())
         print(units)
         return JsonResponse(data, safe=False)
 
@@ -1193,12 +1209,12 @@ def document(request):
     user = request.user
     try:
         vac = VacateNotice.objects.get(notice_from=Tenant.objects.get(profile__user=user))
-    except :
+    except:
         vac = None
 
     try:
         non_com = NonCompliance.objects.filter(tenant=Tenant.objects.get(profile__user=user))
-    except :
+    except:
         non_com = None
 
     context = {
@@ -1330,7 +1346,8 @@ def document_vacate_api(request):
 def non_compliance(request, tenant):
     user = request.user
     t = Tenant.objects.get(id=tenant)
-    non_comp = NonCompliance.objects.create(tenant=t, created_by=user, unit=t.unit, violation=request.POST.get('violation'))
+    non_comp = NonCompliance.objects.create(tenant=t, created_by=user, unit=t.unit,
+                                            violation=request.POST.get('violation'))
     non_comp.save()
 
     return redirect('view-tenant', u_uid=t.unit.uuid)
@@ -1422,7 +1439,7 @@ def vr_view(request, id):
     return render(request, 'properties/vr.html', context)
 
 
-#api
+# api
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def current_app_api(request):
@@ -1489,11 +1506,13 @@ def vacancy_enquire_api(request):
         return PermissionDenied
     u_id = request.data['uuid']
     try:
-        company = CompanyProfile.objects.get(company=Unit.objects.get(uuid=u_id).property.company, user__acc_type_id__in=[2, 3]).user
+        company = CompanyProfile.objects.get(company=Unit.objects.get(uuid=u_id).property.company,
+                                             user__acc_type_id__in=[2, 3]).user
         landlord = Profile.objects.get(user=company)
         eq = Enquire.objects.create(unit=Unit.objects.get(uuid=u_id), user=request.user, created_by=request.user)
         eq.save()
-        send_email_enq(Unit.objects.get(uuid=u_id).unit_name, Profile.objects.get(user=request.user), landlord.user.email)
+        send_email_enq(Unit.objects.get(uuid=u_id).unit_name, Profile.objects.get(user=request.user),
+                       landlord.user.email)
 
         return Response({'success': True, 'message': "You will receive a response via email"}, status.HTTP_200_OK)
     except Unit.DoesNotExist:
@@ -1506,12 +1525,12 @@ def documents_api(request):
     user = request.user
     try:
         non_com = NonCompliance.objects.filter(tenant=Tenant.objects.get(profile__user=user))
-    except :
+    except:
         non_com = None
     violations = []
     for n in non_com:
         violations.append({
-            'link': request.build_absolute_uri(reverse('document-non-comp-api', kwargs={'vid': n.id} ))
+            'link': request.build_absolute_uri(reverse('document-non-comp-api', kwargs={'vid': n.id}))
         })
 
     data = {
@@ -1525,3 +1544,44 @@ def documents_api(request):
         }
     }
     return Response({'success': True, 'data': data}, status=status.HTTP_200_OK)
+
+
+# Get secret properties
+BASE_DIR = Path(__file__).resolve().parent.parent
+with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+    secrets = json.load(secrets_file)
+
+
+def get_secret(setting, secrets=secrets):
+    """Get secret setting or fail with ImproperlyConfigured"""
+    try:
+        return secrets[setting]
+    except KeyError:
+        raise ImproperlyConfigured("Set the {} setting".format(setting))
+
+
+# SMS function
+def sendsms(msisdn, text):
+    url = "https://ujumbesms.co.ke/api/messaging"
+
+    payload = json.dumps({
+        "data": [
+            {
+                "message_bag": {
+                    "numbers": msisdn,
+                    "message": text,
+                    "sender": "DEPTHSMS"
+                }
+            }
+        ]
+    })
+    headers = {
+        'X-Authorization': get_secret('sms_api_key'),
+        'Email': 'mnestafrica@gmail.com',
+        'Content-Type': 'application/json',
+        'Cookie': 'XSRF-TOKEN=eyJpdiI6ImswSVNUc1N5NDV3aW80MTg4TkR5VHc9PSIsInZhbHVlIjoib0Z5cXRuaXVHeHBzSEh1VHBQanJzS3Z4c1lsRTNzbDg3MXRhM3liSG5ybE1GZCt1NXEzcTBtdnVzd0NwOUJvb0hPR0gzNTRuWFBHdU5PVlY4YWlQcEE9PSIsIm1hYyI6IjZjNTNlY2JiOTM5YWE3MTVkMjY1NDY1YjY2ODA2YjAzZmVjYjBhYjg5NjgxMDMyODNmYzgzMzEyOTIzMDgyNGEifQ%3D%3D; ujumbe_session=eyJpdiI6IlpXa0ZtRXBQdGRHREFtRzRwaTZMN3c9PSIsInZhbHVlIjoiSitYVFJIUkFjTnFyUkxVOXJSSXdKYTYyS1c2U2F3T2xyNmxuUXNCZ1BTZVRGWUMyWVF0c1I2R1laM1czTG9uWkVKaFU5XC91Sm1yT2l1b3lFTHZLdVpBPT0iLCJtYWMiOiI1OTk4YThhZTE3YzY4ZGEyNzcxNDJjMzNlMjRiYjQ0OWJmNTVmYzJmMjI3NzkwM2Y3NTM0MDAzYWU4ZWI1YTQ2In0%3D'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    return response.json()
