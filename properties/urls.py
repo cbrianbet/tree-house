@@ -45,10 +45,13 @@ urlpatterns = [
     path('documnet/non-comp<int:vid>', views.document_non_comp, name='document-non-comp'),
     path('documnet/non-comp/api<int:vid>', views.document_non_comp_api, name='document-non-comp-api'),
     path('send/non-comp/<int:tenant>', views.non_compliance, name='non-comp'),
+
     path('vr-tours/', views.vr_tours, name='vr-tours'),
     path('vr-list/<int:id>', views.vr_list, name='vr-list'),
     path('vr-add/<int:id>', views.vr_add, name='vr-add'),
     path('vr-view/<int:id>', views.vr_view, name='vr-view'),
+
+    path('smslog/', views.smslog, name='smslog'),
 
     #api
     path('api/tenant/current', views.current_app_api, name='curr-app-api'),

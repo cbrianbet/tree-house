@@ -1439,6 +1439,18 @@ def vr_view(request, id):
     return render(request, 'properties/vr.html', context)
 
 
+@login_required
+@unsubscribed_user
+def smslog(request):
+    company = CompanyProfile.objects.get(user=request.user).company
+    log = SMSLog.objects.filter(company_id=company.id)
+    # smsbal = SMSWallet.objects.get(company_id=company.id).balance
+    context ={
+        'log': log,
+        'sms': 0
+    }
+    return render(request, "properties/smsLog.html", context)
+
 # api
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

@@ -305,8 +305,20 @@ class UnitVR(models.Model):
 
 
 class SMSWallet(models.Model):
-    company_id = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
     balance = models.PositiveIntegerField(default=0)
 
     class Meta:
         db_table = "SMS Wallet"
+
+
+class SMSLog(models.Model):
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    cost = models.PositiveIntegerField(default=0)
+    status = models.BooleanField(null=True)
+    description = models.CharField(max_length=500, null=True)
+    recipients = models.CharField(max_length=500, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "SMS Log"
