@@ -52,6 +52,7 @@ urlpatterns = [
     path('vr-view/<int:id>', views.vr_view, name='vr-view'),
 
     path('smslog/', views.smslog, name='smslog'),
+    path('smslog/', views.sms_stktopup, name='sms-stktopup'),
 
     #api
     path('api/tenant/current', views.current_app_api, name='curr-app-api'),

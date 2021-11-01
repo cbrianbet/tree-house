@@ -145,7 +145,7 @@
                             </div>
                             <div class="modal-body">
                                 <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                                <form id="hkpay" method="post" action="{% url 'stkpush-topup' %}">
+                                <form id="hkpay" method="post" action="{% url 'sms-stktopup' %}">
                                     {% csrf_token %}
                                     <div class="form-group">
                                         <label class="form-control-label" for="amount">Amount*</label>
@@ -160,116 +160,6 @@
 
                                     <button type="submit" class="btn btn-success">Top up</button>
                                 </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Modal -->
-
-                <!-- Modal -->
-                <div class="modal fade example-modal-lg" id="examplePositionCenter3" aria-hidden="true"
-                     aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
-                    <div class="modal-dialog modal-simple modal-center">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Mpesa Transaction code</h4>
-                            </div>
-                            <div class="modal-body">
-                                <h6>A notification was sent to your phone to pay, enter transaction code </h6>
-
-                                <form id="transF" action="{% url 'confirm-trans' %}" method="post">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="trans">Transaction code*</label>
-                                        <input type="text" class="form-control" id="trans" name="trans"
-                                               required="required">
-                                    </div>
-                                    <button type="submit" class="btn btn-success">Submit</button>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Quit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Modal -->
-                <!-- Modal -->
-                <div class="modal fade example-modal-lg" id="examplePositionCenter2" aria-hidden="true"
-                     aria-labelledby="examplePositionCenter"
-                     role="dialog" tabindex="-1">
-                    <div class="modal-dialog modal-simple modal-center">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title">Withdraw from wallet</h4>
-                            </div>
-                            <div class="modal-body">
-                                <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                                <form id="hkwith" method="post" action="{% url 'withdraw-wallet' %}">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="amount">Amount*</label>
-                                        <small>Your wallet balance is {{ cur_balance }}</small>
-                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control"
-                                               id="amount" name="amount"
-                                               required="required"
-                                               placeholder="Ksh. 10 is the least amount you can withdraw">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="amount">Mobile*</label>
-                                        <input type="text" class="form-control" id="mobile" name="mobile"
-                                               required="required" placeholder="0700000000">
-                                    </div>
-
-                                    <button type="submit" class="btn btn-success">Withdraw</button>
-                                </form>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Modal -->
-                <!-- Modal -->
-                <div class="modal fade example-modal-lg" id="transfer" aria-hidden="true"
-                     aria-labelledby="examplePositionCenter"
-                     role="dialog" tabindex="-1">
-                    <div class="modal-dialog modal-simple modal-center">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title">Wallet transfer</h4>
-                            </div>
-                            <div class="modal-body">
-                                <h6>Wallet balance KSH. {{ cur_balance }}</h6>
-                                <form id="walltrans" method="post" action="{% url 'wallet-transfer' %}">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="amount">Amount*</label>
-                                        <input type="number" min="0" max="{{ cur_balance }}" class="form-control"
-                                               id="amount" name="amount"
-                                               required="required" placeholder="Amount">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="wallet">Wallet ID*</label>
-                                        <input type="number" class="form-control" id="wallet" name="wallet"
-                                               required="required" placeholder="Wallet ID">
-                                    </div>
-
-                                    <button type="submit" class="btn btn-success">Transfer</button>
-                                </form>
-
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -387,7 +277,7 @@
             FlutterwaveCheckout({
                 //public_key: "FLWPUBK_TEST-14d251e0b448f6c8a22134084b798a20-X", //test
                 public_key: "FLWPUBK-e96eebe004986246294db7041123a73b-X", //live
-                tx_ref: "{{profile.hapokash}}",
+                tx_ref: 1,
                 amount: $('#amountc').val(),
                 currency: "KES",
                 country: "KE",
@@ -399,7 +289,7 @@
                 },
                 customizations: {
                     title: "HapoKash",
-                    description: "Wallet Top Up",
+                    description: "SMS Credits",
                     logo: "https://portal.hapokash.app/assets/img/logo.png",
                 },
             });

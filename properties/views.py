@@ -1451,6 +1451,26 @@ def smslog(request):
     }
     return render(request, "properties/smsLog.html", context)
 
+
+@login_required
+@unsubscribed_user
+def sms_stktopup(request):
+    user = Profile.objects.get(user=request.user)
+
+    if request.POST.get('mobile').startswith('0'):
+        mobile ='254' + request.POST.get('mobile')[1:]
+    else:
+        mobile = request.POST.get('mobile')
+
+    URL = "https://portal.hapokash.app/api/wallet/top_up"
+
+    headers_dict = {"Accept": "application/json", "Content-Type": "application/json"}
+    r = requests.post(url=URL, json={"shortcode": "5061001", "msisdn": mobile, "amount": request.POST.get('amount'), "account_no": 1}, headers=headers_dict)
+    wallet = r.json()
+    print(wallet)
+    return HttpResponse('success')
+
+
 # api
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
