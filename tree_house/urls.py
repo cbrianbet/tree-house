@@ -28,6 +28,7 @@ urlpatterns = [
     url('', include('bills.urls')),
     url('', include('chatApp.urls')),
     url('', include('reports.urls')),
+    url('', include('smsApp.urls')),
     url('', include('back_auto.urls')),
     url(r'^auth/', include('djoser.urls')),
     url(r'^auth/', include('djoser.urls.authtoken')),
