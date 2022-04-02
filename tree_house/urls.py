@@ -10,10 +10,10 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="MNEST API",
+        title="mobikeja API",
         default_version='v1',
-        description="APIS FOR MNEST",
-        terms_of_service="https://www.mnest.com/policies/terms/",
+        description="APIS FOR mobikeja",
+        terms_of_service="https://www.mobikeja.com/policies/terms/",
         contact=openapi.Contact(email="mneatafrica@gmail.com"),
         license=openapi.License(name="2021 License"),
     ),

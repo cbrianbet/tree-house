@@ -461,12 +461,12 @@ def inform(u, p, e, n, prop, unit):
     We are thrilled to have you on-board! 
     This email is to let you know that we are continuing to utilise the latest technologies available to provide you with an even better service. 
     A special login has been created for you as follows:
-    Web URL:	mnestafrica.com
+    Web URL:	mobikeja.com
     username: {}
     Password:	{}
     It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
         n, u, p)
-    text = '''Dear {}, Welcome to mNest Africa! You have been successfully registered into the mNest Africa platform by your Agent/Landlord. Your apartment is ({}, {}), Your monthly rent is KES {}. Download the tenant app here (link)'''.format(
+    text = '''Dear {}, Welcome to Mobikeja! You have been successfully registered into the Mobikeja platform by your Agent/Landlord. Your apartment is ({}, {}), Your monthly rent is KES {}. Download the tenant app here (link)'''.format(
         n, unit.unit_name, unit.property.property_name, unit.value
     )
     try:
@@ -481,7 +481,7 @@ def inform_invoice(u, unit, e, n, prop):
     message = '''
     Dear {}, 
     This email is to let you know that an Invoice has been created for your unit {} at {}.
-    login to your portal at	mnestafrica.com to view it under bills. 
+    login to your portal at	mobikeja.com to view it under bills. 
     Your username is : {} incase you forgot.'''.format(n, unit.unit_name, prop, u)
 
     try:
@@ -917,7 +917,7 @@ def inform_staff(u, p, e, n, prop):
     Dear {}, 
     This email is to let you know that we are continuing to utilise the latest technologies available to provide you with an even better service. 
     A special login has been created for you as follows:
-    Web URL:	mnestafrica.com/login
+    Web URL:	mobikeja.com/login
     username: {}
     Password: {}
     It is recommended that you change your password after login in for the first time by choosing the Change Password link in the side menu of the web site.'''.format(
@@ -1609,7 +1609,7 @@ def sendsms(msisdn, text):
     })
     headers = {
         'X-Authorization': get_secret('sms_api_key'),
-        'Email': 'mnestafrica@gmail.com',
+        'Email': 'mobikeja@gmail.com',
         'Content-Type': 'application/json',
         'Cookie': 'XSRF-TOKEN=eyJpdiI6ImswSVNUc1N5NDV3aW80MTg4TkR5VHc9PSIsInZhbHVlIjoib0Z5cXRuaXVHeHBzSEh1VHBQanJzS3Z4c1lsRTNzbDg3MXRhM3liSG5ybE1GZCt1NXEzcTBtdnVzd0NwOUJvb0hPR0gzNTRuWFBHdU5PVlY4YWlQcEE9PSIsIm1hYyI6IjZjNTNlY2JiOTM5YWE3MTVkMjY1NDY1YjY2ODA2YjAzZmVjYjBhYjg5NjgxMDMyODNmYzgzMzEyOTIzMDgyNGEifQ%3D%3D; ujumbe_session=eyJpdiI6IlpXa0ZtRXBQdGRHREFtRzRwaTZMN3c9PSIsInZhbHVlIjoiSitYVFJIUkFjTnFyUkxVOXJSSXdKYTYyS1c2U2F3T2xyNmxuUXNCZ1BTZVRGWUMyWVF0c1I2R1laM1czTG9uWkVKaFU5XC91Sm1yT2l1b3lFTHZLdVpBPT0iLCJtYWMiOiI1OTk4YThhZTE3YzY4ZGEyNzcxNDJjMzNlMjRiYjQ0OWJmNTVmYzJmMjI3NzkwM2Y3NTM0MDAzYWU4ZWI1YTQ2In0%3D'
     }

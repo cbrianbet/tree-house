@@ -282,7 +282,7 @@ def inform_agent_payment(u, n, e, p, un):
     message = '''
     Dear {}, 
     This email is to let you know that a payment request has been received from property {} unit {}. 
-    Login to your portal at	mnestafrica.com for more details. Your username is {} incase you had forgotten'''.format(
+    Login to your portal at	mobikeja.com for more details. Your username is {} incase you had forgotten'''.format(
         n, p, un, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
@@ -514,7 +514,7 @@ def inform_apprved(u, n, prop, e):
     message = '''
     Dear {}, 
     This email is to let you know that Your payment request has been received and Approved. 
-    Login to your portal at	mnestafrica.com to view the transaction. Your username is  {} incase you had forgotten'''.format(
+    Login to your portal at	mobikeja.com to view the transaction. Your username is  {} incase you had forgotten'''.format(
         n, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)
@@ -549,7 +549,7 @@ def inform_rej(u, n, prop, e):
     message = '''
     Dear {}, 
     This email is to let you know that Your payment request has been received and Rejected. Get in touch with your agent/Landlord for more details. 
-    Login to your portal at	mnestafrica.com to post another. Your username is  {} incase you had forgotten'''.format(
+    Login to your portal at	mobikeja.com to post another. Your username is  {} incase you had forgotten'''.format(
         n, u)
     try:
         send_mail(subject, message, EMAIL_HOST_USER, [e], fail_silently=False)

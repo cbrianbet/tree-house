@@ -99,7 +99,7 @@ def send_email(t, date):
     message = '''
         Dear {},
         This email is to let you know that a Rent Invoice has been created for your unit {} at {}.
-        login to your portal at	mnestafrica.com to view it under bills. The incoice is due on: {}  
+        login to your portal at	mobikeja.com to view it under bills. The incoice is due on: {}  
         Your username is : {} incase you forgot.'''.format(t.profile.first_name, t.unit.unit_name,
                                                            t.unit.property.property_name, date,
                                                            t.profile.user.username)

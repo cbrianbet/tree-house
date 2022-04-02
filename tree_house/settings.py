@@ -54,7 +54,7 @@ ALLOWED_HOSTS = ['*']
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mnestafrica@gmail.com'
+EMAIL_HOST_USER = 'mobikeja@gmail.com'
 EMAIL_HOST_PASSWORD = get_secret('E_PASS')
 
 # Application definition
@@ -79,7 +79,8 @@ INSTALLED_APPS = [
     'bills',
     'chatApp',
     'reports',
-    'back_auto'
+    'back_auto',
+    'smsApp'
 ]
 
 MIDDLEWARE = [
@@ -152,7 +153,7 @@ WSGI_APPLICATION = 'tree_house.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'TreeHouse',
+        'NAME': 'treeHouse',
         'USER': get_secret('USER'),
         'PASSWORD': get_secret('PWD'),
         'HOST': get_secret('HOST'),  # Or an IP Address that your DB is hosted on

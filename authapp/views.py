@@ -567,17 +567,17 @@ def signup(request):
                 cp = CompanyProfile.objects.create(user=user, company=company)
                 cp.save()
 
-                stkpushreg(mobile, Subscriptions.objects.get(uuid=sub_picked).value)
+                # stkpushreg(mobile, Subscriptions.objects.get(uuid=sub_picked).value)
 
-                wal_id = hapokashcreate()
-                try:
-                    if wal_id['success']:
-                        profile.hapokash = wal_id['wallet']['id']
-                        profile.save()
-                    else:
-                        print('false')
-                except:
-                    print(wal_id)
+                # wal_id = hapokashcreate()
+                # try:
+                #     if wal_id['success']:
+                #         profile.hapokash = wal_id['wallet']['id']
+                #         profile.save()
+                #     else:
+                #         print('false')
+                # except:
+                #     print(wal_id)
             send_register(user.email)
 
         except Exception  as e:
@@ -1212,8 +1212,8 @@ def password_reset_request(request):
                     email_template_name = "password/password_reset_email.txt"
                     c = {
                         "email": user.email,
-                        'domain': 'mnestafrica.com',
-                        'site_name': 'MNEST',
+                        'domain': 'mobikeja.com',
+                        'site_name': 'mobikeja',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         "user": user,
                         'token': default_token_generator.make_token(user),
@@ -1263,8 +1263,8 @@ def password_reset_api(request):
                 email_template_name = "password/password_reset_email.txt"
                 c = {
                     "email": user.email,
-                    'domain': 'mnestafrica.com',
-                    'site_name': 'MNEST',
+                    'domain': 'mobikeja.com',
+                    'site_name': 'mobikeja',
                     "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                     "user": user,
                     'token': default_token_generator.make_token(user),

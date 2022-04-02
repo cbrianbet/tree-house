@@ -98,7 +98,7 @@ def send_email(t, date, inv, inv_item):
     message = '''
         Dear {},
         This email is to let you know that a Rent Invoice has been created for your unit {} at {}.
-        login to your portal at	mnestafrica.com to view it under bills. The incoice is due on: {}  
+        login to your portal at	mobikeja.com to view it under bills. The incoice is due on: {}  
         Your username is : {} incase you forgot.'''.format(t.profile.first_name, t.unit.unit_name,
                                                            t.unit.property.property_name, date,
                                                            t.profile.user.username)
@@ -158,7 +158,7 @@ def send_email_delay(t, r, days, pens):
     message = '''
         Dear {},
         This email is to let you know that Rent Invoice ({}) for your unit {} at {} was due on {}. The penalties that have acured over {} days are {}.
-        Login to your portal at	mnestafrica.com to view it under bills. 
+        Login to your portal at	mobikeja.com to view it under bills. 
         Your username is : {} incase you forgot.'''.format(t.profile.first_name, r.invoice_no, t.unit.unit_name,
                                                            t.unit.property.property_name, r.date_due, days, pens,
                                                            t.profile.user.username)
