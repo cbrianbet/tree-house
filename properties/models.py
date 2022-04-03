@@ -126,6 +126,7 @@ class Unit(models.Model):
     other_specify = models.CharField(max_length=30, null=True, blank=True)
     size = models.CharField(max_length=30, null=True, blank=True)
     security_deposit = models.CharField(max_length=20, default=0)
+    other_deposit = models.CharField(max_length=20, default=0)
     discount_type = models.CharField(max_length=20, null=True, blank=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     created_by = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="u_created_by")

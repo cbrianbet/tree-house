@@ -63,9 +63,9 @@ def properties_list(request):
     for entry in th:
         tenants.update({entry['curr_unit__property__uuid']: entry['count']})
     print(tenants)
-    sub = SubscriptionsCompanies.objects.get(
-        company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count()
-    print(sub)
+    # sub = SubscriptionsCompanies.objects.get(
+    #     company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count()
+    sub = 20
     context = {
         'prop': p,
         'tenant': tenants,
@@ -287,12 +287,12 @@ def add_units(request, floor, u_uid):
         size = request.POST.get('size_unit')
         specify = request.POST.get('other')
         deposit = request.POST.get('deposit')
+        deposit2 = request.POST.get('deposit2')
 
         u_save = Unit.objects.create(
             unit_name=unit, property=prop, security_deposit=deposit, size=size, other_specify=specify, value=value,
             parking_assigned=no_of_parking, service_charge=service_charge, area=area, unit_status=unit_status,
-            floor=floor,
-            created_by=request.user
+            other_deposit=deposit2, floor=floor, created_by=request.user
         )
         u_save.save()
 
@@ -663,9 +663,9 @@ def prop_file_upload(request):
             created_by=request.user,
             company=CompanyProfile.objects.get(user=request.user).company
         )
-        if SubscriptionsCompanies.objects.get(
-                company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count() > 0:
-            created.save()
+        # if SubscriptionsCompanies.objects.get(
+        #         company=CompanyProfile.objects.get(user=request.user).company).property_limit - p.count() > 0:
+        created.save()
     return redirect('prop-list')
 
 

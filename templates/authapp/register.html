@@ -507,15 +507,22 @@
                         showConfirmButton: true,
                     });
                 } else {
+                    {#swal({#}
+                    {#    title: 'Mpesa Transaction!!',#}
+                    {#    text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',#}
+                    {#    type: "info",#}
+                    {#    showConfirmButton: true,#}
+                    {# }); #}
                     swal({
-                        title: 'Mpesa Transaction!!',
-                        text: 'An mpesa pop up will be sent to your phone, input correct pin to continue signup!!',
-                        type: "info",
+                        title: 'Transaction Successful!!',
+                        text: 'Signup Complete, Proceed to login',
+                        type: "success",
                         showConfirmButton: true,
                     });
-                    $('#examplePositionCenter3').modal('show');
-                    var u_name = document.getElementById("u_name").value;
-                    $('#transF').append('<input type="input" name="conf_uname" placeholder="name" value="' + u_name + '" hidden>');
+                    window.location.href = '/login';
+                    {#$('#examplePositionCenter3').modal('show');#}
+                    {#var u_name = document.getElementById("u_name").value;#}
+                    {#$('#transF').append('<input type="input" name="conf_uname" placeholder="name" value="' + u_name + '" hidden>');#}
                 }
             },
             error: function (er) {
