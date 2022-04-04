@@ -567,17 +567,17 @@ def signup(request):
                 cp = CompanyProfile.objects.create(user=user, company=company)
                 cp.save()
 
-                # stkpushreg(mobile, Subscriptions.objects.get(uuid=sub_picked).value)
+                stkpushreg(mobile, Subscriptions.objects.get(uuid=sub_picked).value)
 
-                # wal_id = hapokashcreate()
-                # try:
-                #     if wal_id['success']:
-                #         profile.hapokash = wal_id['wallet']['id']
-                #         profile.save()
-                #     else:
-                #         print('false')
-                # except:
-                #     print(wal_id)
+                wal_id = hapokashcreate()
+                try:
+                    if wal_id['success']:
+                        profile.hapokash = wal_id['wallet']['id']
+                        profile.save()
+                    else:
+                        print('false')
+                except:
+                    print(wal_id)
             send_register(user.email)
 
         except Exception  as e:
