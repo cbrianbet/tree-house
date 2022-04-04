@@ -422,7 +422,7 @@ def profile(request):
     elif user.acc_type.id == 3 or user.acc_type.id == 2:
         profile = Profile.objects.get(user=user)
         comp = CompanyProfile.objects.get(user=profile.user)
-        subs = SubscriptionsCompanies.objects.filter(company=comp.company).order_by('date_end')[0]
+        subs = SubscriptionsCompanies.objects.filter(id=2)[0]
         try:
             sign = SignatureLandlord.objects.get(user=user)
         except SignatureLandlord.DoesNotExist:
