@@ -153,7 +153,7 @@ WSGI_APPLICATION = 'tree_house.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'treeHouse',
+        'NAME': 'mobikeja',
         'USER': get_secret('USER'),
         'PASSWORD': get_secret('PWD'),
         'HOST': get_secret('HOST'),  # Or an IP Address that your DB is hosted on
